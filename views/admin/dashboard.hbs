@@ -1,0 +1,291 @@
+<link rel="stylesheet" href="/styles/admin.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.js"
+    integrity="sha512-7DgGWBKHddtgZ9Cgu8aGfJXvgcVv4SWSESomRtghob4k4orCBUTSRQ4s5SaC2Rz+OptMqNk0aHHsaUBk6fzIXw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<section class="bgcolor">
+    <div class="row">
+
+        {{!-- Sidebar --}}
+        <div class="aside col-md-2">
+            <div class="d-flex justify-content-evenly align-items-center">
+                <div>
+                    <img src="/images/JAZPERFUME.png" alt="" class="logo_image">
+                    <p class="fs-6">PERFUMES</p>
+                </div>
+                <p class="fs-3 fw-2">ADMIN</p>
+            </div>
+
+            <div class="nav flex-column px-3">
+                <a href="#" class="nav-link active" aria-current="page">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f82b0047e6557aa901c15537d58a7ab6971e1d1d635e2a205c02ec234f11ad61?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Dashboard" loading="lazy">
+                    </span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+
+                <a href="products" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/126b232c82239fc3740982b7c8240f84671d1b6e2a4d00141995b3c82d24c4a5?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Products" loading="lazy">
+                    </span>
+                    <span class="nav-text">Products</span>
+                </a>
+
+                <a href="category" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/c46200642d44aab62899b16a25fc8bfe94e9df6fede3e3512b370b3d4f514356?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Categories" loading="lazy">
+                    </span>
+                    <span class="nav-text">Categories</span>
+                </a>
+
+                <a href="orders" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/395e632ba7027a03ce2c35c1aa8bcc4534da249d8c136cdcc01b5043a72ddc87?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Orders" loading="lazy">
+                    </span>
+                    <span class="nav-text">Orders</span>
+                </a>
+
+                <a href="customers" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f933064a6bab49b74f8d5722595a056cbddbca1247d9b1a20a7e0fc8d56413a0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Customers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Customers</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/ba76937fe489134f0c577be82a18baeadddda8f77194bbcb94734c6db29400c0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Offers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Offers</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/cabe95d2f5fab42e35aad96d91245b122dd4d50ddfe8d1d2bceee5ea219442d8?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Coupons" loading="lazy">
+                    </span>
+                    <span class="nav-text">Coupons</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/2897cc0ce7ace4dd1f7e6d2c1b779540e7fa6d14150e07ac6bd13caecdf99b1a?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Reviews" loading="lazy">
+                    </span>
+                    <span class="nav-text">Reviews</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/5b4c30ca0a115c712594c2dce59791803bec209977f960ad8b2c1a3d2ecaac23?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Settings" loading="lazy">
+                    </span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </div>
+        </div>
+
+
+        {{!-- Content Section --}}
+        <div class="col-md-10">
+
+            {{!-- Breadcrumps --}}
+            <div class="row px-2 pt-2">
+                <div class="col-10">
+                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#" class="link-dark link-underline-opacity-0">Admin</a>
+                            </li>
+                            <li class="breadcrumb-item active text-dark" aria-current="page">Dashboard</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-outline-dark btn-sm" onclick="window.location.href='/admin/logout'">Logout<i
+                            class="bi bi-box-arrow-right ps-2"></i></button>
+
+                </div>
+            </div>
+
+            {{!-- First data section --}}
+            <div class="row d-flex justify-content-around">
+
+                {{!-- barchart --}}
+                <div class="containerbox col-md-4">
+                    <div class="row">
+                        <div class="col-md-6 ps-4">
+                            <h5>Total Sales</h4>
+                                <p style="font-size: small;">THIS MONTH</p>
+                        </div>
+                        <div class="col-md-6 align-self-center">
+                            <p class="fs-4 text-center">$ 4,235</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="chart-container">
+                            <canvas id="barchart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                {{!-- linechart --}}
+                <div class="containerbox col-md-4">
+                    <div class="row">
+                        <div class="col-md-6 ps-4">
+                            <h5>Customers</h4>
+                                <p style="font-size: small;">THIS MONTH</p>
+                        </div>
+                        <div class="col-md-6 align-self-center">
+                            <p class="fs-4 text-center">2571</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="chart-container">
+                            <canvas id="linechart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                {{!-- progress --}}
+                <div class="containerbox col-md-4">
+                    <div class="row">
+                        <div class="col-md-6 ps-4">
+                            <h5>Orders</h4>
+                                <p style="font-size: small;">Monthly Goals: 1,000</p>
+                        </div>
+                        <div class="col-md-6 align-self-center">
+                            <p class="fs-4 text-center">734</p>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-md-12 ps-4 ">
+                            <div class="orderprogress mt-5">
+                                <p class="">266 left</p>
+                                <div class="progress" role="progressbar" aria-label="Example 15px high"
+                                    aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="height: 15px">
+                                    <div class="progress-bar" style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{!-- Second data section --}}
+            <div class="row">
+                <div class="col-mb-4">
+                    <div class="containerbox">
+                        <div class="ps-3">
+                            <h5>Best Selling</h4>
+                                <p style="font-size: small;">THIS MONTH</p>
+                        </div>
+                        <hr>
+                        <div class="ps-3">
+                            <p class="fs-6"><span class="fs-4">$ 2,400</span> - Total Sales</p>
+                        </div>
+
+                        <div class="ps-3">
+                            <button class="btn btn-outline-secondary border-1 rounded-pill py-0 mb-1"
+                                style="font-size: small; font-weight: 500;">Eau De Parfum<span
+                                    style="font-size: smaller; color:black;"> - $940 Sales</span></button>
+                            <button class="btn btn-outline-secondary border-1 rounded-pill py-0 mb-1"
+                                style="font-size: small; font-weight: 500;">Deodorants<span
+                                    style="font-size: smaller; color:black;"> - $790 Sales</span></button>
+
+                            <button class="btn btn-outline-secondary border-1 rounded-pill py-0 mb-1"
+                                style="font-size: small; font-weight: 500;">Body Mist<span
+                                    style="font-size: smaller; color:black;"> - $740 Sales</span></button>
+                        </div>
+                        <div>
+                            <canvas id="donutchart"></canvas>
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+
+<script>
+    /*
+    const data = {
+        labels: [
+            'Red',
+            'Blue',
+            'Yellow'
+        ],
+        datasets: [{
+            label: 'My First Dataset',
+            data: [300, 50, 100],
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)'
+            ],
+            hoverOffset: 4
+        }]
+    };
+    const config = {
+        type: 'doughnut',
+        data: data,
+    };
+
+    const chart = new Chart(
+        document.getElementById('donutchart'),
+        config
+    );
+
+    */
+
+
+
+    var data = {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+        datasets: [{
+            label: "Dataset #1",
+            backgroundColor: "rgba(255,99,132,0.2)",
+            borderColor: "rgba(255,99,132,1)",
+            borderWidth: 2,
+            hoverBackgroundColor: "rgba(255,99,132,0.4)",
+            hoverBorderColor: "rgba(255,99,132,1)",
+            data: [65, 59, 20, 81, 56, 55, 40],
+        }]
+    };
+
+    var options = {
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                stacked: true,
+                grid: {
+                    display: true,
+                    color: "rgba(255,99,132,0.2)"
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        }
+    };
+
+    new Chart('barchart', {
+        type: 'bar',
+        options: options,
+        data: data
+    });
+
+
+</script>

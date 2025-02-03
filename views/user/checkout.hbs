@@ -1,0 +1,234 @@
+{{>header}}
+
+<section>
+    <div class="container p-5">
+        <div class="row">
+            <div class="col-8 px-4">
+                <button type="button" class="btn w-100 p-2 border" style="background-color: #DFF2FA;"
+                    data-bs-toggle="modal" data-bs-target="#exampleModal">Continue with the Saved Address</button>
+                <div class="d-flex justify-content-center p-3">
+                    <hr class="w-25"><span class="px-3">OR</span>
+                    <hr class="w-25">
+                </div>
+                <div class="border rounded p-5" style="background-color: #DFF2FA;">
+                    <h5 class="text-center pb-3">Shipping Address</h5>
+                    <form action="">
+                        <div class="row d-flex justify-content-between mb-3">
+                            <div class="col-6">
+                                <label for="fname" class="form-label">First Name</label>
+                                <input type="text" class="form-control" name="fname" id="fname">
+                            </div>
+                            <div class="col-6">
+                                <label for="lname" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" name="lname" id="lname">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea id="address" name="address" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="row d-flex justify-content-between mb-3">
+                            <div class="col-6">
+                                <label for="locality" class="form-label">Locality</label>
+                                <input type="text" class="form-control" name="locality" id="locality">
+                            </div>
+                            <div class="col-6">
+                                <label for="pincode" class="form-label">Pincode</label>
+                                <input type="text" class="form-control" name="pincode" id="pincode">
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-between mb-3">
+                            <div class="col-6">
+                                <label for="district" class="form-label">District</label>
+                                <input type="text" class="form-control" name="district" id="district">
+                            </div>
+                            <div class="col-6">
+                                <label for="state" class="form-label">State</label>
+                                <input type="text" class="form-control" name="state" id="state">
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-between mb-3">
+                            <div class="col-6">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="tel" class="form-control" name="phone" id="phone">
+                            </div>
+                            <div class="col-6">
+                                <label for="country" class="form-label">Country</label>
+                                <input type="text" class="form-control" name="country" id="country">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="d-flex flex-column align-items-start overflow-hidden border rounded p-4"
+                    style="max-width: 392px;">
+                    <h2 class="fw-semibold fs-5 mb-3">Your Order</h2>
+                    <div class="d-flex justify-content-between align-items-center w-100 mt-3">
+                        <div class="d-flex gap-2 flex-grow-1">
+                            {{#each cartItems}}
+                            <div class="d-flex justify-content-center align-items-center rounded-circle bg-light"
+                                style="width: 40px; height: 40px;">
+                                <img src="/uploads/{{this.products.images.[0]}}" alt="" class="img-fluid"
+                                    style="width: 24px; object-fit: contain;">
+                            </div>
+                            {{/each}}
+                        </div>
+                        <a href="/user/cart" class="btn btn-outline-secondary ms-2">Edit Cart</a>
+                    </div>
+                    <h3 class="fw-bold fs-6 mt-4">Payment Method</h3>
+                    <form class="d-flex flex-column align-items-start mt-2 w-100">
+                        <div class="d-flex align-items-center gap-3">
+                            <input type="radio" id="upi" name="payment" class="form-check-input" checked />
+                            <label for="upi" class="mb-0">UPI</label>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 mt-2">
+                            <input type="radio" id="razorpay" name="payment" class="form-check-input" />
+                            <label for="razorpay" class="mb-0">RazorPay</label>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 mt-2">
+                            <input type="radio" id="wallet" name="payment" class="form-check-input" />
+                            <label for="wallet" class="mb-0">Wallet</label>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 mt-2">
+                            <input type="radio" id="cod" name="payment" class="form-check-input" />
+                            <label for="cod" class="mb-0">Cash On Delivery</label>
+                        </div>
+                        <hr class="my-3">
+                        <div class="d-flex justify-content-between align-items-center w-100 gap-3">
+                            <label for="coupon" class="visually-hidden">Coupon Code</label>
+                            <input type="text" id="coupon" class="form-control" placeholder="Coupon Code"
+                                style="min-height: 42px;">
+                            <button type="button" class="btn btn-secondary btn-sm">Apply Coupon</button>
+                        </div>
+                        <hr class="divider my-3">
+                        <div class="d-flex justify-content-between align-items-center w-100">
+                            <span class="text-secondary">Subtotal:</span>
+                            <span class="text-dark fw-semibold">₹{{totalPrice}}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center w-100 mt-2">
+                            <span class="text-secondary">Shipping:</span>
+                            <span class="text-dark">Free</span>
+                        </div>
+                        <hr class="my-3">
+                        <div class="d-flex justify-content-between align-items-center w-100 fw-bold fs-5">
+                            <span>Total</span>
+                            <span>₹{{totalPrice}}</span>
+                        </div>
+                        <button type="button" class="btn btn-dark w-100 mt-3" id="placeOrderBtn">Place Order</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Saved Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Modal content goes here -->
+                {{#if addresses.length}}
+                <div class="list-group">
+                    {{#each addresses}}
+                    {{#if (isEqual deleted false)}}
+                    <label class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="fw-bold">{{this.firstname}} {{this.firstname}}</span> {{this.phone}} <br>
+                            {{this.address}}, {{this.locality}}, {{this.district}}, {{this.state}} - {{this.pincode}}
+                        </div>
+                        <input class="form-check-input" type="radio" name="selectedAddress" value="{{this._id}}"
+                            data-address='{{{json this}}}'>
+                    </label>
+                    {{/if}}
+                    {{/each}}
+                </div>
+                {{else}}
+                <p>No saved addresses found.</p>
+                {{/if}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{>footer}}
+
+
+
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const addressRadios = document.querySelectorAll("input[name='selectedAddress']");
+        const continueButton = document.querySelector(".modal-footer .btn-primary");
+
+        continueButton.addEventListener("click", () => {
+            const selectedAddress = document.querySelector("input[name='selectedAddress']:checked");
+            if (selectedAddress) {
+                const addressData = JSON.parse(selectedAddress.dataset.address);
+                document.getElementById("fname").value = addressData.firstname;
+                document.getElementById("lname").value = addressData.lastname;
+                document.getElementById("address").value = addressData.address;
+                document.getElementById("locality").value = addressData.locality;
+                document.getElementById("pincode").value = addressData.pincode;
+                document.getElementById("district").value = addressData.district;
+                document.getElementById("state").value = addressData.state;
+                document.getElementById("phone").value = addressData.phone;
+                document.getElementById("country").value = addressData.country;
+                bootstrap.Modal.getInstance(document.getElementById("exampleModal")).hide();
+            }
+        });
+    });
+
+</script>
+
+
+
+<script>
+    document.getElementById("placeOrderBtn").addEventListener("click", function () {
+        const orderData = {
+            fname: document.getElementById("fname").value,
+            lname: document.getElementById("lname").value,
+            address: document.getElementById("address").value,
+            locality: document.getElementById("locality").value,
+            pincode: document.getElementById("pincode").value,
+            district: document.getElementById("district").value,
+            state: document.getElementById("state").value,
+            phone: document.getElementById("phone").value,
+            country: document.getElementById("country").value,
+            paymentMethod: document.querySelector("input[name='payment']:checked").id,
+            cartItems: {{ json cartItems }}
+    }, // Pass cart items from Handlebars
+        totalPrice: "{{totalPrice}}"
+    };
+
+    fetch("/user/place-order", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(orderData)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Order placed successfully!");
+                window.location.href = "/user/order-success"; // Redirect to success page
+            } else {
+                alert("Failed to place order. Try again.");
+            }
+        })
+        .catch(error => console.error("Error:", error));
+});
+</script>

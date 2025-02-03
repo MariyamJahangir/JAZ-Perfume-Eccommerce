@@ -1,0 +1,172 @@
+{{>header}}
+<style>
+    .nav-item:hover {
+        background-color: #DFF2FA;
+        /* Light blue background on hover */
+        cursor: pointer;
+        /* Add a pointer cursor for better UX */
+    }
+
+    .nav-item.active {
+        background-color: #DFF2FA;
+        /* Fixed light blue background for active */
+    }
+</style>
+
+<section style="background-color: #DFF2FA;">
+    <div class="container">
+        <div class="row p-5">
+            <h2>Welcome {{user.firstname}}</h2>
+        </div>
+
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-2 mt-5">
+                <nav class="d-flex flex-column p-3">
+                    <a href="profile" class="link-dark link-underline-opacity-0 nav-item rounded active px-3 py-2 mb-2"
+                        aria-current="page"><i class="bi bi-person-circle p-2"></i>Profile</a>
+                    <a href="address" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+                            class="bi bi-cart4 p-2"></i>Address</a>
+                    <a href="wishlist" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+                            class="bi bi-heart p-2"></i>Wishlist</a>
+                    <a href="orders" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+                            class="bi bi-truck p-2"></i>Orders</a>
+                    <a href="password" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+                            class="bi bi-key p-2"></i>Password</a>
+                    <a href="wallet" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+                            class="bi bi-wallet2 p-2"></i>Wallet</a>
+                    <a href="logout" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+                            class="bi bi-box-arrow-right p-2"></i>Logout</a>
+                </nav>
+            </div>
+            <div class="col-10">
+                <div class="container m-4 p-4 border bg-light">
+                    <h1 class="text-center">PROFILE</h1>
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-7 m-4">
+                            <form id="updateProfileForm">
+                                <div class="row d-flex justify-content-between mb-4">
+
+                                    <div class="col-6">
+                                        <label for="fname" class="form-label">First Name</label>
+                                        <input type="text" class="form-control" name="fname" id="fname"
+                                            value="{{user.firstname}}">
+                                    </div>
+
+                                    <div class="col-6">
+                                        <label for="lname" class="form-label">Last Name</label>
+                                        <input type="text" class="form-control" name="lname" id="lname"
+                                            value="{{user.lastname}}">
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="gender">Gender</label>
+                                    <div class="row d-flex justify-content-start mt-2 ps-2">
+                                        <div class="form-check col-2">
+                                            <input class="form-check-input" type="radio" value="male" id="male"
+                                                name="gender" {{#if (isEqual user.gender "male" )}} checked {{/if}}>
+                                            <label class="form-check-label" for="male">
+                                                Male
+                                            </label>
+                                        </div>
+                                        <div class="form-check col-6">
+                                            <input class="form-check-input" type="radio" value="female" id="female"
+                                                name="gender" {{#if (isEqual user.gender "female" )}} checked {{/if}}>
+                                            <label class="form-check-label" for="female">
+                                                Female
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email" id="email"
+                                        value="{{user.email}}">
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <input type="number" class="form-control" name="phone" id="phone"
+                                        value="{{user.phone}}">
+                                </div>
+
+                                <div class="mb-4 text-center">
+                                    <button type="submit" class="btn btn-secondary px-4">Save</button>
+                                </div>
+
+                            </form>
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{{>footer}}
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("updateProfileForm");
+        console.log(form)
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Capture form data
+            const formData = {
+                firstname: document.getElementById("fname").value,
+                lastname: document.getElementById("lname").value,
+                gender: document.querySelector('input[name="gender"]:checked')?.value || "",
+                email: document.getElementById("email").value,
+                phone: document.getElementById("phone").value
+            };
+
+            const originalEmail = document.getElementById("email").defaultValue;
+            console.log("Form Data Sent:", formData);
+
+            if (formData.email !== originalEmail) {
+                // Ask for confirmation before updating the email
+                const confirmChange = confirm("Are you sure you want to change your email? This will log you out.");
+                if (!confirmChange) {
+                    return; // Stop form submission if the user cancels the email change
+                }
+            }
+
+            try {
+                const response = await fetch("/user/profile-update", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(data.message); // Show success message
+                    // If the email was updated and logout is required, redirect to logout page
+                    if (data.logout) {
+                        window.location.href = "/user/logout"; // Redirect to the logout page
+                    } else {
+                        location.reload(); // Reload the page if no logout is required
+                    }
+                } else {
+                    alert(data.message); // Show error message if email already exists
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while updating the profile.");
+            }
+        });
+    });
+
+</script>

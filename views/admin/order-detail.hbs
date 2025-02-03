@@ -1,0 +1,248 @@
+<link rel="stylesheet" href="/styles/admin.css">
+
+<section class=" m-0 bgcolor ">
+
+    <div class="row d-flex justify-content-between">
+
+        {{!-- Sidebar --}}
+        <div class="aside col-md-2 ">
+            <div class="d-flex justify-content-evenly align-items-center">
+                <div>
+                    <img src="/images/JAZPERFUME.png" alt="" class="logo_image">
+                    <p class="fs-6">PERFUMES</p>
+                </div>
+                <p class="fs-3 fw-2">ADMIN</p>
+            </div>
+
+            <div class="nav flex-column px-3">
+                <a href="#" class="nav-link ">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f82b0047e6557aa901c15537d58a7ab6971e1d1d635e2a205c02ec234f11ad61?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Dashboard" loading="lazy">
+                    </span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+
+                <a href="products" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/126b232c82239fc3740982b7c8240f84671d1b6e2a4d00141995b3c82d24c4a5?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Products" loading="lazy">
+                    </span>
+                    <span class="nav-text">Products</span>
+                </a>
+
+                <a href="category" class="nav-link" aria-current="page">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/c46200642d44aab62899b16a25fc8bfe94e9df6fede3e3512b370b3d4f514356?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Categories" loading="lazy">
+                    </span>
+                    <span class="nav-text">Categories</span>
+                </a>
+
+                <a href="orders" class="nav-link active">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/395e632ba7027a03ce2c35c1aa8bcc4534da249d8c136cdcc01b5043a72ddc87?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Orders" loading="lazy">
+                    </span>
+                    <span class="nav-text">Orders</span>
+                </a>
+
+                <a href="customers" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f933064a6bab49b74f8d5722595a056cbddbca1247d9b1a20a7e0fc8d56413a0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Customers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Customers</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/ba76937fe489134f0c577be82a18baeadddda8f77194bbcb94734c6db29400c0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Offers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Offers</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/cabe95d2f5fab42e35aad96d91245b122dd4d50ddfe8d1d2bceee5ea219442d8?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Coupons" loading="lazy">
+                    </span>
+                    <span class="nav-text">Coupons</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/2897cc0ce7ace4dd1f7e6d2c1b779540e7fa6d14150e07ac6bd13caecdf99b1a?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Reviews" loading="lazy">
+                    </span>
+                    <span class="nav-text">Reviews</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/5b4c30ca0a115c712594c2dce59791803bec209977f960ad8b2c1a3d2ecaac23?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Settings" loading="lazy">
+                    </span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </div>
+        </div>
+
+
+        {{!-- Content Section --}}
+        <div class="col-md-10">
+
+            {{!-- Breadcrumps --}}
+            <div class="row px-2 pt-2">
+                <div class="col-8">
+                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="dashboard"
+                                    class="link-dark link-underline-opacity-0">Admin</a>
+                            </li>
+                            <li class="breadcrumb-item text-dark" aria-current="page"><a href="orders"
+                                    class="link-dark link-underline-opacity-0">Orders</a></li>
+                            <li class="breadcrumb-item active text-dark" aria-current="page">Detail</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-4 d-flex justify-content-end pe-5">
+                    <button type="submit" class="btn btn-outline-dark btn-sm"
+                        onclick="window.location.href='/admin/logout'">Logout<i
+                            class="bi bi-box-arrow-right ps-2"></i></button>
+                </div>
+            </div>
+
+            {{!-- content box --}}
+            <div class="row m-0">
+                <div class="containerboxcat mt-4 p-4">
+                    <div class="row d-flex justify-content-between align-items-center my-4">
+                        <div class="col-3">
+                            <h3 class="fw-bold">Order Detail</h3>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-6 d-flex border p-4">
+                            <div class="col-3">
+                                <p>Customer :</p>
+                                <p>Email :</p>
+                                <p>Phone :</p>
+                                <p>Address :</p>
+                            </div>
+                            <div>
+                                <p>User Name</p>
+                                <p>user@gmail.com</p>
+                                <p>437568586</p>
+                                <p>Address, ksakfgupse9rgo kjdsouge ruvoiv</p>
+                            </div>
+                        </div>
+                        <div class="col-6 d-flex border p-4">
+                            <div class="col-5">
+                                <p>Order Date :</p>
+                                <p>Shipping Method :</p>
+                                <p>Payment Method :</p>
+                                <p>Total :</p>
+                            </div>
+                            <div>
+                                <p>21 Jan 2025</p>
+                                <p>user@gmail.com</p>
+                                <p>Visa 798305</p>
+                                <p>Rs. 8364</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row ">
+                        <div class="col-3 d-flex justify-content-center border p-4">
+                            <div id="carouselExampleIndicators" class="carousel slide d-flex justify-content-center"
+                                data-bs-ride="carousel">
+                                <!-- Indicators -->
+                                <div class="carousel-indicators">
+                                    <button type="button" data-bs-target="#carouselExampleIndicators"
+                                        data-bs-slide-to="0" class="active" aria-current="true"
+                                        aria-label="Slide 1"></button>
+                                    <button type="button" data-bs-target="#carouselExampleIndicators"
+                                        data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                    <button type="button" data-bs-target="#carouselExampleIndicators"
+                                        data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                </div>
+
+                                <!-- Carousel Slides -->
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <img src="/uploads/1736396244173-prd1.jpg" class="d-block w-100" alt="Slide 1">
+                                    </div>
+                                    <div class="carousel-item">
+                                        <img src="/uploads/1736399248344-prd2.jpg" class="d-block w-100" alt="Slide 2">
+                                    </div>
+                                    <div class="carousel-item">
+                                        <img src="/uploads/1736400407553-prd3.jpg" class="d-block w-100" alt="Slide 3">
+                                    </div>
+                                </div>
+
+                                <!-- Navigation Controls -->
+                                <button class="carousel-control-prev" type="button"
+                                    data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button"
+                                    data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+
+                        </div>
+                        <div class="col-9 border p-4">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>Product Name1</td>
+                                        <td>2</td>
+                                        <td>Rs. 2525</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">2</th>
+                                        <td>Product Name2</td>
+                                        <td>1</td>
+                                        <td>Rs. 2353</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                           <div class="container pt-4 px-0">
+                                <p>Order Status</p>
+                                <div class="row d-flex justify-content-start">
+                                    <div class="col-4"><select class="form-select" id="status" name="status">
+                                        <option value="Ordered" selected>Order Placed</option>
+                                        <option value="Processing">Processing</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                        <option value="Delivered">Delivered</option>
+                                    </select></div>
+                                    <div class="col-4"><button type="button" class="btn btn-dark px-4">Set Status</button></div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</section>

@@ -1,0 +1,268 @@
+<link rel="stylesheet" href="/styles/admin.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.js"
+    integrity="sha512-7DgGWBKHddtgZ9Cgu8aGfJXvgcVv4SWSESomRtghob4k4orCBUTSRQ4s5SaC2Rz+OptMqNk0aHHsaUBk6fzIXw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<section class="m-0 bgcolor ">
+    <div class="row d-flex justify-content-between">
+
+        {{!-- Sidebar --}}
+        <div class="aside col-md-2 ">
+            <div class="d-flex justify-content-evenly align-items-center">
+                <div>
+                    <img src="/images/JAZPERFUME.png" alt="" class="logo_image">
+                    <p class="fs-6">PERFUMES</p>
+                </div>
+                <p class="fs-3 fw-2">ADMIN</p>
+            </div>
+
+            <div class="nav flex-column px-3">
+                <a href="#" class="nav-link active" aria-current="page">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f82b0047e6557aa901c15537d58a7ab6971e1d1d635e2a205c02ec234f11ad61?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Dashboard" loading="lazy">
+                    </span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+
+                <a href="/admin/products" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/126b232c82239fc3740982b7c8240f84671d1b6e2a4d00141995b3c82d24c4a5?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Products" loading="lazy">
+                    </span>
+                    <span class="nav-text">Products</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/c46200642d44aab62899b16a25fc8bfe94e9df6fede3e3512b370b3d4f514356?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Categories" loading="lazy">
+                    </span>
+                    <span class="nav-text">Categories</span>
+                </a>
+
+                <a href="orders" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/395e632ba7027a03ce2c35c1aa8bcc4534da249d8c136cdcc01b5043a72ddc87?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Orders" loading="lazy">
+                    </span>
+                    <span class="nav-text">Orders</span>
+                </a>
+
+                <a href="/admin/customers" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f933064a6bab49b74f8d5722595a056cbddbca1247d9b1a20a7e0fc8d56413a0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Customers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Customers</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/ba76937fe489134f0c577be82a18baeadddda8f77194bbcb94734c6db29400c0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Offers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Offers</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/cabe95d2f5fab42e35aad96d91245b122dd4d50ddfe8d1d2bceee5ea219442d8?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Coupons" loading="lazy">
+                    </span>
+                    <span class="nav-text">Coupons</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/2897cc0ce7ace4dd1f7e6d2c1b779540e7fa6d14150e07ac6bd13caecdf99b1a?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Reviews" loading="lazy">
+                    </span>
+                    <span class="nav-text">Reviews</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/5b4c30ca0a115c712594c2dce59791803bec209977f960ad8b2c1a3d2ecaac23?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Settings" loading="lazy">
+                    </span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </div>
+        </div>
+
+
+        {{!-- Content Section --}}
+        <div class="col-md-10">
+
+            {{!-- Breadcrumps --}}
+            <div class="row px-2 pt-2">
+                <div class="col-8">
+                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#" class="link-dark link-underline-opacity-0">Admin</a>
+                            </li>
+                            <li class="breadcrumb-item"><a href="http://localhost:5000/admin/category"
+                                    class="link-dark link-underline-opacity-0">Categories</a></li>
+                            <li class="breadcrumb-item active text-dark" aria-current="page">Edit-Category</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-4 d-flex justify-content-end pe-5">
+                    <button type="submit" class="btn btn-outline-dark btn-sm"
+                        onclick="window.location.href='/admin/logout'">Logout<i
+                            class="bi bi-box-arrow-right ps-2"></i></button>
+                </div>
+            </div>
+
+            {{!-- content box --}}
+            <div class="row m-0">
+                <div class="containerboxcat mt-4 p-4">
+
+                    <form class="p-4 pe-5 bg-white" id="categoryForm" style="margin: auto;"
+                        enctype="multipart/form-data">
+                        <!-- Category Name -->
+                        <div class="mb-3">
+                            <label for="categoryName" class="form-label fw-bold">Category Name</label>
+                            <input type="text" id="categoryName" name="name" value="{{category.name}}"
+                                class="form-control catinput" placeholder="Type here">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label fw-bold">Description</label>
+                            <textarea id="description" name="description" class="form-control catinput" rows="5"
+                                placeholder="Type here">{{category.description}}</textarea>
+                        </div>
+
+                        <!-- Category Icon -->
+                        <div class="mb-3">
+                            <label for="images" class="form-label">Images</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-box-arrow-up"></i>
+                                </span>
+                                <input type="file" id="images" name="image" class="form-control" accept="image/*"
+                                    data-existing-image="{{category.imageUrl}}" value="{{category.image}}"
+                                    data-categoryId="{{ category._id }}">
+                            </div>
+                            <div class="d-flex flex-wrap mt-3" id="preview-container">
+                                <!-- Preview images with remove buttons will be shown here -->
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex justify-content-center gap-3 pt-4">
+                            <button type="reset" class="btn btn-outline-secondary">Cancel</button>
+                            <button type="submit" class="btn btn-dark px-4">Save</button>
+                        </div>
+                    </form>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</section>
+
+
+
+<script>
+
+    const categoryForm = document.getElementById('categoryForm');
+    const categoryImageInput = document.getElementById('images');
+    const previewContainer = document.getElementById('preview-container');
+
+    // Display the existing image on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const existingImageUrl = categoryImageInput.dataset.existingImage; // Assuming the server sets this as a data attribute
+        if (existingImageUrl) {
+            previewContainer.innerHTML = ''; // Clear any existing previews
+
+            const imageDiv = document.createElement('div');
+            imageDiv.classList.add('position-relative', 'me-2', 'mb-2');
+
+            // Create an image element
+            const img = document.createElement('img');
+            img.src = existingImageUrl;
+            img.classList.add('img-thumbnail');
+            img.style.maxWidth = '100px';
+            img.style.maxHeight = '100px';
+
+            // Append the image to the container
+            imageDiv.appendChild(img);
+            previewContainer.appendChild(imageDiv);
+        }
+    });
+
+    // Display the selected image preview
+    categoryImageInput.addEventListener('change', () => {
+        previewContainer.innerHTML = ''; // Clear any existing previews
+
+        const file = categoryImageInput.files[0]; // Handle only the first file for a single image
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                const imageDiv = document.createElement('div');
+                imageDiv.classList.add('position-relative', 'me-2', 'mb-2');
+
+                // Create an image element
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.classList.add('img-thumbnail');
+                img.style.maxWidth = '100px';
+                img.style.maxHeight = '100px';
+
+                // Create a remove button
+                const removeButton = document.createElement('button');
+                removeButton.type = 'button';
+                removeButton.classList.add('btn-close', 'position-absolute', 'top-0', 'end-0');
+                removeButton.addEventListener('click', () => {
+                    previewContainer.innerHTML = ''; // Clear the preview
+                    categoryImageInput.value = ''; // Reset the file input
+                });
+
+                // Append the image and remove button to the container
+                imageDiv.appendChild(img);
+                imageDiv.appendChild(removeButton);
+                previewContainer.appendChild(imageDiv);
+            };
+
+            reader.readAsDataURL(file); // Read the file for preview
+        }
+    });
+
+    // Handle form submission
+    document.querySelector('form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        
+        // Prepare FormData for image upload
+        const formData = new FormData(categoryForm);
+        try {
+            const response = await fetch('/admin/edit-category/{{category._id}}', {              
+                method: 'POST',
+                body: formData, // Pass FormData directly
+            });
+             
+            if (!response.ok) throw new Error('Failed to update category');
+            swal('Category updated successfully!');
+            window.location.href = '/admin/category';
+        } catch (error) {
+            console.error(error);
+            swal('Could not update category.');
+        }
+    });
+
+
+
+
+
+
+
+
+</script>

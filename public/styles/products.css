@@ -1,0 +1,123 @@
+/*
+.carouselimg{
+    width: 200px; /* Make the image take full width */
+   /* height: 200px; /* Set a fixed height for the image */
+   /* object-fit: cover; /* Ensure the image maintains its aspect ratio while filling the area */
+/* } */
+
+
+/*------------------ product image-------------- */
+.thumbnail img {
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+
+  .thumbnail img:hover,
+  .thumbnail img.active {
+    border-color: #000000;
+  }
+
+
+
+  /* --------------zoom------------- */
+
+
+/* Styling for lens effect */
+.image-container {
+  position: relative;
+  overflow: hidden;
+  
+}
+
+.lens {
+  position: absolute;
+  border: 2px solid #000;
+  
+  width: 200px;
+  height: 200px;
+  pointer-events: none;
+  display: none;
+  background-repeat: no-repeat;
+  background-size: 200%; /* Adjust zoom level */
+}
+
+/* -------------------- */
+
+
+
+
+
+
+
+.product-image {
+    display: block;
+    margin: auto; /* Center images horizontally */
+    max-height: 600px; /* Adjust height */
+    object-fit: contain;
+  }
+  .rating-badge {
+    background-color: #f6f6f6;
+    border-radius: 50px;
+    padding: 5px 15px;
+  }
+  .discount-badge {
+    border: 1px solid #e6e7e8;
+    border-radius: 50px;
+    padding: 5px 15px;
+  }
+  .add-to-cart {
+    background-color: #0f263e;
+    color: white;
+  }
+
+
+
+ /* Similar Products------------------ */
+
+.card {
+    position: relative;
+    overflow: hidden;
+}
+.card-img-top {
+    transition: transform 0.3s ease-in-out;
+}
+.card:hover .card-img-top {
+    transform: scale(1.1);
+}
+.btn-hover {
+    position: absolute;
+    background-color: black;
+    color: white;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 1;
+}
+.card:hover .btn-hover {
+    opacity: 1;
+}
+
+
+.btncart{
+    width: 100%;
+    margin-top: 65%;
+    border-radius: 3px;
+    padding: 3%;
+}
+
+.btnpill{
+    font-size: small;
+}
+
+
+.btncartbtm{
+    width: 100%;
+    margin-top: 40%;
+    border-radius: 3px;
+    padding: 3%;
+}
+  
+
+/* ------------------------------ */

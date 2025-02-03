@@ -1,0 +1,150 @@
+
+body{
+  overflow-x: hidden;
+}
+
+.aside{
+    background-color: #9FCEE2;
+  float: left;
+}
+
+
+
+.logo_image{
+    width: 4rem
+}
+
+
+
+.nav-link {
+    border-radius: 8px;
+    color: #5c5f6a;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background-color: #f6f6f6;
+    color: #0e1422;
+}
+
+.nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.nav-icon img {
+    width: 15px;
+    height: 15px;
+}
+
+.nav-text {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 25px;
+}
+
+
+
+.containerbox{
+    width: 20rem;
+    height: auto;
+    background: #fff;
+    padding: 1% 1%;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 5% 15%;
+} 
+
+.containerboxprd{
+    width: 65rem;
+    height: auto;
+    background: #fff;
+    padding: 1% 1%;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 1% 1%;
+}
+
+.containerboxcat{
+    width: 95%;
+    height: auto;
+    background: #fff;
+    padding: 15% 10%;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 1% 1%;
+}
+
+
+
+.bgcolor{
+    background-color: #DFF2FA;
+}
+
+
+.orderprogress{
+    height: 7rem;
+    align-items: end;
+}
+
+
+
+  
+  /* .chart-container {
+    position: relative;
+    margin: auto;
+
+  }
+   */
+
+
+
+  .iconimage{
+    width: 4rem;
+  }
+  
+
+
+  .catinput{
+    background-color: #F4F5F9;
+  }
+
+
+/* edit-products */
+
+  .preview-container {
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+  }
+  .preview-container img {
+    max-width: 100px;
+    border-radius: 0.25rem;
+  }
+  .btn-close {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+  }
+
+
+
+  /* admin product page */
+
+  .card-img-top {
+    width: 200px; /* Make the image take full width */
+    height: 200px; /* Set a fixed height for the image */
+    object-fit: cover; /* Ensure the image maintains its aspect ratio while filling the area */
+  }

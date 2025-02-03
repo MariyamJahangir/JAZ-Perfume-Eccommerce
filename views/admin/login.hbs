@@ -1,0 +1,36 @@
+<link rel="stylesheet" href="/styles/usersignup.css">
+
+<section>
+    <div>
+        <p class="text-center fs-2 fw-semibold pt-5">Admin Login</p>
+    </div>
+
+    <div class="signup-container">
+
+
+        <form action="/admin/login" method="post">
+        <input type="text" id="message" value="{{message}}" hidden>
+            <div class="mb-4">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" id="username">
+            </div>
+
+            <div class="mb-4">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" id="password">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+    </div>
+</section>
+
+
+<script>
+
+    const message = document.getElementById('message').value
+    if (message) {
+      swal(message)
+    }
+  
+
+</script>

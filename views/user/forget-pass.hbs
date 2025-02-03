@@ -1,0 +1,36 @@
+<link rel="stylesheet" href="/styles/usersignup.css">
+
+{{>header}}
+
+
+<section>
+    <div>
+        <p class="text-center fs-2 fw-semibold pt-5">Forget Password</p>
+    </div>
+    <div class="signup-container">
+        <div class="mb-4 d-flex align-items-center">  
+            <span class="text-muted">Please enter the email address associated with your account. We'll promptly send you a link to reset your password.</span>
+        </div>
+        <form action="/user/forget-password" method="POST">
+            <div class="mb-4">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" id="email">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Continue</button>
+        </form>
+    </div>
+</section>
+
+
+{{>footer}}
+
+<!-- Add SweetAlert if a message exists -->
+{{#if message}}
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '{{message}}',
+    });
+</script>
+{{/if}}

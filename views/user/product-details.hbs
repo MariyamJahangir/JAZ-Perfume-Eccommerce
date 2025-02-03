@@ -1,0 +1,518 @@
+<link rel="stylesheet" href="/styles/products.css">
+
+
+{{>header}}
+
+<section>
+    <div class="container py-5">
+        <div class="row g-4">
+            <!-- Image Column -->
+            <div class="col-md-6">
+
+                <div class="container">
+                    <div class="row">
+
+
+                        {{!-- ------------------------------------- --}}
+
+
+
+
+                        <!-- Thumbnails (Left) -->
+                        <div class="col-2">
+                            <div class="d-flex flex-column">
+                                {{#each product.images}}
+                                <a href="#carouselExample" role="button" data-bs-slide-to="{{@index}}"
+                                    class="thumbnail mb-3">
+                                    <img src="/uploads/{{this}}" alt="Thumbnail {{@index}}" class="img-fluid">
+                                </a>
+                                {{/each}}
+
+                            </div>
+                        </div>
+
+                        <!-- Main Product Image (Right) -->
+                        <div class="col-10">
+                            <div id="carouselExample" class="carousel slide">
+                                <div class="carousel-inner">
+                                    {{#each product.images}}
+                                    <div class="carousel-item {{#if @first}}active{{/if}}">
+                                        <div class="image-container">
+                                            <img src="/uploads/{{this}}" class="d-block w-100"
+                                                alt="Main Product {{@index}}">
+                                            <div class="lens"></div>
+                                        </div>
+                                    </div>
+                                    {{/each}}
+
+                                </div>
+
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Details Column -->
+            <div class="col-md-6">
+                <div>
+                    <div>
+                        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/user/home"
+                                        class="link-secondary link-underline-opacity-0">Home</a></li>
+                                <li class="breadcrumb-item"><a href="/user/all-products"
+                                        class="link-secondary link-underline-opacity-0">All Products</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">product-details</li>
+                            </ol>
+                        </nav>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center ">
+                        <h1 class="h4 mb-3 me-auto">{{product.name}}</h1>
+                        <button class="btn btn-outline-secondary btn-sm mx-2">
+                            <i class="bi bi-heart"></i>
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm ">
+                            <i class="bi bi-share"></i>
+                        </button>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rating-badge d-flex align-items-center me-3">
+                            <i class="bi bi-star-fill text-secondary pe-2"></i>
+                            <span>4.2 — 86 ratings & 54 Reviews</span>
+                        </div>
+                        <span class="discount-badge" id="stockDisplay">{{product.variant.[0].stockStatus}}</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <h2 class="h5">Rs. <span id="priceDisplay">{{product.variant.[0].price}}</span></h2>
+                    </div>
+
+                    <div class="my-3">
+                        <label class="form-label">SELECT QUANTITY VARIANT</label>
+                        <div class="d-flex gap-2">
+                            {{#each product.variant}}
+                            <button type="button" class="btn btn-outline-dark variant-btn" data-price="{{this.price}}"
+                                data-stockStatus="{{this.stockStatus}}" data-ml="{{this.quantityML}}"
+                                data-variant-id="{{this._id}}">
+                                {{this.quantityML}}ml
+                            </button>
+                            {{/each}}
+                        </div>
+                    </div>
+
+
+                    <div class="d-flex flex-column">
+                        <label for="quantity-input" class=" my-2">
+                            QUANTITY
+                        </label>
+
+                        <div class="d-flex justify-content-between border rounded border-dark w-25 ">
+                            <button class="btn px-3 border-0" id="decrement" aria-label="Decrease quantity">-</button>
+                            <span id="quantityCount" class="mx-3 align-self-center">1</span>
+                            <button class="btn px-3 border-0" id="increment" aria-label="Increase quantity">+</button>
+                        </div>
+                    </div>
+
+                    <div class="w-50 py-3">
+                        <label for="quantity-input" class=" my-3">Coupon:</label>
+                        <span class="discount-badge">{{product.offer}}</span>
+                        <p>Get extra 20% off</p>
+                    </div>
+                    <div>
+                        <button class="btn add-to-cart px-4" id="addToCartBtn" data-product-id="{{product._id}}"
+                            data-variant-id="{{product.variant.[0]._id}}">
+                            Add to Cart
+                        </button>
+                    </div>
+
+                    <div class=" mt-3 text-muted">
+                        <small>Free shipping on orders over Rs.500</small>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</section>
+
+
+
+<section class="p-5">
+
+    <div class="row p-4">
+        <div class="col-12">
+
+            {{!-- buttons --}}
+            <div class="d-flex justify-content-center gap-2" id="list-tab" role="tablist">
+                <button class="btn btn-black active" id="list-home-list" data-bs-toggle="list"
+                    data-bs-target="#list-home" type="button" role="tab" aria-controls="list-home">
+                    <i class="bi bi-three-dots pe-2"></i>Details
+                </button>
+                <button class="btn btn-black" id="list-profile-list" data-bs-toggle="list"
+                    data-bs-target="#list-profile" type="button" role="tab" aria-controls="list-profile">
+                    <i class="bi bi-star pe-2"></i>Reviews
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="conatiner px-5 col-12">
+
+            {{!-- Tab contents --}}
+            <div class="tab-content" id="nav-tabContent">
+
+                {{!-- Details Tab --}}
+                <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
+                    <h5>Details</h5>
+                    <p>{{product.description}}</p>
+                </div>
+
+
+                {{!-- Reviews Tab --}}
+                <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+                    <div class="container ">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4>Reviews</h4>
+                            <div class="text-muted">4.2 — 54 Reviews</div>
+                        </div>
+                        <button class="btn btn-outline-primary my-3">Write a review</button>
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="sortMenu"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Sort by
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="sortMenu">
+                                <li><a class="dropdown-item" href="#">Most Recent</a></li>
+                                <li><a class="dropdown-item" href="#">Highest Rating</a></li>
+                                <li><a class="dropdown-item" href="#">Lowest Rating</a></li>
+                            </ul>
+                        </div>
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6>Emily Davis</h6>
+                                        <small class="text-muted">1 week ago</small>
+                                    </div>
+                                    <div>
+                                        <span class="text-warning">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                                    </div>
+                                </div>
+                                <p class="mt-2 mb-0">This company always goes above and beyond to satisfy their
+                                    customers.
+                                </p>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6>Daniel Smith</h6>
+                                        <small class="text-muted">2 months ago</small>
+                                    </div>
+                                    <div>
+                                        <span class="text-warning">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                                    </div>
+                                </div>
+                                <p class="mt-2 mb-0">I can't believe how affordable and high-quality this item is!</p>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6>Benjamin Clark</h6>
+                                        <small class="text-muted">23 April</small>
+                                    </div>
+                                    <div>
+                                        <span class="text-warning">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                                    </div>
+                                </div>
+                                <p class="mt-2 mb-0">These guys know their stuff, and it shows in their products.</p>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn btn-outline-secondary px-5 mt-4">Load more reviews</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+
+
+<!-- Similar Products -->
+<section class=" container pb-5 pt-3">
+
+    <h2 class="fw-bold fs-3 pb-3">You might also like</h2>
+    <p class="text-black mb-4">SIMILAR PRODUCTS</p>
+    <div class="row text-center d-flex justify-content-around">
+        <!-- Product Card -->
+        <div class="col-md-2 p-0">
+            <div class="card text-center">
+                <img src="/images/trend1.jpg" class="card-img-top" alt="Product Image">
+                <button type="button" class="btn-hover btncartbtm">Add to Cart</button>
+            </div>
+            <div class="card-body px-0">
+                <h6 class="card-title pt-2">DOLOE, GABBANA, The only one-50 ml</h6>
+                <div class="d-flex justify-content-between align-items-center pe-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill ">30%
+                        off</button>
+                    <p class="card-text text-muted"> $65.00</p>
+                </div>
+            </div>
+        </div>
+        <!-- Duplicate Product Cards -->
+        <div class="col-md-2 p-0">
+            <div class="card text-center">
+                <img src="/images/trend1.jpg" class="card-img-top" alt="Product Image">
+                <button type="button" class="btn-hover btncartbtm">Add to Cart</button>
+            </div>
+            <div class="card-body px-0">
+                <h6 class="card-title pt-2">DOLOE, GABBANA, The only one-50 ml</h6>
+                <div class="d-flex justify-content-between align-items-center pe-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill ">30%
+                        off</button>
+                    <p class="card-text text-muted"> $65.00</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 p-0">
+            <div class="card text-center">
+                <img src="/images/trend1.jpg" class="card-img-top" alt="Product Image">
+                <button type="button" class="btn-hover btncartbtm">Add to Cart</button>
+            </div>
+            <div class="card-body px-0">
+                <h6 class="card-title pt-2">DOLOE, GABBANA, The only one-50 ml</h6>
+                <div class="d-flex justify-content-between align-items-center pe-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill ">30%
+                        off</button>
+                    <p class="card-text text-muted"> $65.00</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 p-0">
+            <div class="card text-center">
+                <img src="/images/trend1.jpg" class="card-img-top" alt="Product Image">
+                <button type="button" class="btn-hover btncartbtm">Add to Cart</button>
+            </div>
+            <div class="card-body px-0">
+                <h6 class="card-title pt-2">DOLOE, GABBANA, The only one-50 ml</h6>
+                <div class="d-flex justify-content-between align-items-center pe-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill ">30%
+                        off</button>
+                    <p class="card-text text-muted"> $65.00</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+
+{{>footer}}
+
+
+
+
+<script>
+    /*
+    // JavaScript to handle increment and decrement
+    const quantityDisplay = document.getElementById('quantityCount');
+    const decrementButton = document.getElementById('decrement');
+    const incrementButton = document.getElementById('increment');
+    const priceDisplay = document.getElementById('priceDisplay')
+
+    console.log(priceDisplay)
+
+    let quantityCount = quantityDisplay.textContent;
+    //const price = priceDisplay.textContent;
+
+    decrementButton.addEventListener('click', () => {
+        const price = priceDisplay.textContent;
+        if (quantityCount > 1) {
+            quantityCount--;
+            quantityDisplay.textContent = quantityCount;  
+            priceDisplay.textContent = price/quantityCount;      
+        }
+    });
+
+    incrementButton.addEventListener('click', () => {
+        const price = priceDisplay.textContent;
+        quantityCount++;
+        quantityDisplay.textContent = quantityCount;
+        priceDisplay.textContent = price*quantityCount;
+        
+    });
+
+   */
+
+
+</script>
+
+
+
+
+{{!-- zoom --}}
+
+
+<script>
+
+    const zoomLevel = 2; // Adjust the zoom level here (e.g., 2 for 2x zoom, 3 for 3x zoom)
+
+    document.querySelectorAll('.image-container').forEach(container => {
+        const lens = container.querySelector('.lens');
+        const image = container.querySelector('img');
+
+        container.addEventListener('mousemove', e => {
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            lens.style.display = 'block';
+            lens.style.left = `${x - lens.offsetWidth / 2}px`;
+            lens.style.top = `${y - lens.offsetHeight / 2}px`;
+
+            const backgroundPosX = -((x / rect.width) * image.naturalWidth * zoomLevel - lens.offsetWidth / 2);
+            const backgroundPosY = -((y / rect.height) * image.naturalHeight * zoomLevel - lens.offsetHeight / 2);
+
+            lens.style.backgroundImage = `url(${image.src})`;
+            lens.style.backgroundPosition = `${backgroundPosX}px ${backgroundPosY}px`;
+            lens.style.backgroundSize = `${image.naturalWidth * zoomLevel}px ${image.naturalHeight * zoomLevel}px`;
+        });
+
+        container.addEventListener('mouseleave', () => {
+            lens.style.display = 'none';
+        });
+    });
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const stockDisplay = document.getElementById("stockDisplay");
+        const priceDisplay = document.getElementById("priceDisplay");
+        const variantButtons = document.querySelectorAll(".variant-btn");
+        const addToCartBtn = document.getElementById("addToCartBtn");
+        const incrementBtn = document.getElementById("increment");
+        const decrementBtn = document.getElementById("decrement");
+        const quantityDisplay = document.getElementById("quantityCount");
+
+
+        let selectedVariantId = null;
+        let quantityCount = 1;
+        let basePrice = parseFloat(priceDisplay.textContent);
+
+        // Select first variant by default if available
+        if (variantButtons.length > 0) {
+            const firstVariant = variantButtons[0];
+            selectedVariantId = firstVariant.getAttribute("data-variant-id");
+            basePrice = parseFloat(firstVariant.getAttribute("data-price"));
+
+            console.log("Default variant selected:", selectedVariantId); // ✅ Debugging
+
+            // Update the displayed values
+            priceDisplay.textContent = firstVariant.getAttribute("data-price");
+            stockDisplay.textContent = firstVariant.getAttribute("data-stockStatus");
+            addToCartBtn.setAttribute("data-variant-id", selectedVariantId);
+            firstVariant.classList.add("active");
+        }
+
+        variantButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                selectedVariantId = this.getAttribute("data-variant-id");
+                basePrice = parseFloat(this.getAttribute("data-price"));
+                quantityCount = 1; // Reset quantity when variant changes
+                console.log("Variant selected:", selectedVariantId); // ✅ Debugging output
+
+                // Update displayed values
+                priceDisplay.textContent = basePrice
+                quantityDisplay.textContent = quantityCount;
+                stockDisplay.textContent = this.getAttribute("data-stockStatus");
+
+                addToCartBtn.setAttribute("data-variant-id", selectedVariantId);
+
+                // Remove active class from all buttons
+                variantButtons.forEach(btn => btn.classList.remove("active"));
+                // Add active class to the selected button
+                this.classList.add("active");
+            });
+        });
+
+
+        // Increment Quantity
+        incrementBtn.addEventListener("click", function () {
+            quantityCount++;
+            updatePrice();
+        });
+
+        // Decrement Quantity
+        decrementBtn.addEventListener("click", function () {
+            if (quantityCount > 1) {  // Prevent quantity from dropping below 1
+                quantityCount--;
+                updatePrice();
+            }
+        });
+
+        // Update Price Function
+        function updatePrice() {
+            const totalPrice = basePrice * quantityCount;
+            priceDisplay.textContent = totalPrice
+            quantityDisplay.textContent = quantityCount;
+        }
+
+
+
+        // Handle Add to Cart click
+        addToCartBtn.addEventListener("click", async function () {
+            if (!selectedVariantId) {
+                alert("Please select a variant before adding to cart.");
+                return;
+            }
+
+            const productId = this.getAttribute("data-product-id");
+
+
+            console.log("Adding to cart: Product ID:", productId, "Variant ID:", selectedVariantId, "quantityCount:", quantityCount); // ✅ Debugging log
+
+            try {
+                const response = await fetch("/user/cart/add", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ productId, variantId: selectedVariantId, quantityCount, totalPrice: (basePrice * quantityCount) }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert("Product added to cart!");
+                    window.location.href = "/user/cart"; // Redirect to cart page
+                } else {
+                    alert("Failed to add product to cart.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        });
+    });
+
+
+</script>

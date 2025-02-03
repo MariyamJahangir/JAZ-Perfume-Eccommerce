@@ -1,0 +1,469 @@
+{{>header}}
+<style>
+    .nav-item:hover {
+        background-color: #DFF2FA;
+        /* Light blue background on hover */
+        cursor: pointer;
+        /* Add a pointer cursor for better UX */
+    }
+
+    .nav-item.active {
+        background-color: #DFF2FA;
+        /* Fixed light blue background for active */
+    }
+
+    .bg-color {
+        background-color: #DFF2FA;
+    }
+</style>
+
+<section style="background-color: #DFF2FA;">
+    <div class="container">
+        <div class="row p-5">
+            <h2>Welcome Mariyam Jahangir</h2>
+        </div>
+
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-2 mt-5">
+                <nav class="d-flex flex-column p-3">
+                    <a href="profile" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+                            class="bi bi-person-circle p-2"></i>Profile</a>
+                    <a href="address" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2 active"
+                        aria-current="page"><i class="bi bi-cart4 p-2"></i>Address</a>
+                    <a href="wishlist" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+                            class="bi bi-heart p-2"></i>Wishlist</a>
+                    <a href="orders" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+                            class="bi bi-truck p-2"></i>Orders</a>
+                    <a href="password" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+                            class="bi bi-key p-2"></i>Password</a>
+                    <a href="wallet" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+                            class="bi bi-wallet2 p-2"></i>Wallet</a>
+                    <a href="logout" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+                            class="bi bi-box-arrow-right p-2"></i>Logout</a>
+                </nav>
+            </div>
+            <div class="col-10">
+                <div class="container m-4">
+                    <h1 class="text-center">ADDRESS</h1>
+                    <div class="row flex-column align-items-center">
+                        <div class="col-11 mt-2 ">
+
+
+                            {{#each user.address}}
+                            {{#if (isEqual deleted false)}}
+                            <div class="row d-flex justify-content-between border rounded bg-color mb-2">
+                                <!-- Radio Button -->
+                                <div class="col-1 p-4">
+                                    <input class="form-check-input" type="radio" name="selectedAddress"
+                                        value="{{this._id}}">
+                                </div>
+
+                                <!-- Address Details -->
+                                <div class="col-9 py-4">
+                                    <label class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <p><span>{{this.firstname}}
+                                                    {{this.lastname}}</span>&emsp;<span>{{this.phone}}</span></p>
+                                            <span>{{this.address}}, {{this.locality}}, {{this.district}}, {{this.state}}
+                                                - {{this.pincode}}</span>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <!-- Edit & Delete Buttons -->
+                                <div class="col-2 py-3 text-end">
+                                    <button type="button" class="btn btn-outline-primary btn-sm my-2 edit-address-btn"
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdropEdit"
+                                        data-addressid="{{this._id}}" data-firstname="{{this.firstname}}"
+                                        data-lastname="{{this.lastname}}" data-address="{{this.address}}"
+                                        data-locality="{{this.locality}}" data-pincode="{{this.pincode}}"
+                                        data-district="{{this.district}}" data-state="{{this.state}}"
+                                        data-phone="{{this.phone}}" data-country="{{this.country}}">Edit</button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm delete-address"
+                                        data-addressid="{{this._id}}">Delete</button>
+                                </div>
+                            </div>
+                             {{/if}}
+                            {{/each}}
+
+
+                            <!-- Modal for Edit Address-->
+                            <div class="modal fade" id="staticBackdropEdit" data-bs-backdrop="static"
+                                data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Address</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="p-3">
+                                                <form action="">
+                                                    <div class="row d-flex justify-content-between mb-3">
+                                                        <div class="col-6">
+                                                            <label for="edfirstname" class="form-label">First
+                                                                Name</label>
+                                                            <input type="text" class="form-control" name="firstname"
+                                                                id="edfirstname">
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <label for="edlastname" class="form-label">Last Name</label>
+                                                            <input type="text" class="form-control" name="lastname"
+                                                                id="edlastname">
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="edaddress" class="form-label">Address</label>
+                                                        <textarea id="edaddress" name="address" class="form-control"
+                                                            rows="2"></textarea>
+                                                    </div>
+                                                    <div class="row d-flex justify-content-between mb-3">
+                                                        <div class="col-6">
+                                                            <label for="edlocality" class="form-label">Locality</label>
+                                                            <input type="text" class="form-control" name="locality"
+                                                                id="edlocality">
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <label for="edpincode" class="form-label">Pincode</label>
+                                                            <input type="text" class="form-control" name="pincode"
+                                                                id="edpincode">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row d-flex justify-content-between mb-3">
+                                                        <div class="col-6">
+                                                            <label for="eddistrict" class="form-label">District</label>
+                                                            <input type="text" class="form-control" name="district"
+                                                                id="eddistrict">
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <label for="edstate" class="form-label">State</label>
+                                                            <input type="text" class="form-control" name="state"
+                                                                id="edstate">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row d-flex justify-content-between mb-3">
+                                                        <div class="col-6">
+                                                            <label for="edphone" class="form-label">Phone</label>
+                                                            <input type="text" class="form-control" name="phone"
+                                                                id="edphone">
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <label for="edcountry" class="form-label">Country</label>
+                                                            <input type="text" class="form-control" name="country"
+                                                                id="edcountry">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary" id="saveEditBtn">Save</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="text-center m-4">
+                                <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdropAdd">Add Address</button>
+                            </div>
+
+                            <!-- Modal for Add Address-->
+                            <div class="modal fade" id="staticBackdropAdd" data-bs-backdrop="static"
+                                data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Address</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="p-3">
+                                                <form action="/user/address" method="POST" id="address-form">
+                                                    <div class="row d-flex justify-content-between mb-3">
+                                                        <div class="col-6">
+                                                            <label for="firstname" class="form-label">First Name</label>
+                                                            <input type="text" class="form-control" name="firstname"
+                                                                id="firstname">
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <label for="lastname" class="form-label">Last Name</label>
+                                                            <input type="text" class="form-control" name="lastname"
+                                                                id="lastname">
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="address" class="form-label">Address</label>
+                                                        <textarea id="address" name="address" class="form-control"
+                                                            rows="2"></textarea>
+                                                    </div>
+                                                    <div class="row d-flex justify-content-between mb-3">
+                                                        <div class="col-6">
+                                                            <label for="locality" class="form-label">Locality</label>
+                                                            <input type="text" class="form-control" name="locality"
+                                                                id="locality">
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <label for="pincode" class="form-label">Pincode</label>
+                                                            <input type="text" class="form-control" name="pincode"
+                                                                id="pincode">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row d-flex justify-content-between mb-3">
+                                                        <div class="col-6">
+                                                            <label for="district" class="form-label">District</label>
+                                                            <input type="text" class="form-control" name="district"
+                                                                id="district">
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <label for="state" class="form-label">State</label>
+                                                            <input type="text" class="form-control" name="state"
+                                                                id="state">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row d-flex justify-content-between mb-3">
+                                                        <div class="col-6">
+                                                            <label for="phone" class="form-label">Phone</label>
+                                                            <input type="text" class="form-control" name="phone"
+                                                                id="phone">
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <label for="country" class="form-label">Country</label>
+                                                            <input type="text" class="form-control" name="country"
+                                                                id="country">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{{>footer}}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const addressForm = document.getElementById("address-form");
+        const submitButton = document.querySelector("#staticBackdropAdd .btn-primary");
+
+        submitButton.addEventListener("click", async function (event) {
+            event.preventDefault(); // Prevent default form submission
+            console.log(submitButton);
+            // Collect form data
+            const formData = {
+                firstname: document.getElementById("firstname").value.trim(),
+                lastname: document.getElementById("lastname").value.trim(),
+                address: document.getElementById("address").value.trim(),
+                locality: document.getElementById("locality").value.trim(),
+                pincode: document.getElementById("pincode").value.trim(),
+                district: document.getElementById("district").value.trim(),
+                state: document.getElementById("state").value.trim(),
+                phone: document.getElementById("phone").value.trim(),
+                country: document.getElementById("country").value.trim(),
+            };
+
+            console.log(
+                document.getElementById("firstname"),
+                document.getElementById("lastname"),
+                document.getElementById("address"),
+                document.getElementById("locality"),
+                document.getElementById("pincode"),
+                document.getElementById("district"),
+                document.getElementById("state"),
+                document.getElementById("phone"),
+                document.getElementById("country")
+            );
+            console.log(formData.firstname, formData.lastname, formData.address, formData.locality, formData.phone, formData.pincode, formData.district, formData.state, formData.country)
+
+            // Validate inputs
+            if (!formData.firstname || !formData.lastname || !formData.address || !formData.phone || !formData.pincode) {
+                alert("Please fill in all required fields.");
+                return;
+            }
+
+            if (!/^\d{6}$/.test(formData.pincode)) {
+                alert("Pincode must be a 6-digit number.");
+                return;
+            }
+
+            if (!/^\d{10}$/.test(formData.phone)) {
+                alert("Phone number must be a 10-digit number.");
+                return;
+            }
+
+            try {
+                // Send data to the server using Fetch API
+                const response = await fetch("/user/address", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                const data = await response.json().catch(() => ({ error: "Invalid JSON response" }));
+                console.log("Server response:", response.status, data);
+
+                if (data.message) {
+                    alert("Address added successfully!");
+                    addressForm.reset(); // Clear form fields
+                    const modal = bootstrap.Modal.getInstance(document.getElementById("staticBackdropAdd"));
+                    modal.hide(); // Hide modal
+                    location.reload(); // Reload page to update UI (optional)
+                } else {
+                    alert("Failed to add address. Please try again.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while adding the address.");
+            }
+        });
+    });
+
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".edit-address-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                // Get the modal fields
+                const modal = document.getElementById("staticBackdropEdit");
+
+                // Store the address ID in the save button
+                const saveButton = modal.querySelector("#saveEditBtn");
+                saveButton.setAttribute("data-addressid", this.getAttribute("data-addressid"));
+
+                console.log("Editing First Name:", this.getAttribute("data-firstname"));
+
+                // Set values in modal form fields
+                modal.querySelector("#edfirstname").value = this.getAttribute("data-firstname");
+                modal.querySelector("#edlastname").value = this.getAttribute("data-lastname");
+                modal.querySelector("#edaddress").value = this.getAttribute("data-address");
+                modal.querySelector("#edlocality").value = this.getAttribute("data-locality");
+                modal.querySelector("#edpincode").value = this.getAttribute("data-pincode");
+                modal.querySelector("#eddistrict").value = this.getAttribute("data-district");
+                modal.querySelector("#edstate").value = this.getAttribute("data-state");
+                modal.querySelector("#edphone").value = this.getAttribute("data-phone");
+                modal.querySelector("#edcountry").value = this.getAttribute("data-country");
+            });
+        });
+
+        // Save button click event to update the address
+        document.getElementById("saveEditBtn").addEventListener("click", async function () {
+            const addressId = this.getAttribute("data-addressid");
+            const modal = document.getElementById("staticBackdropEdit");
+
+            const updatedData = {
+                firstname: modal.querySelector("#edfirstname").value,
+                lastname: modal.querySelector("#edlastname").value,
+                address: modal.querySelector("#edaddress").value,
+                locality: modal.querySelector("#edlocality").value,
+                pincode: modal.querySelector("#edpincode").value,
+                district: modal.querySelector("#eddistrict").value,
+                state: modal.querySelector("#edstate").value,
+                phone: modal.querySelector("#edphone").value,
+                country: modal.querySelector("#edcountry").value
+            };
+
+            console.log(updatedData)
+
+            try {
+                const response = await fetch(`/user/update-address/${addressId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(updatedData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert("Address updated successfully!");
+                    location.reload(); // Reload to reflect the updated data
+                } else {
+                    alert("Failed to update address!");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while updating the address.");
+            }
+        });
+    });
+
+</script>
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".delete-address").forEach(button => {
+            button.addEventListener("click", async function () {
+                const addressId = this.getAttribute("data-addressid");
+
+                if (confirm("Are you sure you want to delete this address?")) {
+                    try {
+                        const response = await fetch(`/user/delete-address/${addressId}`, {
+                            method: "DELETE",
+                            headers: {
+                                "Content-Type": "application/json"
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            alert("Address deleted successfully!");
+                            location.reload(); // Reload the page to reflect the changes
+                        } else {
+                            alert("Failed to delete address.");
+                        }
+                    } catch (error) {
+                        console.error("Error:", error);
+                        alert("An error occurred while deleting the address.");
+                    }
+                }
+            });
+        });
+    });
+
+
+</script>

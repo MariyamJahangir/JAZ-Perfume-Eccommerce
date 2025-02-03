@@ -1,0 +1,194 @@
+<link rel="stylesheet" href="/styles/admin.css">
+
+<section class=" m-0 bgcolor ">
+
+    <div class="row d-flex justify-content-between">
+
+        {{!-- Sidebar --}}
+        <div class="aside col-md-2 ">
+            <div class="d-flex justify-content-evenly align-items-center">
+                <div>
+                    <img src="/images/JAZPERFUME.png" alt="" class="logo_image">
+                    <p class="fs-6">PERFUMES</p>
+                </div>
+                <p class="fs-3 fw-2">ADMIN</p>
+            </div>
+
+            <div class="nav flex-column px-3">
+                <a href="#" class="nav-link ">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f82b0047e6557aa901c15537d58a7ab6971e1d1d635e2a205c02ec234f11ad61?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Dashboard" loading="lazy">
+                    </span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+
+                <a href="products" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/126b232c82239fc3740982b7c8240f84671d1b6e2a4d00141995b3c82d24c4a5?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Products" loading="lazy">
+                    </span>
+                    <span class="nav-text">Products</span>
+                </a>
+
+                <a href="category" class="nav-link" aria-current="page">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/c46200642d44aab62899b16a25fc8bfe94e9df6fede3e3512b370b3d4f514356?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Categories" loading="lazy">
+                    </span>
+                    <span class="nav-text">Categories</span>
+                </a>
+
+                <a href="orders" class="nav-link active">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/395e632ba7027a03ce2c35c1aa8bcc4534da249d8c136cdcc01b5043a72ddc87?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Orders" loading="lazy">
+                    </span>
+                    <span class="nav-text">Orders</span>
+                </a>
+
+                <a href="customers" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f933064a6bab49b74f8d5722595a056cbddbca1247d9b1a20a7e0fc8d56413a0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Customers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Customers</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/ba76937fe489134f0c577be82a18baeadddda8f77194bbcb94734c6db29400c0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Offers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Offers</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/cabe95d2f5fab42e35aad96d91245b122dd4d50ddfe8d1d2bceee5ea219442d8?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Coupons" loading="lazy">
+                    </span>
+                    <span class="nav-text">Coupons</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/2897cc0ce7ace4dd1f7e6d2c1b779540e7fa6d14150e07ac6bd13caecdf99b1a?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Reviews" loading="lazy">
+                    </span>
+                    <span class="nav-text">Reviews</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/5b4c30ca0a115c712594c2dce59791803bec209977f960ad8b2c1a3d2ecaac23?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Settings" loading="lazy">
+                    </span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </div>
+        </div>
+
+
+        {{!-- Content Section --}}
+        <div class="col-md-10">
+
+            {{!-- Breadcrumps --}}
+            <div class="row px-2 pt-2">
+                <div class="col-8">
+                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#" class="link-dark link-underline-opacity-0">Admin</a>
+                            </li>
+                            <li class="breadcrumb-item active text-dark" aria-current="page">Orders</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-4 d-flex justify-content-end pe-5">
+                    <button type="submit" class="btn btn-outline-dark btn-sm"
+                        onclick="window.location.href='/admin/logout'">Logout<i
+                            class="bi bi-box-arrow-right ps-2"></i></button>
+                </div>
+            </div>
+
+            {{!-- content box --}}
+            <div class="row m-0">
+                <div class="containerboxcat mt-4 p-4">
+
+
+                    <div class="row d-flex justify-content-between align-items-center my-4">
+                        <div class="col-3">
+                            <h3 class="fw-bold">Orders</h3>
+                        </div>
+                        <div class="col-4">
+                            <form>
+                                <div class="input-group search-input">
+                                    <span class="input-group-text bg-white border-end-0">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                    <input class="form-control border-start-0" type="search" placeholder="Search"
+                                        aria-label="Search">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div
+                        class="row d-flex justify-content-between align-items-center border-top border-bottom p-2">
+                        <div class="col-1">
+                            <i class="bi bi-arrow-down-up"></i>
+                        </div>
+                        <div class="col-2">
+                            <span>Order</span>
+                        </div>
+                        <div class="col-2">
+                            <span>customer</span>
+                        </div>
+                        <div class="col-2">
+                            <span>Date</span>
+                        </div>
+                        <div class="col-2">
+                            <span>Total</span>
+                        </div>
+                        <div class="col-2">
+                            <span>Status</span>
+                        </div>
+                        <div class="col-1">
+                            <span>Action</span>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-between align-items-center p-2 border-bottom">
+                        <div class="col-1">
+                            <img src="/uploads/1736396244173-prd1.jpg" alt="" style="width: 100%;">
+                        </div>
+                        <div class="col-2">
+                            <span>Product Name</span>
+                        </div>
+                        <div class="col-2">
+                            <span>User Name</span>
+                        </div>
+                        <div class="col-2">
+                            <span>21 Jan 2025</span>
+                        </div>
+                        <div class="col-2">
+                            <span>Rs. price</span>
+                        </div>
+                        <div class="col-2">
+                            <span class="badge text-bg-success">completed</span>
+                        </div>
+                        <div class="col-1 text-center">
+                            <a href="order-detail" type="button" class="btn btn-outline-primary btn-sm my-1">View</a>
+                            <button type="button" class="btn btn-outline-danger btn-sm my-1">Cancel</button>
+                        </div>
+
+                    </div>
+                    
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</section>

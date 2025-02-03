@@ -1,0 +1,75 @@
+<link rel="stylesheet" href="/styles/usersignup.css">
+
+{{>header}}
+
+<section>
+    <div>
+        <p class="text-center fs-2 fw-semibold pt-5">Signup</p>
+    </div>
+
+    <div class="signup-container">
+        <button class="btn btn-google w-100 mb-3">
+            <a href="/user/auth/google" class="link-underline-opacity-0 link-secondary" >
+                <img src="/images/google.webp" alt="Google Icon" style="width: 20px; height: 20px;" class="me-2">
+            
+            Sign up using Google</a>
+        </button>
+        <div class="text-center my-2 d-flex align-items-center">
+            <hr class="flex-grow-1 border-secondary">
+            <span class="mx-2 text-muted">OR</span>
+            <hr class="flex-grow-1 border-secondary">
+        </div>
+        <form action="/user/signup" method="post">
+            {{#if succesMessage}}
+            <input type="text" id="message" value="{{{successMessage}}}" name="message" hidden>
+            {{/if}}
+            {{#if errorMessage}}
+            <input type="text" id="message" value="{{{errorMessage}}}" name="message" hidden>
+            {{/if}}
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="fname" class="form-label">First Name</label>
+                    <input type="text" id="fname" name="firstname" class="form-control">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="lname" class="form-label">Last Name</label>
+                    <input type="text" id="lname" name="lastname" class="form-control">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" name="password" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="confirmpassword" class="form-label">Confirm Password</label>
+                <input type="password" id="confirmpassword" name="confirmpassword" class="form-control">
+            </div>
+            <div class="form-footer text-start mb-4">
+                By Creating An Account You Agree With Our <a href="#" class="link-secondary">Terms Of Service</a>, <a
+                    href="#" class="link-secondary">Privacy Policy</a>.
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Create Account</button>
+        </form>
+        <p class="text-center mt-4">
+            Already have an account? <a href="/user/login"
+                class="link-secondary link-underline-opacity-0 link-underline-opacity-75-hover">Log in</a>
+        </p>
+    </div>
+</section>
+
+{{>footer}}
+
+
+
+<script>
+  
+    const message = document.getElementById('message').value
+    if (message) {
+        swal(message)
+    }
+
+</script>

@@ -1,0 +1,555 @@
+<link rel="stylesheet" href="/styles/admin.css">
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+
+<section class="m-0 bgcolor ">
+    <div class="row d-flex justify-content-between">
+
+        {{!-- Sidebar --}}
+        <div class="aside col-md-2 ">
+            <div class="d-flex justify-content-evenly align-items-center">
+                <div>
+                    <img src="/images/JAZPERFUME.png" alt="" class="logo_image">
+                    <p class="fs-6">PERFUMES</p>
+                </div>
+                <p class="fs-3 fw-2">ADMIN</p>
+            </div>
+
+            <div class="nav flex-column px-3">
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f82b0047e6557aa901c15537d58a7ab6971e1d1d635e2a205c02ec234f11ad61?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Dashboard" loading="lazy">
+                    </span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+
+                <a href="/admin/products" class="nav-link active" aria-current="page">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/126b232c82239fc3740982b7c8240f84671d1b6e2a4d00141995b3c82d24c4a5?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Products" loading="lazy">
+                    </span>
+                    <span class="nav-text">Products</span>
+                </a>
+
+                <a href="/admin/category" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/c46200642d44aab62899b16a25fc8bfe94e9df6fede3e3512b370b3d4f514356?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Categories" loading="lazy">
+                    </span>
+                    <span class="nav-text">Categories</span>
+                </a>
+
+                <a href="/admin/orders" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/395e632ba7027a03ce2c35c1aa8bcc4534da249d8c136cdcc01b5043a72ddc87?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Orders" loading="lazy">
+                    </span>
+                    <span class="nav-text">Orders</span>
+                </a>
+
+                <a href="/admin/customers" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f933064a6bab49b74f8d5722595a056cbddbca1247d9b1a20a7e0fc8d56413a0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Customers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Customers</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/ba76937fe489134f0c577be82a18baeadddda8f77194bbcb94734c6db29400c0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Offers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Offers</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/cabe95d2f5fab42e35aad96d91245b122dd4d50ddfe8d1d2bceee5ea219442d8?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Coupons" loading="lazy">
+                    </span>
+                    <span class="nav-text">Coupons</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/2897cc0ce7ace4dd1f7e6d2c1b779540e7fa6d14150e07ac6bd13caecdf99b1a?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Reviews" loading="lazy">
+                    </span>
+                    <span class="nav-text">Reviews</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/5b4c30ca0a115c712594c2dce59791803bec209977f960ad8b2c1a3d2ecaac23?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Settings" loading="lazy">
+                    </span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </div>
+        </div>
+
+
+        {{!-- Content Section --}}
+        <div class="col-md-10">
+
+            {{!-- Breadcrumps --}}
+            <div class="row px-2 pt-2">
+                <div class="col-8">
+                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#" class="link-dark link-underline-opacity-0">Admin</a>
+                            </li>
+                            <li class="breadcrumb-item"><a href="/admin/products"
+                                    class="link-dark link-underline-opacity-0">Products</a></li>
+                            <li class="breadcrumb-item active text-secondary" aria-current="page">Edit Products</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-4 d-flex justify-content-end pe-5">
+                    <button type="submit" class="btn btn-outline-dark btn-sm"
+                        onclick="window.location.href='/admin/logout'">Logout<i
+                            class="bi bi-box-arrow-right ps-2"></i></button>
+                </div>
+            </div>
+
+            {{!-- content box --}}
+            <div class="row m-0">
+                <div class="containerboxcat mt-4 p-4">
+                    <form class="bg-white p-4" enctype="multipart/form-data">
+                        <h1 class="h4 text-dark mb-4">Edit Product</h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Title</label>
+                                    <input type="text" id="name" name="name" value="{{product.name}}"
+                                        class="form-control" placeholder="{{ or product.name 'Enter product title'}}" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Category</label>
+                                    <select id="category" name="category" class="form-select">
+                                        <option value="" disabled {{#unless product.category}}selected{{/unless}}>
+                                            Select a category</option>
+                                        {{#each categories}}
+                                        <option value="{{_id}}" {{#if (isEqual ../product.category
+                                            _id)}}selected{{/if}}>
+                                            {{name}}
+                                        </option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="offer" class="form-label">Offer</label>
+                                    <select id="offer" name="offer" class="form-select">
+                                        <option value="" disabled {{#unless product.offer}}selected{{/unless}}>Select
+                                            an offer</option>
+                                        <option value="sales2024" {{#if (isEqual product.offer 'sales2024'
+                                            )}}selected{{/if}}>Sales2024</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="trending" class="form-label">Is Trending?</label>
+                                    <select class="form-select" id="trending" name="trending">
+                                        <option value="" {{#unless product.trending}}selected{{/unless}} disabled>Select
+                                        </option>
+                                        <option value="true" {{#if (isEqual product.trending true )}}selected{{/if}}>Yes
+                                        </option>
+                                        <option value="false" {{#if (isEqual product.trending false )}}selected{{/if}}>
+                                            No</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea id="description" name="description" class="form-control" rows="4"
+                                        placeholder="{{or product.description 'Enter product description'}}">{{product.description}}</textarea>
+                                </div>
+                                <div class="d-flex gap-3 mt-4">
+                                    <button type="submit" class="btn btn-dark px-4">Save</button>
+                                    <button type="reset" class="btn btn-outline-dark">Cancel</button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+
+                                <div class="mb-2">
+                                    <label for="images" class="form-label">Images</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-box-arrow-up"></i>
+                                        </span>
+                                        <input type="file" id="images" name="images" class="form-control" multiple
+                                            accept="image/*">
+                                    </div>
+
+                                    <div id="preview-container" class="d-flex flex-wrap mt-3" tabindex="0">
+
+                                        <!-- Modal for cropping images -->
+                                        <div class="modal fade" id="cropperModal" tabindex="-1"
+                                            aria-labelledby="cropperModalLabel">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="cropperModalLabel">Crop Image</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body text-center"
+                                                        style="display: flex; justify-content: center; align-items: center;">
+                                                        <img id="cropImage" class="img-fluid" alt="Crop Target">
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-primary"
+                                                            id="cropButton">Crop</button>
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <span class="fw-bold">VARIANTS</span>
+                                <div class="variantsContainer border px-4" id="variantSection">
+                                    {{#each product.variant}}
+                                    <div id="variant-{{@index}}" class="variant pt-3 pb-2">
+                                        <span class="fw-bold">Variant:</span>
+                                        <div class="mb-3">
+                                            <label for="stockQuantity" class="form-label">Available Stock
+                                                Quantity</label>
+                                            <input type='number' name='variant[{{@index}}][stockQuantity]'
+                                                id="stockQuantity" class="form-control field-input"
+                                                placeholder='Stock Quantity' min='0' value='{{this.stockQuantity}}' />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="quantityML" class="form-label">Quantity in ML</label>
+                                            <input type='text' name='variant[{{@index}}][quantityML]' id="quantityML"
+                                                class="form-control field-input" placeholder='Quantity in ML'
+                                                value='{{this.quantityML}}' />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="price" class="form-label">Price</label>
+                                            <input type='number' name='variant[{{@index}}][price]' id="price"
+                                                class="form-control field-input" placeholder='Price' min='0'
+                                                value='{{this.price}}' />
+                                        </div>
+                                        <button type="button" class="btn btn-danger btn-sm mb-2"
+                                            onclick='removeVariant({{@index}})' id="removeVariantBtn">Remove
+                                            Variant</button>
+                                    </div>
+                                    {{/each}}
+
+
+                                </div>
+                                <div class="text-start ps-4">
+                                    <button type="button" class="btn btn-secondary px-3 btn-sm mt-2"
+                                        id="addVariantBtn">Add
+                                        Variant</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+
+
+
+
+<script>
+
+    const imageInput = document.getElementById("images");
+    const previewContainer = document.getElementById("preview-container");
+    const cropperModalElement = document.getElementById("cropperModal");
+    const cropperModal = cropperModalElement ? new bootstrap.Modal(cropperModalElement) : null;
+    const cropImage = document.getElementById("cropImage");
+    const imageDivs = previewContainer.querySelectorAll('.position-relative');
+
+    let cropper = null;
+    let currentImages = []; // The original array of image filenames from the database
+    let croppedImages = {}; // Track cropped versions of images (by index)
+    let newImages = []; // Track new images added
+    let imageCounter = 0; // Ensure unique index for each image
+    const productId = "{{product._id}}";
+
+    // Simulate fetching existing image filenames from the database
+    async function fetchExistingImages() {
+        try {
+            const response = await fetch(`/admin/edit-products/${productId}/images`);
+            if (!response.ok) throw new Error("Failed to fetch existing images.");
+            currentImages = await response.json(); // Assume this is an array of image filenames
+            currentImages.forEach((filename) => {
+
+                if (filename.startsWith("data:")) {
+                    addImagePreview(`${filename}`, filename, false);
+                } else {
+                    // Generate preview for each existing image
+                    addImagePreview(`/uploads/${filename}`, filename, false);
+                }
+
+
+
+            });
+        } catch (error) {
+            console.error("Error fetching existing images:", error);
+        }
+    }
+
+    fetchExistingImages(); // Initialize previews for existing images
+
+    // Handle file input for new images
+    imageInput.addEventListener("change", (event) => {
+        const files = event.target.files;
+        Array.from(files).forEach((file) => {
+            if (!file.type.startsWith("image/")) {
+                console.error("Only image files are allowed.");
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                console.error("File size exceeds 5MB.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                addImagePreview(e.target.result, null, true);
+                newImages.push({ file, tempSrc: e.target.result }); // Store new images with temporary src
+            };
+
+            console.log("New Images: ", newImages)
+            reader.readAsDataURL(file);
+        });
+    });
+
+    // Add image preview to the container
+    function addImagePreview(src, filename, isNew) {
+        const index = imageCounter++; // Ensure a unique index
+        const div = document.createElement("div");
+        div.className = "position-relative me-2 mb-2";
+        div.dataset.index = index;
+        div.dataset.image = filename || "";
+        div.dataset.isnew = isNew;
+
+        div.innerHTML = `
+            <img src="${src}" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" alt="Image Preview">
+            <button type="button" class="btn-close position-absolute top-0 end-0" aria-label="Close"></button>
+        `;
+
+        previewContainer.appendChild(div);
+    }
+
+    // Delegate events for preview container
+    previewContainer.addEventListener("click", (e) => {
+        const div = e.target.closest("div[data-index]");
+
+        if (!div) return;
+
+        const index = div.dataset.index;
+        const isNew = div.dataset.isnew === "true";
+
+        if (e.target.classList.contains("btn-close")) {
+            div.remove(); // Remove the preview
+            if (isNew) {
+                // Remove new image
+                const imgSrc = div.querySelector("img").src;
+                newImages = newImages.filter((img) => img.tempSrc !== imgSrc);
+                console.log("After Remove button - New Images: ", newImages)
+            } else {
+                // Remove existing image
+                currentImages = currentImages.filter((filename) => filename !== div.dataset.image);
+                console.log("After Remove button - Current Images: ", currentImages)
+            }
+        } else if (e.target.tagName === "IMG") {
+            openCropper(e.target.src, index);
+        }
+    });
+
+    // Open cropper modal
+    function openCropper(imageSrc, index) {
+        cropImage.src = imageSrc;
+        cropperModal.show();
+
+        if (cropper) {
+            cropper.destroy(); // Destroy previous instance
+            cropper = null;
+        }
+
+        cropper = new Cropper(cropImage, {
+            aspectRatio: 1,
+            viewMode: 1,
+            cropBoxResizable: true,
+            zoomable: true,
+            scalable: true,
+            minContainerHeight: 350, // Minimum height for the container
+            minContainerWidth: 350, // Minimum width for the container
+        });
+
+        // Crop the image on confirm
+        document.getElementById("cropButton").onclick = () => {
+            const canvas = cropper.getCroppedCanvas();
+            const croppedSrc = canvas.toDataURL();
+            croppedImages[index] = croppedSrc; // Save cropped image
+
+            console.log("Cropped Images: ", croppedImages)
+
+            const targetImg = document.querySelector(`[data-index="${index}"] img`);
+            if (targetImg) targetImg.src = croppedSrc; // Update preview with cropped image
+
+            const div = document.querySelector(`[data-index="${index}"]`);
+            const isNew = div.dataset.isnew === "true";
+
+            if (isNew) {
+                // Update the newImages array for new images
+                const newImage = newImages.find(img => img.tempSrc === imageSrc);
+                if (newImage) {
+                    newImage.tempSrc = croppedSrc; // Update with the cropped source
+                }
+            } else {
+                // Update the currentImages array for existing images
+                const filename = div.dataset.image; // Get the filename of the existing image
+                if (filename) {
+                    const index = currentImages.findIndex(img => img === filename);
+                    if (index !== -1) {
+                        currentImages[index] = croppedSrc; // Update the existing image with the cropped source
+                    }
+                }
+            }
+
+            cropperModal.hide();
+        };
+    }
+
+    // Listen for modal hide event
+    cropperModalElement.addEventListener('hidden.bs.modal', () => {
+        // Move focus to an appropriate element outside the modal
+        const previewContainer = document.getElementById("preview-container");
+        if (previewContainer) {
+            previewContainer.focus(); // Ensure focus is shifted to a visible element
+        }
+    });
+
+    // Optional: When the modal is shown, focus on the first interactive element in the modal
+    cropperModalElement.addEventListener('shown.bs.modal', () => {
+        const cropButton = document.getElementById("cropButton");
+        if (cropButton) {
+            cropButton.focus(); // Focus the crop button when the modal is opened
+        }
+    });
+
+
+
+
+
+    // Handle form submission
+    const form = document.querySelector("form");
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+
+        // Gather all cropped images for existing and new images
+        const updatedImages = [...currentImages]; // Start with currentImages
+        const uploadedImages = newImages.map(newImage => newImage.tempSrc); // Add new images
+
+        // Combine updated images and new images
+        const finalImages = [...updatedImages, ...uploadedImages];
+
+        console.log("Final IMAGES: ", finalImages)
+
+        // Prepare the form data
+        const formData = new FormData(form);
+
+        // Append finalImages to the form data
+        finalImages.forEach((image, index) => {
+            formData.append(`images[${index}]`, image);
+        });
+
+        // Logging all key-value pairs in FormData
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+
+        try {
+            // Submit the form data using Fetch API
+            const response = await fetch("/admin/edit-products/{{product._id}}", {
+                method: "POST",
+                body: formData,
+            });
+
+            const result = await response.json();
+            console.log(result)
+
+            if (response.ok) {
+                alert("Product Updated successfully!");
+                window.location.href = "/admin/products"
+            } else {
+                alert(`Product Update failed: ${result.error || "Unknown error"}`);
+            }
+        } catch (error) {
+            console.error("Error submitting the form:", error);
+            alert("Error: ", error)
+        }
+    });
+
+
+
+</script>
+
+
+<script>
+    // Function to add new variant
+    document.getElementById('addVariantBtn').addEventListener('click', function () {
+        const variantSection = document.getElementById('variantSection');
+        const newIndex = variantSection.children.length;
+        const newVariant = `
+            <div id="variant-${newIndex}" class="variant pt-3 pb-2">
+                <span class="fw-bold">Variant:</span>
+                <div class="mb-3">
+                    <label for="stockQuantity" class="form-label">Available Stock
+                        Quantity</label>
+                    <input type='number' name='variant[${newIndex}][stockQuantity]' id="stockQuantity"
+                        class="form-control field-input" 
+                        placeholder='Stock Quantity' min='0' value='{{this.stockQuantity}}' />
+                </div>
+                <div class="mb-3">
+                    <label for="quantityML" class="form-label">Quantity in ML</label>
+                    <input type='text' name='variant[${newIndex}][quantityML]' id="quantityML"
+                        class="form-control field-input" 
+                        placeholder='Quantity in ML' value='{{this.quantityML}}' />
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input type='number' name='variant[${newIndex}][price]' id="price"
+                        class="form-control field-input"  placeholder='Price'
+                        min='0' value='{{this.price}}' />
+                </div>
+                <button type="button" class="btn btn-danger btn-sm mb-2" onclick='removeVariant(${newIndex})'
+                    id="removeVariantBtn">Remove
+                    Variant</button>
+            </div>
+        `;
+        variantSection.insertAdjacentHTML('beforeend', newVariant);
+    });
+
+    // Function to remove variant
+    function removeVariant(index) {
+        const variantRow = document.getElementById(`variant-${index}`);
+        variantRow.remove();
+    }
+</script>

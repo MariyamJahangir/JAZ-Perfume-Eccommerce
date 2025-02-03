@@ -1,0 +1,274 @@
+<link rel="stylesheet" href="/styles/admin.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.js"
+    integrity="sha512-7DgGWBKHddtgZ9Cgu8aGfJXvgcVv4SWSESomRtghob4k4orCBUTSRQ4s5SaC2Rz+OptMqNk0aHHsaUBk6fzIXw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<section class="m-0 bgcolor ">
+    <div class="row d-flex justify-content-between">
+
+        {{!-- Sidebar --}}
+        <div class="aside col-md-2 ">
+            <div class="d-flex justify-content-evenly align-items-center">
+                <div>
+                    <img src="/images/JAZPERFUME.png" alt="" class="logo_image">
+                    <p class="fs-6">PERFUMES</p>
+                </div>
+                <p class="fs-3 fw-2">ADMIN</p>
+            </div>
+
+            <div class="nav flex-column px-3">
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f82b0047e6557aa901c15537d58a7ab6971e1d1d635e2a205c02ec234f11ad61?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Dashboard" loading="lazy">
+                    </span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+
+                <a href="products" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/126b232c82239fc3740982b7c8240f84671d1b6e2a4d00141995b3c82d24c4a5?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Products" loading="lazy">
+                    </span>
+                    <span class="nav-text">Products</span>
+                </a>
+
+                <a href="category" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/c46200642d44aab62899b16a25fc8bfe94e9df6fede3e3512b370b3d4f514356?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Categories" loading="lazy">
+                    </span>
+                    <span class="nav-text">Categories</span>
+                </a>
+
+                <a href="orders" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/395e632ba7027a03ce2c35c1aa8bcc4534da249d8c136cdcc01b5043a72ddc87?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Orders" loading="lazy">
+                    </span>
+                    <span class="nav-text">Orders</span>
+                </a>
+
+                <a href="#" class="nav-link active" aria-current="page">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f933064a6bab49b74f8d5722595a056cbddbca1247d9b1a20a7e0fc8d56413a0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Customers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Customers</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/ba76937fe489134f0c577be82a18baeadddda8f77194bbcb94734c6db29400c0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Offers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Offers</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/cabe95d2f5fab42e35aad96d91245b122dd4d50ddfe8d1d2bceee5ea219442d8?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Coupons" loading="lazy">
+                    </span>
+                    <span class="nav-text">Coupons</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/2897cc0ce7ace4dd1f7e6d2c1b779540e7fa6d14150e07ac6bd13caecdf99b1a?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Reviews" loading="lazy">
+                    </span>
+                    <span class="nav-text">Reviews</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/5b4c30ca0a115c712594c2dce59791803bec209977f960ad8b2c1a3d2ecaac23?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Settings" loading="lazy">
+                    </span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </div>
+        </div>
+
+
+        {{!-- Content Section --}}
+        <div class="col-md-10">
+
+            {{!-- Breadcrumps --}}
+            <div class="row px-2 pt-2">
+                <div class="col-8">
+                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#" class="link-dark link-underline-opacity-0">Admin</a>
+                            </li>
+                            <li class="breadcrumb-item active text-secondary" aria-current="page">Customers</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-4 d-flex justify-content-end pe-5">
+                    <button type="submit" class="btn btn-outline-dark btn-sm"
+                        onclick="window.location.href='/admin/logout'">Logout<i
+                            class="bi bi-box-arrow-right ps-2"></i></button>
+                </div>
+            </div>
+
+            {{!-- content box --}}
+            <div class="row m-0">
+                <div class="containerboxcat mt-4 p-4">
+
+
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <h3 class="fw-medium">Customers</h3>
+                        <form action="/admin/search">
+                            <div class=" input-group w-auto">
+                                <input type="text" class="form-control" placeholder="Search customers"
+                                    aria-label="Search customers">
+                                <button class="btn border" type="submit">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="table-responsive mt-4">
+                        <table class="table table-bordered align-middle text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each users}}
+                                <tr>
+                                    <td>{{firstname}} {{lastname}}</td>
+                                    <td>{{email}}</td>
+                                    <td>
+
+                                        {{#if (isEqual status "active")}}
+                                        <span class="badge text-bg-success">{{status}}</span>
+                                        {{else}}
+                                        <span class="badge text-bg-danger">{{status}}</span>
+                                        {{/if}}
+
+                                    </td>
+                                    <td>
+                                        {{#if (isEqual status "active")}}
+                                        <button type="button" class="btn btn-outline-primary btn-sm me-2 toggle-status"
+                                            data-id="{{_id}}" data-status="active">Block</button>
+                                        {{else}}
+                                        <button type="button" class="btn btn-outline-primary btn-sm me-2 toggle-status"
+                                            data-id="{{_id}}" data-status="blocked">Unblock</button>
+                                        {{/if}}
+
+                                    </td>
+                                </tr>
+                                {{/each}}
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <nav aria-label="Page navigation" class="d-flex justify-content-end mt-4">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</section>
+
+
+
+<script>
+  document.querySelectorAll('.toggle-status').forEach((button) => {
+    button.addEventListener('click', async (event) => {
+        event.preventDefault(); // Prevent default behavior
+
+        const userId = button.dataset.id; // Get the user ID
+        const currentStatus = button.dataset.status; // Get the current status
+
+        try {
+            const response = await fetch(`/admin/status`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: userId, // Pass user ID
+                    status: currentStatus === 'active' ? 'blocked' : 'active', // Update status
+                }),
+            });
+
+            const result = await response.json(); // Parse the JSON response
+
+            if (result.success) {
+                // Update the UI dynamically
+                const row = button.closest('tr');
+                const badge = row.querySelector('.badge');
+
+                if (badge) {
+                    badge.textContent = result.status;
+                    badge.className = result.status === 'active'
+                        ? 'badge text-bg-success'
+                        : 'badge text-bg-danger';
+                }
+
+                button.textContent = result.status === 'active' ? 'Block' : 'Unblock';
+                button.dataset.status = result.status;
+            } else {
+                swal('Failed to update status');
+            }
+        } catch (error) {
+            console.error('Error updating status:', error);
+            swal('Something went wrong');
+        }
+    });
+});
+
+
+</script>
+
+
+
+
+
+
+
+<script>
+
+    if (result.success) {
+        button.dataset.status = currentStatus === 'active' ? 'blocked' : 'active';
+        button.textContent = button.dataset.status === 'active' ? 'Block' : 'Unblock';
+        button.closest('tr').querySelector('.status-badge').textContent = button.dataset.status;
+        button.closest('tr').querySelector('.status-badge').className =
+            button.dataset.status === 'active' ? 'badge text-bg-success' : 'badge text-bg-danger';
+    }
+
+
+</script>

@@ -1,0 +1,134 @@
+{{>header}}
+
+
+
+
+<section>
+    <div class="container">
+        <div class="row p-5">
+            <div class="col-8">
+                <div class="py-4">
+                    <h2>Your Cart</h2>
+                </div>
+
+                {{#if cartItems.length}}
+                {{#each cartItems}}
+                <div class="row d-flex justify-content-between border p-2 me-3">
+                    <div class="col-2">
+                        <img src="/uploads/{{this.products.images.[0]}}" alt="" style="width: 70%;">
+                    </div>
+                    <div class="col-5 align-content-center">
+                        <p><a href="/user/product-details/{{this.products._id}}"
+                                class="fw-bold text-black link-underline link-underline-opacity-0">{{this.products.name}}</a>
+                        </p>
+                        <span>Variant: {{this.selectedVariant.quantityML}}ML</span>
+                    </div>
+                    <div class="col-2 align-content-center">
+                        <p class="mb-0">₹{{this.totalPrice}}</p>
+                    </div>
+                    <div class="col-3 align-content-center">
+                        <button class="btn btn-sm btn-outline-secondary rounded-circle me-1"
+                            onclick="decreaseQuantity('{{this._id}}')">-</button>
+                        <span class="quantity">{{this.quantityCount}}</span>
+                        <button class="btn btn-sm btn-outline-secondary rounded-circle ms-1"
+                            onclick="increaseQuantity('{{this._id}}')">+</button>
+                        <button class="btn btn-sm btn-danger ms-3" onclick="removeProduct('{{this._id}}')">X</button>
+                    </div>
+                </div>
+                {{/each}}
+                {{else}}
+                <div class="text-center p-5">
+                    <h3>Your cart is empty!</h3>
+                    <a href="/user/all-products" class="btn btn-dark mt-3 px-3">Shop Now</a>
+                </div>
+                {{/if}}
+
+            </div>
+
+            <div class="col-4 border bg-light mt-5">
+                <div class="p-3">
+                    <h4>Order Summary</h4>
+                </div>
+                <div class="p-3 text-center">
+                    <div class="d-flex justify-content-between py-2"><span>Subtotal:</span><span>₹{{totalPrice}}</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-2"><span>Discount</span><span>-₹0</span></div>
+                    <div class="d-flex justify-content-between py-2"><span>Shipping:</span><span>Free</span></div>
+                    <hr>
+                    <div class="d-flex justify-content-between py-2"><span>Total:</span><span>₹{{totalPrice}}</span>
+                    </div>
+                    <a href="/user/checkout" class="btn btn-dark w-100 my-2">Checkout</a>
+                    <a href="/user/home" class="btn btn-link link-dark my-2">Continue Shopping..</a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+{{>footer}}
+
+<script>
+    async function increaseQuantity(cartItemId) {
+        try {
+            const response = await fetch(`/user/cart/increase/${cartItemId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                location.reload(); // Refresh page to update cart UI
+            } else {
+                alert("Failed to update quantity");
+            }
+        } catch (error) {
+            console.error("Error updating quantity:", error);
+        }
+    }
+
+    async function decreaseQuantity(cartItemId) {
+        try {
+            const response = await fetch(`/user/cart/decrease/${cartItemId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                location.reload(); // Refresh page to reflect updated values
+            } else {
+                alert(data.message); // Show alert if quantity can't be reduced further
+            }
+        } catch (error) {
+            console.error("Error decreasing quantity:", error);
+        }
+    }
+
+    async function removeProduct(cartItemId) {
+        if (!confirm("Are you sure you want to remove this item from your cart?")) {
+            return; // If user cancels, do nothing
+        }
+
+        try {
+            const response = await fetch(`/user/cart/remove/${cartItemId}`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                location.reload(); // Reload page after successful deletion
+            } else {
+                alert(data.message); // Show error if any
+            }
+        } catch (error) {
+            console.error("Error removing product:", error);
+        }
+    }
+
+
+
+</script>

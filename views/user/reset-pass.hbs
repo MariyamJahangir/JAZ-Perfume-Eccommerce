@@ -1,0 +1,97 @@
+<link rel="stylesheet" href="/styles/usersignup.css">
+
+
+{{>header}}
+
+<section>
+    <div>
+        <p class="text-center fs-2 fw-semibold pt-5">Reset Password</p>
+    </div>
+
+    <div class="signup-container">
+
+
+        <form id="reset-form">
+            <div class="mb-4">
+                <label for="password" class="form-label">New Password</label>
+                <input type="password" class="form-control" id="newPassword" name="newPassword">
+            </div>
+
+            <div class="mb-4">
+                <label for="password" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
+            </div>
+
+
+            <button type="submit" class="btn btn-primary w-100">Reset Password</button>
+        </form>
+    </div>
+</section>
+
+
+{{>footer}}
+
+<script>
+document.getElementById('reset-form').addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    // Check if fields are filled
+    if (!newPassword || !confirmPassword) {
+        return Swal.fire({
+            title: 'Error!',
+            text: 'All fields are required!',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    // Check if passwords match
+    if (newPassword !== confirmPassword) {
+        return Swal.fire({
+            title: 'Error!',
+            text: 'Passwords do not match!',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    // Send the data to the server
+    try {
+        const response = await fetch('/user/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: newPassword }) // Send new password to the server
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            Swal.fire({
+                title: 'Success!',
+                text: result.message,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                window.location.href = '/user/login'; // Redirect to login page
+            });
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: result.message,
+                icon: 'error',
+                confirmButtonText: 'Try Again'
+            });
+        }
+    } catch (error) {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Something went wrong!',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+});
+</script>

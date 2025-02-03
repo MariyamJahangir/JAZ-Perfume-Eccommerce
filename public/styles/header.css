@@ -1,0 +1,18 @@
+
+.offer {
+    background-color: #0F263E;
+    color: azure;
+    text-align: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center; /* Vertically aligns items in the container */
+    
+
+}
+
+.logo_image {
+    width: 5rem;
+}
+ 

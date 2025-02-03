@@ -1,0 +1,518 @@
+<link rel="stylesheet" href="/styles/admin.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.js"
+    integrity="sha512-7DgGWBKHddtgZ9Cgu8aGfJXvgcVv4SWSESomRtghob4k4orCBUTSRQ4s5SaC2Rz+OptMqNk0aHHsaUBk6fzIXw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+
+
+<section class="m-0 bgcolor ">
+    <div class="row d-flex justify-content-between">
+
+        {{!-- Sidebar --}}
+        <div class="aside col-md-2 ">
+            <div class="d-flex justify-content-evenly align-items-center">
+                <div>
+                    <img src="/images/JAZPERFUME.png" alt="" class="logo_image">
+                    <p class="fs-6">PERFUMES</p>
+                </div>
+                <p class="fs-3 fw-2">ADMIN</p>
+            </div>
+
+            <div class="nav flex-column px-3">
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f82b0047e6557aa901c15537d58a7ab6971e1d1d635e2a205c02ec234f11ad61?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Dashboard" loading="lazy">
+                    </span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+
+                <a href="products" class="nav-link active" aria-current="page">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/126b232c82239fc3740982b7c8240f84671d1b6e2a4d00141995b3c82d24c4a5?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Products" loading="lazy">
+                    </span>
+                    <span class="nav-text">Products</span>
+                </a>
+
+                <a href="category" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/c46200642d44aab62899b16a25fc8bfe94e9df6fede3e3512b370b3d4f514356?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Categories" loading="lazy">
+                    </span>
+                    <span class="nav-text">Categories</span>
+                </a>
+
+                <a href="orders" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/395e632ba7027a03ce2c35c1aa8bcc4534da249d8c136cdcc01b5043a72ddc87?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Orders" loading="lazy">
+                    </span>
+                    <span class="nav-text">Orders</span>
+                </a>
+
+                <a href="customers" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f933064a6bab49b74f8d5722595a056cbddbca1247d9b1a20a7e0fc8d56413a0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Customers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Customers</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/ba76937fe489134f0c577be82a18baeadddda8f77194bbcb94734c6db29400c0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Offers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Offers</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/cabe95d2f5fab42e35aad96d91245b122dd4d50ddfe8d1d2bceee5ea219442d8?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Coupons" loading="lazy">
+                    </span>
+                    <span class="nav-text">Coupons</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/2897cc0ce7ace4dd1f7e6d2c1b779540e7fa6d14150e07ac6bd13caecdf99b1a?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Reviews" loading="lazy">
+                    </span>
+                    <span class="nav-text">Reviews</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/5b4c30ca0a115c712594c2dce59791803bec209977f960ad8b2c1a3d2ecaac23?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Settings" loading="lazy">
+                    </span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </div>
+        </div>
+
+
+        {{!-- Content Section --}}
+        <div class="col-md-10">
+
+            {{!-- Breadcrumps --}}
+            <div class="row px-2 pt-2">
+                <div class="col-10">
+                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#" class="link-dark link-underline-opacity-0">Admin</a>
+                            </li>
+                            <li class="breadcrumb-item"><a href="products"
+                                    class="link-dark link-underline-opacity-0">Products</a></li>
+                            <li class="breadcrumb-item active text-secondary" aria-current="page">Add Products</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-2">
+                    <button type="submit" class="btn btn-outline-dark btn-sm"
+                        onclick="window.location.href='/admin/logout'">Logout<i
+                            class="bi bi-box-arrow-right ps-2"></i></button>
+                </div>
+            </div>
+
+            {{!-- content box --}}
+            <div class="row m-0">
+                <div class="containerboxcat mt-4 p-4">
+
+                    <form class=" bg-white p-4" enctype="multipart/form-data">
+                        <h1 class="h4 text-dark mb-4">Add Product</h1>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Title</label>
+                                    <input type="text" id="name" name="name" class="form-control"
+                                        placeholder="Enter Product Name" />
+                                </div>
+
+
+
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Category</label>
+                                    <select id="category" name="category" class="form-select">
+                                        <option value="" selected disabled>Select</option>
+                                        {{#each categories}}
+                                        <option value="{{_id}}">{{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="offer" class="form-label">Offer</label>
+                                    <select id="offer" name="offer" class="form-select">
+                                        <option value="" disabled selected>Select an Offer</option>
+                                        <option value="sales2024">Sales2024</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="trend" class="form-label">Is Trending?</label>
+                                    <select class="form-select" id="trend" name="trend">
+                                        <option value="" selected disabled>Select</option>
+                                        <option value="true">Yes</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea id="description" name="description" class="form-control" rows="4"
+                                        placeholder="Enter Product Description"></textarea>
+                                </div>
+
+                                <div class="d-flex gap-3 mt-4">
+                                    <button type="submit" class="btn btn-dark">Add Product</button>
+                                    <button type="reset" class="btn btn-outline-dark">Cancel</button>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-md-6">
+                                
+
+                                <div class="mb-2">
+                                    <label for="images" class="form-label">Images</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-box-arrow-up"></i>
+                                        </span>
+                                        <input type="file" id="images" name="images" class="form-control" multiple
+                                            accept="image/*">
+                                    </div>
+                                    <!-- Bootstrap Grid for Preview Container -->
+                                    <div id="preview-container" class="d-flex flex-wrap mt-3"></div>
+                                    <!-- Cropper Modal -->
+                                    <div class="modal fade" id="cropperModal" tabindex="-1"
+                                        aria-labelledby="cropperModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="cropperModalLabel">Crop Image</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body text-center"
+                                                    style="display: flex; justify-content: center; align-items: center;">
+                                                    <img id="cropImage" class="img-fluid" alt="Crop Target">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary"
+                                                        id="cropButton">Crop</button>
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <span class="fw-bold">VARIANTS</span>
+                                <div class="variantsContainer border p-4">
+                                    <div id="variant" class="variant">
+                                        <span class="fw-bold">Variant 1:</span>
+                                        <div class="mb-3 mt-2 ">
+                                            <label for="stockQuantity" class="form-label">Available Stock
+                                                Quantity</label>
+                                            <input type="number" id="stockQuantity" name="stockQuantity" min="0"
+                                                class="form-control variant1" placeholder="Enter stock quantity" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label" for="quantityML">Quantity in ML</label>
+                                            <input type="number" id="quantityML" name="quantityML" min="0"
+                                                class="form-control variant1"
+                                                placeholder="Enter the quanity in ml (eg: 50)" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="price" class="form-label">Price</label>
+                                            <input type="number" id="price" name="price" min="0"
+                                                class="form-control variant1" placeholder="Enter product price" />
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-secondary px-3 btn-sm" id="addVariantBtn">Add
+                                        Variant</button>
+                                    <button type="button" class="btn btn-danger btn-sm" id="removeVariantBtn">Remove
+                                        Variant</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const addVariantBtn = document.getElementById("addVariantBtn");
+        const removeVariantBtn = document.getElementById("removeVariantBtn");
+        const variantsContainer = document.querySelector(".variantsContainer");
+
+        addVariantBtn.addEventListener("click", () => {
+            const variantCount = document.querySelectorAll(".variant").length + 1;
+
+            // Create a new variant div
+            const newVariant = document.createElement("div");
+            newVariant.className = "variant";
+            newVariant.id = `variant${variantCount}`;
+            newVariant.innerHTML = `
+                <span class="fw-bold">Variant ${variantCount}:</span>
+                <div class="mb-3 mt-2">
+                    <label for="stockQuantity${variantCount}" class="form-label">Available Stock Quantity</label>
+                    <input type="number" id="stockQuantity${variantCount}" name="stockQuantity" min="0"
+                        class="form-control" placeholder="Enter Stock Quantity" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="quantityML${variantCount}">Quantity in ML</label>
+                    <input type="number" id="quantityML${variantCount}" name="quantityML" min="0"
+                        class="form-control" placeholder="Enter the quantity in ml (e.g., 50)" />
+                </div>
+                <div class="mb-3">
+                    <label for="price${variantCount}" class="form-label">Price</label>
+                    <input type="number" id="price${variantCount}" name="price" min="0" class="form-control"
+                        placeholder="Enter Product Price" />
+                </div>
+            `;
+
+            // Append the new variant to the container before the buttons
+            variantsContainer.insertBefore(newVariant, addVariantBtn);
+        });
+
+        removeVariantBtn.addEventListener("click", () => {
+            const allVariants = document.querySelectorAll(".variant");
+
+            // Ensure at least one variant remains
+            if (allVariants.length > 1) {
+                const lastVariant = allVariants[allVariants.length - 1];
+                lastVariant.remove();
+            } else {
+                alert("At least one variant must be present.");
+            }
+        });
+    });
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const imageInput = document.getElementById("images");
+        const previewContainer = document.getElementById("preview-container");
+        const cropperModal = new bootstrap.Modal(document.getElementById("cropperModal"));
+        const cropImage = document.getElementById("cropImage");
+        const cropButton = document.getElementById("cropButton");
+        let cropper = null;
+        let imagesData = []; // Array to hold cropped image data
+        let activeIndex = null; // Track the currently active image index
+
+        // Handle image selection
+        imageInput.addEventListener("change", () => {
+            previewContainer.innerHTML = ""; // Clear existing previews
+            imagesData = []; // Reset the image data array
+
+            Array.from(imageInput.files).forEach((file, index) => {
+                if (!file.type.startsWith("image/")) {
+                    swal("Only image files are allowed!");
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const previewWrapper = document.createElement("div");
+                    previewWrapper.className = "position-relative d-inline-block me-2 mb-2";
+
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.alt = file.name;
+                    img.className = "img-thumbnail";
+                    img.style.width = "100px";
+                    img.style.height = "100px";
+                    img.dataset.index = index;
+                    previewWrapper.appendChild(img);
+
+                    const removeButton = document.createElement("button");
+                    removeButton.className = "btn btn-sm btn-danger position-absolute top-0 end-0";
+                    removeButton.textContent = "X";
+                    removeButton.addEventListener("click", () => {
+                        previewWrapper.remove();
+                        imagesData = imagesData.filter((_, i) => i !== parseInt(img.dataset.index));
+                        // Re-index remaining images
+                        Array.from(previewContainer.children).forEach((child, newIndex) => {
+                            child.querySelector("img").dataset.index = newIndex;
+                        });
+
+                    });
+                    previewWrapper.appendChild(removeButton);
+
+                    previewContainer.appendChild(previewWrapper);
+
+                    // Open cropper modal when clicking on the image
+                    img.addEventListener("click", () => {
+                        cropImage.src = e.target.result;
+                        cropperModal.show();
+                        activeIndex = index; // Set the active index
+
+                        // Destroy any existing cropper instance
+                        if (cropper) {
+                            cropper.destroy();
+
+                        }
+
+                        // Initialize new cropper
+                        cropper = new Cropper(cropImage, {
+                            aspectRatio: NaN, // No fixed aspect ratio
+                            viewMode: 1, // Controls the resizing behavior
+                            cropBoxResizable: true, // Allows the crop box to be resized
+                            zoomable: true, // Allows zooming
+                            scalable: true, // Allows scaling of the image
+                            minContainerHeight: 350, // Minimum height for the container
+                            minContainerWidth: 350, // Minimum width for the container
+                        });
+
+
+                    });
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        // Handle crop button click
+        cropButton.addEventListener("click", () => {
+            if (!cropper) return;
+
+            const croppedCanvas = cropper.getCroppedCanvas();
+            if (!croppedCanvas) {
+                swal("Cropping failed. Please try again.");
+                return;
+            }
+            const croppedData = croppedCanvas.toDataURL();
+
+            // Update image data and thumbnail
+            imagesData[activeIndex] = croppedData;
+            const activeImage = previewContainer.querySelector(
+                `img[data-index="${activeIndex}"]`
+            );
+            activeImage.src = croppedData; // Update thumbnail
+
+            // Close the modal and destroy the cropper instance
+            cropperModal.hide();
+            cropper.destroy();
+            cropper = null;
+        });
+
+
+
+        // Reset the cropper image when the modal is closed
+        document.getElementById("cropperModal").addEventListener("hidden.bs.modal", () => {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            cropImage.src = ""; // Clear the image source
+            activeIndex = null; // Reset active index
+        });
+
+
+        // Submit the form
+        const form = document.querySelector("form");
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+
+            imagesData.forEach((data, i) => {
+                formData.append(`images[${i}]`, data);
+            });
+
+            // Gather variant data
+            const variants = [];
+            document.querySelectorAll(".variant").forEach((variantDiv) => {
+                const quantityML = parseFloat(variantDiv.querySelector('[name="quantityML"]').value);
+                const price = parseFloat(variantDiv.querySelector('[name="price"]').value);
+                const stockQuantity = parseInt(variantDiv.querySelector('[name="stockQuantity"]').value);
+
+                let stockStatus;
+                if (stockQuantity === 0) {
+                    stockStatus = "Out of Stock";
+                } else if (stockQuantity < 10) {
+                    stockStatus = "A few stocks left";
+                } else {
+                    stockStatus = "In Stock";
+                }
+
+                if (!isNaN(quantityML) && !isNaN(price) && !isNaN(stockQuantity)) {
+                    variants.push({ quantityML, price, stockQuantity, stockStatus });
+                }
+            });
+
+            if (variants.length === 0) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Validation Error",
+                    text: "Please add at least one valid variant.",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+
+            // Append variants to form data
+            formData.append("variant", JSON.stringify(variants));
+
+
+            try {
+                console.log("FormData contents:");
+                formData.forEach((value, key) => console.log(`${key}: ${value}`)); // Log FormData for debugging
+
+                const response = await fetch("/admin/add-products", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Product added successfully!",
+                        confirmButtonText: "OK",
+                    });
+                    console.log(result);
+                    form.reset();
+                    previewContainer.innerHTML = "";
+                    window.location.href = "/admin/products"
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Failed to add product",
+                        text: result.error || "Unknown error",
+                        confirmButtonText: "Retry",
+                    });
+                    console.error(result);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Submission Error",
+                    text: "An error occurred while adding the product. Please try again.",
+                    confirmButtonText: "OK",
+                });
+            }
+        });
+    });
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>

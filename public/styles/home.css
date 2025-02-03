@@ -1,0 +1,83 @@
+hr{
+    width:30%;
+    margin: auto;
+    border-top: 2px solid black;
+    
+    padding-bottom: 1.5rem;
+}
+
+
+.feature{
+    background-color: #DFF2FA;
+}
+
+.featureRow{
+    justify-content: center;
+}
+
+.btnhead{
+    padding: 2% 8%;
+    
+}
+
+
+.btn-black {
+    background-color: black; /* Black button */
+    color: white;           /* White text */
+    border: none;           /* No border */
+}
+
+
+.rounded-circle{
+    width: 60%;
+}
+
+
+
+
+
+
+.card {
+    position: relative;
+    overflow: hidden;
+}
+.card-img-top {
+    transition: transform 0.3s ease-in-out;
+}
+.card:hover .card-img-top {
+    transform: scale(1.1);
+}
+.btn-hover {
+    position: absolute;
+    background-color: black;
+    color: white;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 1;
+}
+.card:hover .btn-hover {
+    opacity: 1;
+}
+
+
+.btncart{
+    width: 100%;
+    margin-top: 50%;
+    border-radius: 3px;
+    padding: 3%;
+}
+
+.btnpill{
+    font-size: small;
+}
+
+
+.btncartbtm{
+    width: 100%;
+    margin-top: 40%;
+    border-radius: 3px;
+    padding: 3%;
+}
