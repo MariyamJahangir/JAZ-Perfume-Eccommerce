@@ -59,7 +59,11 @@
 
 const message = document.getElementById('message').value
   if (message) {
-    swal(message)
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops!',
+        text: message
+    });
   }
 
 </script>

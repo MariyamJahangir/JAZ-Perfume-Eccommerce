@@ -88,43 +88,8 @@ const OrderDetail = (req, res) => {
 
 
 
-const OrderPlaced = (req, res) => {
-  res.render('user/order-placed')
-}
 
 
-const PlaceOrder = async (req, res) => {
-  try {
-      const { addressId, paymentMethod, totalPrice, cartItems } = req.body;
-      const userId = req.session.user._id; // Assuming user session is stored
-
-      // Fetch the selected address
-      const user = await userModel.findById(userId);
-      const selectedAddress = user.address.find(addr => addr._id.toString() === addressId);
-
-      if (!selectedAddress) {
-          return res.json({ success: false, message: "Invalid address selected" });
-      }
-
-      // Create a new order
-      const newOrder = new Order({
-          userId,
-          items: cartItems,
-          totalAmount: totalPrice,
-          shippingAddress: selectedAddress,
-          paymentMethod,
-          status: "Pending" // Initial status
-      });
-
-      await newOrder.save();
-      await Cart.deleteOne({ userId }); // Clear cart after order placement
-
-      res.json({ success: true, message: "Order placed successfully" });
-  } catch (error) {
-      console.error("Order placement error:", error);
-      res.json({ success: false, message: "Order placement failed" });
-  }
-}
 
 
 module.exports = {
@@ -133,6 +98,6 @@ module.exports = {
   LoadOrders,
   OrderDetail,
  
-  OrderPlaced,
-  PlaceOrder
+ 
+
 }

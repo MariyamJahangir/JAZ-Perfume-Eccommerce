@@ -152,7 +152,13 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    alert(data.message); // Show success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: data.message,
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#28a745'  // Green color for success
+                    }); // Show success message
                     // If the email was updated and logout is required, redirect to logout page
                     if (data.logout) {
                         window.location.href = "/user/logout"; // Redirect to the logout page
@@ -160,11 +166,23 @@
                         location.reload(); // Reload the page if no logout is required
                     }
                 } else {
-                    alert(data.message); // Show error message if email already exists
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: data.message,
+                        confirmButtonText: 'Try Again',
+                        confirmButtonColor: '#d33'  // Red color for error
+                    }); // Show error message if email already exists
                 }
             } catch (error) {
                 console.error("Error:", error);
-                alert("An error occurred while updating the profile.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'An error occurred while updating the profile.',
+                    confirmButtonText: 'Try Again',
+                    confirmButtonColor: '#d33'  // Red color for error
+                });
             }
         });
     });

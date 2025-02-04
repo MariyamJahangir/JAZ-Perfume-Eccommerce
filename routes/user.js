@@ -5,6 +5,7 @@ const productController = require('../controller/user/productController')
 const profileController = require('../controller/user/profileController')
 const addressController = require('../controller/user/addressController')
 const cartController = require('../controller/user/cartController')
+const orderController = require('../controller/user/orderController')
 const auth = require('../middleware/auth')
 const passport = require('passport')
 
@@ -38,13 +39,14 @@ router.get('/auth/google/callback',
 
 
 // Users homepage
-router.get('/home',auth.isLogin, homeController.loadHome)  //
+router.get('/home', homeController.loadHome)  //auth.isLogin,
 
 
 
 //List products on the user side
 router.get('/all-products', productController.allProducts)  //auth.isLogin,
-router.get('/product-details/:id', auth.isLogin, productController.productDetails)
+router.get('/product-details/:id',  productController.productDetails)  //auth.isLogin,
+router.post('/cart/add', auth.isLogin, productController.AddToCart)
 
 
 
@@ -74,15 +76,20 @@ router.get('/order-detail', profileController.OrderDetail)
 
 // cart
 router.get('/cart', auth.isLogin, cartController.LoadCart)
-router.post('/cart/add', cartController.AddToCart)
+
 router.post("/cart/increase/:cartItemId", cartController.increaseCart)
 router.post("/cart/decrease/:cartItemId", cartController.decreaseCart)
 router.delete("/cart/remove/:cartItemId", cartController.removeProduct)
-router.get('/checkout', cartController.LoadCheckout)
 
 
-router.post("/place-order", profileController.PlaceOrder)
-router.get('/order-placed', profileController.OrderPlaced)
+
+
+//orders
+router.get('/checkout',auth.isLogin, orderController.LoadCheckout)
+router.post("/order/place",auth.isLogin, orderController.PlaceOrder)
+router.get('/order-placed', orderController.OrderPlaced)
+
+
 
 
 

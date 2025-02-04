@@ -331,46 +331,6 @@
 {{>footer}}
 
 
-
-
-<script>
-    /*
-    // JavaScript to handle increment and decrement
-    const quantityDisplay = document.getElementById('quantityCount');
-    const decrementButton = document.getElementById('decrement');
-    const incrementButton = document.getElementById('increment');
-    const priceDisplay = document.getElementById('priceDisplay')
-
-    console.log(priceDisplay)
-
-    let quantityCount = quantityDisplay.textContent;
-    //const price = priceDisplay.textContent;
-
-    decrementButton.addEventListener('click', () => {
-        const price = priceDisplay.textContent;
-        if (quantityCount > 1) {
-            quantityCount--;
-            quantityDisplay.textContent = quantityCount;  
-            priceDisplay.textContent = price/quantityCount;      
-        }
-    });
-
-    incrementButton.addEventListener('click', () => {
-        const price = priceDisplay.textContent;
-        quantityCount++;
-        quantityDisplay.textContent = quantityCount;
-        priceDisplay.textContent = price*quantityCount;
-        
-    });
-
-   */
-
-
-</script>
-
-
-
-
 {{!-- zoom --}}
 
 
@@ -484,35 +444,87 @@
         // Handle Add to Cart click
         addToCartBtn.addEventListener("click", async function () {
             if (!selectedVariantId) {
-                alert("Please select a variant before adding to cart.");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Variant Required',
+                    text: 'Please select a variant before adding to cart.',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#f39c12'
+                });
                 return;
             }
 
             const productId = this.getAttribute("data-product-id");
 
-
-            console.log("Adding to cart: Product ID:", productId, "Variant ID:", selectedVariantId, "quantityCount:", quantityCount); // ✅ Debugging log
-
             try {
                 const response = await fetch("/user/cart/add", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ productId, variantId: selectedVariantId, quantityCount, totalPrice: (basePrice * quantityCount) }),
+                    body: JSON.stringify({
+                        productId,
+                        variantId: selectedVariantId,
+                        quantityCount,
+                        totalPrice: (basePrice * quantityCount)
+                    }),
                 });
 
-                const data = await response.json();
 
-                if (data.success) {
-                    alert("Product added to cart!");
-                    window.location.href = "/user/cart"; // Redirect to cart page
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: data.message,
+                            confirmButtonText: 'Great!',
+                            confirmButtonColor: '#28a745'
+                        });
+                        window.location.href = "/user/cart"; // Redirect to cart page
+                    } else if (response.status === 401) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'You need to log in!',
+                            text: data.message,
+                            confirmButtonColor: '#d33'
+                        });
+                        window.location.href = "/user/login";
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: data.message || 'Failed to add product to cart.',
+                            confirmButtonColor: '#d33'
+                        });
+                    }
+
+
                 } else {
-                    alert("Failed to add product to cart.");
+                    // Handle HTML response (unauthenticated)
+                    await Swal.fire({
+                        icon: 'warning',
+                        title: 'Authentication Required',
+                        text: 'You need to log in to add products to the cart.',
+                        confirmButtonColor: '#d33'
+                    });
+                    window.location.href = "/user/login";
                 }
+
             } catch (error) {
                 console.error("Error:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Server Error',
+                    text: error.message || 'Something went wrong. Please try again later.',
+                    confirmButtonColor: '#d33'
+                });
             }
         });
     });
 
 
 </script>
+
+

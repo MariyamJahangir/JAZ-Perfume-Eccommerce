@@ -9,10 +9,10 @@
 
     <div class="signup-container">
         <button class="btn btn-google w-100 mb-3">
-            <a href="/user/auth/google" class="link-underline-opacity-0 link-secondary" >
+            <a href="/user/auth/google" class="link-underline-opacity-0 link-secondary">
                 <img src="/images/google.webp" alt="Google Icon" style="width: 20px; height: 20px;" class="me-2">
-            
-            Sign up using Google</a>
+
+                Sign up using Google</a>
         </button>
         <div class="text-center my-2 d-flex align-items-center">
             <hr class="flex-grow-1 border-secondary">
@@ -66,10 +66,14 @@
 
 
 <script>
-  
+
     const message = document.getElementById('message').value
     if (message) {
-        swal(message)
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            text: message
+        });
     }
 
 </script>
