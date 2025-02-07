@@ -417,14 +417,29 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    alert("Address updated successfully!");
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Address updated successfully!',
+                        confirmButtonColor: '#3085d6'
+                    });
                     location.reload(); // Reload to reflect the updated data
                 } else {
-                    alert("Failed to update address!");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Update Failed',
+                        text: 'Failed to update address!',
+                        confirmButtonColor: '#d33'
+                    });
                 }
             } catch (error) {
                 console.error("Error:", error);
-                alert("An error occurred while updating the address.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Update Error',
+                    text: 'An error occurred while updating the address.',
+                    confirmButtonColor: '#d33'
+                });
             }
         });
     });
@@ -433,37 +448,77 @@
 
 
 <script>
-
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".delete-address").forEach(button => {
             button.addEventListener("click", async function () {
                 const addressId = this.getAttribute("data-addressid");
 
-                if (confirm("Are you sure you want to delete this address?")) {
-                    try {
-                        const response = await fetch(`/user/delete-address/${addressId}`, {
-                            method: "DELETE",
-                            headers: {
-                                "Content-Type": "application/json"
-                            }
-                        });
-
-                        const data = await response.json();
-
-                        if (data.success) {
-                            alert("Address deleted successfully!");
-                            location.reload(); // Reload the page to reflect the changes
-                        } else {
-                            alert("Failed to delete address.");
-                        }
-                    } catch (error) {
-                        console.error("Error:", error);
-                        alert("An error occurred while deleting the address.");
-                    }
+                if (!addressId) {
+                    console.error("Error: Address ID is missing!");
+                    return;
                 }
+
+                // Call the delete function
+                deleteAddress(addressId);
             });
         });
     });
 
+    async function deleteAddress(addressId) {
+        try {
+            const result = await Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to undo this!",
+                icon: "warning",
+                showCancelButton: true,  // Enables the cancel button
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel"
+            });
 
+            if (result.isConfirmed) {  // Checks if the user confirmed the deletion
+                const response = await fetch(`/user/delete-address/${addressId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    await Swal.fire({
+                        icon: "success",
+                        title: "Deleted!",
+                        text: "Address deleted successfully!",
+                        confirmButtonColor: "#3085d6"
+                    });
+                    location.reload(); // Reload the page to reflect changes
+                } else {
+                    await Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        text: "Failed to delete address.",
+                        confirmButtonColor: "#d33"
+                    });
+                }
+            } else {  // If user clicks cancel, show a message and do nothing
+                await Swal.fire({
+                    icon: "info",
+                    title: "Cancelled",
+                    text: "Your address is safe!",
+                    confirmButtonColor: "#3085d6"
+                });
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            await Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "An error occurred while deleting the address.",
+                confirmButtonColor: "#d33"
+            });
+        }
+    }
 </script>

@@ -22,7 +22,6 @@ const variantSchema = new mongoose.Schema(
     
 );
 
-//module.exports = mongoose.model('variant', variantSchema);
 
 const productSchema = new mongoose.Schema(
     {
@@ -70,4 +69,4 @@ const productSchema = new mongoose.Schema(
 );
 
 
-module.exports = mongoose.model('product', productSchema);
+module.exports = mongoose.model('Product', productSchema);

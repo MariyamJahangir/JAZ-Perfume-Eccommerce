@@ -32,7 +32,7 @@
                             class="bi bi-cart4 p-2"></i>Address</a>
                     <a href="wishlist" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
                             class="bi bi-heart p-2"></i>Wishlist</a>
-                    <a href="orders" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2 active"
+                    <a href="/user/orders" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2 active"
                         aria-current="page"><i class="bi bi-truck p-2"></i>Orders</a>
                     <a href="password" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
                             class="bi bi-key p-2"></i>Password</a>
@@ -42,9 +42,12 @@
                             class="bi bi-box-arrow-right p-2"></i>Logout</a>
                 </nav>
             </div>
-            <div class="col-10">
+
+
+            
+            {{!-- <div class="col-10">
                 <div class="container m-4 p-4 border bg-light">
-                    <h1 class="text-center pb-4">ALL ORDERS</h1>
+                    <h1 class="text-center pb-4">ORDER DETAILS</h1>
                     <div class="grid gap-1 d-flex justify-content-between p-3">
                         <div class="col-3 text-center p-2">
                             <img src="/uploads/1736396244173-prd1.jpg" alt="" style="width: 60%;">
@@ -87,7 +90,84 @@
                     </div>
 
                 </div>
+            </div> --}}
+
+           
+<div class="col-10">
+    <div class="container m-4 p-4 border bg-light">
+        <h1 class="text-center pb-4">ORDER DETAILS</h1>
+
+        {{#each order.items}}
+        <div class="grid gap-1 d-flex justify-content-between p-3">
+            <!-- Product Image -->
+            <div class="col-3 text-center p-2">
+                <img src="/uploads/{{this.productId.images.[0]}}" alt="{{this.productId.name}}" style="width: 60%;">
             </div>
+
+            <!-- Product Details -->
+            <div class="col-4 d-flex align-items-center">
+                <div>
+                    <p>{{this.productId.name}} - {{getVariantQuantity this.productId.variant this.variantId}} ML</p>
+                    <span class="fw-5">Ordered on: {{formatDate ../orderDate}}</span>
+                    <p>${{this.price}}</p>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="col-5 d-flex align-items-center">
+                <div class="p-2 me-4">
+                    <a href="/user/product-details/{{this.productId._id}}" class="btn btn-outline-primary px-3">View Product</a>
+                </div>
+
+                <div class="p-2">
+                    {{#if (isEqual this.status "Delivered")}}
+                        <span class="badge text-bg-success">Delivered</span>
+                    {{else if (isEqual this.status "Returned")}}
+                        <span class="badge text-bg-danger">Returned</span>
+                    {{else}}
+                        <span class="badge text-bg-warning">{{this.status}}</span>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+        {{/each}}
+
+        <!-- Delivery Address -->
+        <div class="grid gap-1 d-flex justify-content-between p-3">
+            <div class="col-7 ps-3">
+                <p class="fw-bold">Shipping Address</p>
+                <p><span>{{order.shippingAddress.firstname}} {{order.shippingAddress.lastname}}</span> <span>{{order.shippingAddress.phone}}</span></p>
+                <span>{{order.shippingAddress.address}}, {{order.shippingAddress.locality}}, {{order.shippingAddress.district}}, {{order.shippingAddress.state}} - {{order.shippingAddress.pincode}}</span>
+            </div>
+
+            <!-- Order Status -->
+            <div class="col-2 align-content-center">
+                <button type="button" class="btn btn-success rounded-circle p-1 m-2"></button>
+                <span>{{#if (isEqual order.items.[0].status "Delivered")}}Delivered{{else}}In Progress{{/if}}</span>
+            </div>
+
+            <!-- Rate Product -->
+            <div class="col-3 align-content-center">
+                <div class="p-2 me-4">
+                    {{#if (isReturnEligible order.orderDate)}}
+                        <button type="button" class="btn btn-outline-primary px-3">Rate this Product</button>
+                    {{else}}
+                        <button type="button" class="btn btn-outline-secondary px-3" disabled>Rating Closed</button>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
         </div>
     </div>
 </section>

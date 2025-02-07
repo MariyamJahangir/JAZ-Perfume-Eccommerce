@@ -45,26 +45,44 @@
             <div class="col-10">
                 <div class="container m-4 p-4">
                     <h1 class="text-center pb-4">ALL ORDERS</h1>
-                    <div class="grid gap-1 d-flex justify-content-between border bg-light p-3">
+                    {{#each orders}}
+                    {{#each items}}
+                        <div class="grid gap-1 d-flex justify-content-between border bg-light p-3">
+                        <!-- Product Image -->
                         <div class="col-2 text-center p-2">
-                            <img src="/uploads/1736396244173-prd1.jpg" alt="">
+                            <img src="/uploads/{{productDetails.images.[0]}}" alt="{{productDetails.name}}" class="img-fluid">
                         </div>
+
+                        <!-- Product Details -->
                         <div class="col-4">
-                            <p>ELIXIR - 100 ML</p>
-                            <span class="fw-5">Ordered on: 27 July 2023</span>
-                            <p>$1327.00</p>
+                            <p>{{productDetails.name}} - {{productDetails.variant.quantityML}} ML</p>
+                            <span>Rs. {{productDetails.variant.price}}</span>
+                            <p class="fw-5">Ordered on: {{formatDate ../orderDate}}</p>
+                            
                         </div>
+
+                        <!-- Order Status -->
                         <div class="col-2 d-flex align-items-center">
-                            <button type="button"
-                                class="btn btn-warning rounded-circle p-1 m-2"></button><span>processing</span>
+                            <button type="button" class="btn btn-warning rounded-circle p-1 m-2"></button>
+                            <span>{{status}}</span>
                         </div>
+
+                        <!-- Action Buttons -->
                         <div class="col-4 d-flex align-items-center">
-                            <div class="p-2"><button type="button" class="btn btn-outline-primary px-3">View</button>
+                            <div class="p-2">
+                            <a href="/user/order-detail/{{../_id}}/{{_id}}" type="button" class="btn btn-outline-primary px-3">View</a>
                             </div>
-                            <div class="p-2"><button type="button" class="btn btn-outline-danger">Cancel</button></div>
-                            <div class="p-2"><button type="button" class="btn btn-outline-warning" disabled>Return</button></div>
+                            <div class="p-2">
+                            <button type="button" class="btn btn-outline-danger">Cancel</button>
+                            </div>
+                            <div class="p-2">
+                            <button type="button" class="btn btn-outline-warning" disabled>Return</button>
+                            </div>
                         </div>
-                    </div>
+                        </div>
+                    {{/each}}
+                    {{/each}}
+
                     <div class="grid gap-1 d-flex justify-content-between border bg-light p-3">
                         <div class="col-2 text-center p-2">
                             <img src="/uploads/1736396244173-prd1.jpg" alt="">

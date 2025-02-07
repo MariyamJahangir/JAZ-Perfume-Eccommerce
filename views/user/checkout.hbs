@@ -81,7 +81,7 @@
                     <h3 class="fw-bold fs-6 mt-4">Payment Method</h3>
                     <form class="d-flex flex-column align-items-start mt-2 w-100">
                         <div class="d-flex align-items-center gap-3">
-                            <input type="radio" id="upi" name="payment" class="form-check-input" checked />
+                            <input type="radio" id="upi" name="payment" class="form-check-input" />
                             <label for="upi" class="mb-0">UPI</label>
                         </div>
                         <div class="d-flex align-items-center gap-3 mt-2">
@@ -201,6 +201,46 @@
 <script>
 
     document.getElementById('placeOrderBtn').addEventListener('click', async function () {
+        
+        // Required fields for validation
+        const requiredFields = ['fname', 'lname', 'address', 'locality', 'district', 'state', 'pincode', 'phone'];
+        let isValid = true;
+
+        // Validate required fields
+        requiredFields.forEach(field => {
+            const input = document.getElementById(field);
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add('is-invalid'); // Adds red border for invalid fields
+            } else {
+                input.classList.remove('is-invalid'); // Removes red border if valid
+            }
+        });
+
+        // Validate payment method selection
+        const paymentMethodInput = document.querySelector('input[name="payment"]:checked');
+        if (!paymentMethodInput) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Payment Required',
+                text: 'Please select a payment method.',
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
+        if (!isValid) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Fields',
+                text: 'Please fill in all required fields.',
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
+
+
         // Collect shipping address data
         const shippingAddress = {
             firstname: document.getElementById('fname').value,

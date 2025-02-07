@@ -75,14 +75,7 @@ const profileUpdate = async (req, res) => {
 
 
 
-// get Orders
-const LoadOrders = (req, res) => {
-  res.render('user/orders')
-}
 
-const OrderDetail = (req, res) => {
-  res.render('user/order-detail')
-}
 
 
 
@@ -95,8 +88,7 @@ const OrderDetail = (req, res) => {
 module.exports = {
   LoadProfile,
   profileUpdate,
-  LoadOrders,
-  OrderDetail,
+  
  
  
 

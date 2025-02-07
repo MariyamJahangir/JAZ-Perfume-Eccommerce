@@ -99,7 +99,7 @@
                         <div class="d-flex gap-2">
                             {{#each product.variant}}
                             <button type="button" class="btn btn-outline-dark variant-btn" data-price="{{this.price}}"
-                                data-stockStatus="{{this.stockStatus}}" data-ml="{{this.quantityML}}"
+                                data-stockStatus="{{this.stockStatus}}" data-stockQuantity="{{this.stockQuantity}}" data-ml="{{this.quantityML}}"
                                 data-variant-id="{{this._id}}">
                                 {{this.quantityML}}ml
                             </button>
@@ -380,12 +380,14 @@
         let selectedVariantId = null;
         let quantityCount = 1;
         let basePrice = parseFloat(priceDisplay.textContent);
+        let stockQuantity = 0;  // Initialize stockQuantity
 
         // Select first variant by default if available
         if (variantButtons.length > 0) {
             const firstVariant = variantButtons[0];
             selectedVariantId = firstVariant.getAttribute("data-variant-id");
             basePrice = parseFloat(firstVariant.getAttribute("data-price"));
+            stockQuantity = parseInt(firstVariant.getAttribute("data-stockQuantity"));  // Get stock quantity
 
             console.log("Default variant selected:", selectedVariantId); // ✅ Debugging
 
@@ -400,8 +402,9 @@
             button.addEventListener("click", function () {
                 selectedVariantId = this.getAttribute("data-variant-id");
                 basePrice = parseFloat(this.getAttribute("data-price"));
+                stockQuantity = parseInt(this.getAttribute("data-stockQuantity"));
                 quantityCount = 1; // Reset quantity when variant changes
-                console.log("Variant selected:", selectedVariantId); // ✅ Debugging output
+                console.log("Variant selected:", selectedVariantId, "Stock Quantity:", stockQuantity); // ✅ Debugging output
 
                 // Update displayed values
                 priceDisplay.textContent = basePrice
@@ -419,9 +422,18 @@
 
 
         // Increment Quantity
-        incrementBtn.addEventListener("click", function () {
-            quantityCount++;
-            updatePrice();
+        incrementBtn.addEventListener("click", function () {       
+            if (quantityCount < stockQuantity) {
+                quantityCount++;
+                updatePrice();
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Limit Reached',
+                    text: `Only ${stockQuantity} items are in stock.`,
+                    confirmButtonColor: '#d33'
+                });
+            }
         });
 
         // Decrement Quantity
@@ -482,7 +494,7 @@
                             confirmButtonText: 'Great!',
                             confirmButtonColor: '#28a745'
                         });
-                        window.location.href = "/user/cart"; // Redirect to cart page
+                        //window.location.href = "/user/cart"; // Redirect to cart page
                     } else if (response.status === 401) {
                         Swal.fire({
                             icon: 'warning',

@@ -4,82 +4,91 @@ const productModel = require('../../model/productModel')
 const cartModel = require('../../model/cartModel')
 const orderModel = require('../../model/orderModel')
 
-const LoadCheckout = async (req, res) => {
-    try {
-        // Assuming the user is authenticated and their ID is stored in session
-        const userId = req.session.user?.id;
-        if (!userId) {
-            return res.redirect("/user/login");
-        }
 
-        // Fetch addresses for the logged-in user
-        const addresses = await addressModel.find({ user: userId }).lean();
-        const cartItems = await cartModel.find({ user: userId }).populate({
-            path: 'products',
-            select: 'name images variant',  // Populate product details
-        })
+// get Orders
+const LoadOrders = async (req, res) => {
+    try {
+        const userId = req.session.user.id;
+
+        // Step 1: Populate product details
+        const orders = await orderModel.find({ userId })
+            .populate({
+                path: 'items.productId',
+                select: 'name images variant'  // Include variants in the populated data
+            })
             .lean();
 
-        // Loop through cart items and attach selected variant data to each cart item
-        cartItems.forEach(item => {
-            const selectedVariant = item.products.variant.find(v => v._id.toString() === item.variant.toString());
-            if (selectedVariant) {
-                // Attach selected variant data to the cart item
-                item.selectedVariant = selectedVariant;
-            } else {
-                console.log("Variant not found in product.");
-            }
+        // Step 2: Match variants manually
+        const populatedOrders = orders.map(order => {
+            order.items = order.items.map(item => {
+                const product = item.productId;
+                // Find the variant matching variantId
+                const variant = product.variant.find(v => v._id.toString() === item.variantId.toString());
+                
+                return {
+                    ...item,
+                    productDetails: {
+                        name: product.name,
+                        images: product.images,
+                        variant: variant  // Add the matched variant details
+                    }
+                };
+            });
+            return order;
         });
 
-        // Calculate the total price based on the selected variant's price
-        let totalPrice = 0;
-        cartItems.forEach(item => {
-            if (item.selectedVariant) {
-                totalPrice += item.selectedVariant.price * item.quantityCount;  // Use the selected variant's price
-            }
-        });
+        console.log(populatedOrders);  // Debug to verify the populated data
 
-        // Render the checkout page with saved addresses
-        res.render("user/checkout", { addresses, cartItems, totalPrice }); // Pass addresses to HBS
+        res.render('user/orders', { orders: populatedOrders });
+
     } catch (error) {
-        console.error("Error fetching addresses:", error);
-        res.status(500).send("Server Error");
+        console.error("Error loading orders:", error);
+        res.status(500).send('Server Error');
     }
-}
+};
 
 
 
-const PlaceOrder = async (req, res) => {
+
+// const OrderDetail = (req, res) => {
+//     res.render('user/order-detail')
+// }
+
+
+const OrderDetail = async (req, res) => {
     try {
-        const { shippingAddress, paymentMethod, items, totalAmount } = req.body;
+        const { orderId, itemId } = req.params;
+        const userId = req.session.user.id; // Ensure this is retrieved correctly (e.g., from authentication middleware)
 
-        const newOrder = new orderModel({
-            userId: req.session.user.id, // Assuming you're using Passport.js for authentication
-            items,
-            totalAmount,
-            shippingAddress,
-            paymentMethod
+        // Fetch the order based on orderId and userId
+        const order = await orderModel.findOne({ _id: orderId, userId }).populate('items.productId').lean();
+
+        if (!order) {
+            return res.status(404).send('Order not found');
+        }
+
+        // Find the specific item within the order's items array
+        const item = order.items.find(item => item._id.toString() === itemId);
+
+        if (!item) {
+            return res.status(404).send('Item not found in this order');
+        }
+
+        // Render the order detail page with specific item data
+        res.render('user/order-detail', {
+            order,
+            item, // Send only the specific item
+            userId
         });
-
-        await newOrder.save();
-        await cartModel.deleteMany({ user: req.session.user.id });
-
-        res.status(200).json({ message: 'Order placed successfully!' });
     } catch (error) {
-        console.error('Error placing order:', error);
-        res.status(500).json({ message: 'Failed to place order.' });
+        console.error(error);
+        res.status(500).send('Server error');
     }
-}
+};
 
-
-
-const OrderPlaced = (req, res) => {
-  res.render('user/order-placed')
-}
 
 
 module.exports = {
-    LoadCheckout,
-    PlaceOrder,
-    OrderPlaced,
+    LoadOrders,
+    OrderDetail,
 }

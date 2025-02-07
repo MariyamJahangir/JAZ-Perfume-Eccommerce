@@ -71,28 +71,23 @@ router.put("/update-address/:addressId", addressController.updateAddress);
 router.delete("/delete-address/:id", addressController.deleteAddress)
 
 
-router.get('/orders', profileController.LoadOrders)
-router.get('/order-detail', profileController.OrderDetail)
+
 
 // cart
 router.get('/cart', auth.isLogin, cartController.LoadCart)
-
 router.post("/cart/increase/:cartItemId", cartController.increaseCart)
 router.post("/cart/decrease/:cartItemId", cartController.decreaseCart)
 router.delete("/cart/remove/:cartItemId", cartController.removeProduct)
+router.get('/checkout',auth.isLogin, cartController.LoadCheckout)
+router.post("/order/place",auth.isLogin, cartController.PlaceOrder)
+router.get('/order-placed', cartController.OrderPlaced)
 
 
 
 
 //orders
-router.get('/checkout',auth.isLogin, orderController.LoadCheckout)
-router.post("/order/place",auth.isLogin, orderController.PlaceOrder)
-router.get('/order-placed', orderController.OrderPlaced)
-
-
-
-
-
+router.get('/orders',auth.isLogin, orderController.LoadOrders)
+router.get('/order-detail/:orderId/:itemId', auth.isLogin, orderController.OrderDetail)
 
 
 
