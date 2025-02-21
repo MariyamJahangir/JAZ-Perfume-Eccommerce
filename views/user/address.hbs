@@ -196,7 +196,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="p-3">
-                                                <form action="/user/address" method="POST" id="address-form">
+                                                <form action="/address" method="POST" id="address-form">
                                                     <div class="row d-flex justify-content-between mb-3">
                                                         <div class="col-6">
                                                             <label for="firstname" class="form-label">First Name</label>
@@ -315,23 +315,38 @@
 
             // Validate inputs
             if (!formData.firstname || !formData.lastname || !formData.address || !formData.phone || !formData.pincode) {
-                alert("Please fill in all required fields.");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Incomplete Form',
+                    text: 'Please fill in all required fields.',
+                    confirmButtonText: 'OK'
+                });
                 return;
             }
 
             if (!/^\d{6}$/.test(formData.pincode)) {
-                alert("Pincode must be a 6-digit number.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Pincode',
+                    text: 'Pincode must be a 6-digit number.',
+                    confirmButtonText: 'OK'
+                });
                 return;
             }
 
             if (!/^\d{10}$/.test(formData.phone)) {
-                alert("Phone number must be a 10-digit number.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Phone Number',
+                    text: 'Phone number must be a 10-digit number.',
+                    confirmButtonText: 'OK'
+                });
                 return;
             }
 
             try {
                 // Send data to the server using Fetch API
-                const response = await fetch("/user/address", {
+                const response = await fetch("/address", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -343,17 +358,33 @@
                 console.log("Server response:", response.status, data);
 
                 if (data.message) {
-                    alert("Address added successfully!");
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Address added successfully!',
+                        confirmButtonText: 'OK'
+                    });
                     addressForm.reset(); // Clear form fields
                     const modal = bootstrap.Modal.getInstance(document.getElementById("staticBackdropAdd"));
                     modal.hide(); // Hide modal
                     location.reload(); // Reload page to update UI (optional)
                 } else {
-                    alert("Failed to add address. Please try again.");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Failed to Add Address',
+                        text: 'Failed to add address. Please try again.',
+                        confirmButtonText: 'OK'
+                    });
                 }
             } catch (error) {
                 console.error("Error:", error);
-                alert("An error occurred while adding the address.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while adding the address.',
+                    confirmButtonText: 'OK'
+                });
+
             }
         });
     });
@@ -406,7 +437,7 @@
             console.log(updatedData)
 
             try {
-                const response = await fetch(`/user/update-address/${addressId}`, {
+                const response = await fetch(`/update-address/${addressId}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
@@ -422,8 +453,14 @@
                         title: 'Success!',
                         text: 'Address updated successfully!',
                         confirmButtonColor: '#3085d6'
+                        
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload(); // Reload the page to reflect the updated data
+                        }
                     });
-                    location.reload(); // Reload to reflect the updated data
+                   
+                    //location.reload(); // Reload to reflect the updated data
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -478,7 +515,7 @@
             });
 
             if (result.isConfirmed) {  // Checks if the user confirmed the deletion
-                const response = await fetch(`/user/delete-address/${addressId}`, {
+                const response = await fetch(`/delete-address/${addressId}`, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json"

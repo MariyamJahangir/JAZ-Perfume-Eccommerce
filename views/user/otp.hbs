@@ -12,7 +12,7 @@
 
     <div class="signup-container d-flex flex-column align-items-center justify-content-center">
 
-        <form id="otp-form" action="/user/otp" method="POST">
+        <form id="otp-form" action="/otp" method="POST">
             
             <div class="text-center">
                 <p class="mb-2">An automated mail has been sent to your mail</p>
@@ -73,7 +73,7 @@
     submitButton.innerHTML = 'Verifying...';
 
     try {
-        const response = await fetch('/user/otp', {
+        const response = await fetch('/otp', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -93,7 +93,7 @@
                 icon: 'success',
                 confirmButtonText: 'OK'
             }).then(() => {
-                window.location.href = '/user/login';
+                window.location.href = '/login';
             });
         } else {
             Swal.fire({
@@ -123,7 +123,7 @@
         resendOtpButton.disabled = true;
         resendOtpButton.textContent = 'Sending OTP...';
 
-        const response = await fetch('/user/otp/resend', {
+        const response = await fetch('/otp/resend', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -166,7 +166,7 @@
             return;
         }
 
-        const response = await fetch('/user/otp', {
+        const response = await fetch('/otp', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

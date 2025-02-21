@@ -74,7 +74,7 @@
                             </div>
                             {{/each}}
                         </div>
-                        <a href="/user/cart" class="btn btn-outline-secondary ms-2">Edit Cart</a>
+                        <a href="/cart" class="btn btn-outline-secondary ms-2">Edit Cart</a>
                     </div>
                     <div id="cartData" data-cart-items='{{json cartItems}}' style="display:none;"></div>
 
@@ -281,7 +281,7 @@
 
         try {
             // Send data to the backend via POST request
-            const response = await fetch('/user/order/place', {
+            const response = await fetch('/order/place', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -298,8 +298,8 @@
                     text: 'Order placed successfully!',
                     confirmButtonColor: '#3085d6'
                 });
-                window.location.href = '/user/order-placed'; // Redirect to order confirmation page
-                window.history.replaceState(null, '', '/user/cart');
+                window.location.href = '/order-placed'; // Redirect to order confirmation page
+                window.history.replaceState(null, '', '/cart');
             } else {
                 Swal.fire({
                     icon: 'error',

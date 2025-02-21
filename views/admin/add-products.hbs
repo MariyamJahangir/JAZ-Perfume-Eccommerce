@@ -300,7 +300,12 @@
                 const lastVariant = allVariants[allVariants.length - 1];
                 lastVariant.remove();
             } else {
-                alert("At least one variant must be present.");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Attention',
+                    text: 'At least one variant must be present.',
+                    confirmButtonText: 'OK'
+                });
             }
         });
     });

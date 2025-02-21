@@ -12,7 +12,7 @@
 
     <div class="signup-container d-flex flex-column align-items-center justify-content-center">
 
-        <form id="otp-form" action="/user/forget-verify-otp" method="POST">
+        <form id="otp-form" action="/forget-verify-otp" method="POST">
             
             <div class="text-center">
                 <p class="mb-2">An automated mail has been sent to your mail</p>
@@ -73,7 +73,7 @@
     submitButton.innerHTML = 'Verifying...';
 
     try {
-        const response = await fetch('/user/forget-verify-otp', {
+        const response = await fetch('/forget-verify-otp', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -93,7 +93,7 @@
                 icon: 'success',
                 confirmButtonText: 'OK'
             }).then(() => {
-                window.location.href = '/user/reset-password';
+                window.location.href = '/reset-password';
             });
         } else {
             Swal.fire({
@@ -123,7 +123,7 @@
         resendOtpButton.disabled = true;
         resendOtpButton.textContent = 'Sending OTP...';
 
-        const response = await fetch('/user/forget-otp-resend', {
+        const response = await fetch('/forget-otp-resend', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -166,7 +166,7 @@
             return;
         }
 
-        const response = await fetch('/user/forget-verify-otp', {
+        const response = await fetch('/forget-verify-otp', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

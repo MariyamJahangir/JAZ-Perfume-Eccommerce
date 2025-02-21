@@ -142,7 +142,7 @@ const LoadCheckout = async (req, res) => {
         // Assuming the user is authenticated and their ID is stored in session
         const userId = req.session.user?.id;
         if (!userId) {
-            return res.redirect("/user/login");
+            return res.redirect("/login");
         }
 
         // Fetch addresses for the logged-in user

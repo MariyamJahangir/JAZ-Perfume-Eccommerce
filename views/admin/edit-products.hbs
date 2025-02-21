@@ -496,14 +496,30 @@
             console.log(result)
 
             if (response.ok) {
-                alert("Product Updated successfully!");
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Product updated successfully!',
+                    confirmButtonText: 'OK'
+                });
                 window.location.href = "/admin/products"
             } else {
-                alert(`Product Update failed: ${result.error || "Unknown error"}`);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Product Update Failed',
+                    text: `Product Update failed: ${result.error || 'Unknown error'}`,
+                    confirmButtonText: 'OK'
+                });
             }
         } catch (error) {
             console.error("Error submitting the form:", error);
-            alert("Error: ", error)
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Error: ${error.message || error}`,
+                confirmButtonText: 'OK'
+            });
+
         }
     });
 

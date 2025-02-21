@@ -39,7 +39,7 @@ router.get('/auth/google/callback',
 
 
 // Users homepage
-router.get('/home', homeController.loadHome)  //auth.isLogin,
+router.get('/', homeController.loadHome)  //auth.isLogin,
 
 
 
@@ -88,8 +88,8 @@ router.get('/order-placed', cartController.OrderPlaced)
 //orders
 router.get('/orders',auth.isLogin, orderController.LoadOrders)
 router.get('/order-detail/:orderId/:itemId', auth.isLogin, orderController.OrderDetail)
-
-
+router.post('/order/return/:orderId/:productId',auth.isLogin, orderController.ReturnOrder)
+router.post('/order/cancel/:orderId/:productId',auth.isLogin, orderController.CancelOrder)
 
 
 module.exports = router;

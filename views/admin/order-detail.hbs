@@ -98,10 +98,10 @@
                 <div class="col-8">
                     <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="dashboard"
+                            <li class="breadcrumb-item"><a href="/admin/dashboard"
                                     class="link-dark link-underline-opacity-0">Admin</a>
                             </li>
-                            <li class="breadcrumb-item text-dark" aria-current="page"><a href="orders"
+                            <li class="breadcrumb-item text-dark" aria-current="page"><a href="/admin/orders"
                                     class="link-dark link-underline-opacity-0">Orders</a></li>
                             <li class="breadcrumb-item active text-dark" aria-current="page">Detail</li>
                         </ol>
@@ -131,24 +131,25 @@
                                 <p>Address :</p>
                             </div>
                             <div>
-                                <p>User Name</p>
-                                <p>user@gmail.com</p>
-                                <p>437568586</p>
-                                <p>Address, ksakfgupse9rgo kjdsouge ruvoiv</p>
+                                <p>{{order.userId.firstname}} {{order.userId.lastname}}</p>
+                                <p>{{order.userId.email}}</p>
+                                <p>{{order.userId.phone}}</p>
+                                <p>{{order.shippingAddress.firstname}} {{order.shippingAddress.lastname}} <br>
+                                    {{order.shippingAddress.address}} <br> {{order.shippingAddress.locality}},
+                                    {{order.shippingAddress.district}}, {{order.shippingAddress.state}} <br> pin:
+                                    {{order.shippingAddress.pincode}} <br> {{order.shippingAddress.phone}}</p>
                             </div>
                         </div>
                         <div class="col-6 d-flex border p-4">
                             <div class="col-5">
                                 <p>Order Date :</p>
-                                <p>Shipping Method :</p>
                                 <p>Payment Method :</p>
-                                <p>Total :</p>
+                                <p>Total Amount :</p>
                             </div>
                             <div>
-                                <p>21 Jan 2025</p>
-                                <p>user@gmail.com</p>
-                                <p>Visa 798305</p>
-                                <p>Rs. 8364</p>
+                                <p>{{formatDate order.orderDate}}</p>
+                                <p>{{order.paymentMethod}}</p>
+                                <p>Rs. {{order.totalAmount}}</p>
                             </div>
                         </div>
                     </div>
@@ -159,26 +160,20 @@
                                 data-bs-ride="carousel">
                                 <!-- Indicators -->
                                 <div class="carousel-indicators">
+                                    {{#each orderedItem.productId.images}}
                                     <button type="button" data-bs-target="#carouselExampleIndicators"
-                                        data-bs-slide-to="0" class="active" aria-current="true"
-                                        aria-label="Slide 1"></button>
-                                    <button type="button" data-bs-target="#carouselExampleIndicators"
-                                        data-bs-slide-to="1" aria-label="Slide 2"></button>
-                                    <button type="button" data-bs-target="#carouselExampleIndicators"
-                                        data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                        data-bs-slide-to="{{@index}}" class="{{#if @first}}active{{/if}}"
+                                        aria-current="true" aria-label="Slide {{inc @index}}"></button>
+                                    {{/each}}
                                 </div>
 
                                 <!-- Carousel Slides -->
                                 <div class="carousel-inner">
-                                    <div class="carousel-item active">
-                                        <img src="/uploads/1736396244173-prd1.jpg" class="d-block w-100" alt="Slide 1">
+                                    {{#each orderedItem.productId.images}}
+                                    <div class="carousel-item {{#if @first}}active{{/if}}">
+                                        <img src="/uploads/{{this}}" class="d-block w-100" alt="Product Image">
                                     </div>
-                                    <div class="carousel-item">
-                                        <img src="/uploads/1736399248344-prd2.jpg" class="d-block w-100" alt="Slide 2">
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="/uploads/1736400407553-prd3.jpg" class="d-block w-100" alt="Slide 3">
-                                    </div>
+                                    {{/each}}
                                 </div>
 
                                 <!-- Navigation Controls -->
@@ -194,47 +189,88 @@
                                 </button>
                             </div>
 
+
+
+
                         </div>
                         <div class="col-9 border p-4">
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">#</th>
+                                        
+                                        <th scope="col">Products</th>
                                         <th scope="col">Quantity</th>
                                         <th scope="col">Price</th>
                                         <th scope="col">Total</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <th scope="row">1</th>
-                                        <td>Product Name1</td>
-                                        <td>2</td>
-                                        <td>Rs. 2525</td>
+                                        
+                                        <td>{{orderedItem.productId.name}}</td>
+                                        <td class="text-center">{{orderedItem.quantityCount}}</td>
+                                        <td>Rs. {{orderedItem.price}}</td>
+                                        <td>Rs. {{multiply orderedItem.quantityCount orderedItem.price}}</td>
                                     </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>Product Name2</td>
-                                        <td>1</td>
-                                        <td>Rs. 2353</td>
-                                    </tr>
+
 
                                 </tbody>
                             </table>
 
-                           <div class="container pt-4 px-0">
+                            <div class="container pt-4 px-0 " >
                                 <p>Order Status</p>
-                                <div class="row d-flex justify-content-start">
+                                {{!-- <div class="row d-flex justify-content-start">
                                     <div class="col-4"><select class="form-select" id="status" name="status">
-                                        <option value="Ordered" selected>Order Placed</option>
-                                        <option value="Processing">Processing</option>
-                                        <option value="Cancelled">Cancelled</option>
-                                        <option value="Delivered">Delivered</option>
-                                    </select></div>
-                                    <div class="col-4"><button type="button" class="btn btn-dark px-4">Set Status</button></div>
+                                            <option value="Ordered" selected>Order Placed</option>
+                                            <option value="Processing">Processing</option>
+                                            <option value="Cancelled">Cancelled</option>
+                                            <option value="Delivered">Delivered</option>
+                                        </select></div>
+                                    <div class="col-4"><button type="button" class="btn btn-dark px-4">Set
+                                            Status</button></div>
+                                </div> --}}
+
+                                <div class="row d-flex justify-content-start mt-4">
+                                    <div class="mb-2"><strong>Current Status:</strong> {{orderedItem.status}}
+                                            </div>
+                                    {{#if statusOptions.length}}
+                                    <div class="col-4">
+                                        
+                                        <form id="setstatus"
+                                            action="/admin/update-order-status/{{order._id}}/{{orderedItem.productId._id}}"
+                                            method="POST">
+                                            <!-- Display the current status as plain text -->
+                                        
+                                            <select class="form-select" id="status" name="status">
+                                                <!-- Show the current status as a disabled, selected option -->
+                                                <option value="{{orderedItem.status}}" selected disabled>
+                                                    {{orderedItem.status}}</option>
+
+                                                <!-- Show only the next available statuses -->
+                                                {{#each statusOptions}}
+                                                {{#unless (isEqual this ../orderedItem.status)}}
+                                                <option value="{{this}}">{{this}}</option>
+                                                {{/unless}}
+                                                {{/each}}
+                                            </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="submit" class="btn btn-dark px-4">Set Status</button>
+                                        </form>
+                                    </div>
+                                    {{else}}
+                                    <div class="col-6">
+                                        <span class="text-muted">No further status changes allowed</span>
+                                    </div>
+                                    {{/if}}
                                 </div>
+
+
+
+
                             </div>
-                            
+
                         </div>
                     </div>
 
@@ -246,3 +282,62 @@
 
 
 </section>
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const statusForm = document.getElementById("setstatus");
+
+        if (statusForm) {
+            statusForm.addEventListener("submit", async function (event) {
+                event.preventDefault(); // Prevent default form submission
+
+                const formData = new FormData(statusForm);
+                const statusValue = formData.get("status");
+
+                // Extract the action URL dynamically from the form
+                const actionUrl = statusForm.getAttribute("action");
+
+                try {
+                    const response = await fetch(/admin/update - order - status / ${ order._id } / ${ orderedItem.productId._id }, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ status: statusValue }),
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Status updated successfully!',
+                            confirmButtonText: 'OK'
+                        });
+                        location.reload(); // Refresh to reflect the new status
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Update Failed',
+                            text: result.error || 'Failed to update status.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error updating status:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'An error occurred',
+                        text: 'Please try again.',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        }
+    });
+
+
+</script>

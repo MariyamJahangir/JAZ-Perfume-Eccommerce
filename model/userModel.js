@@ -55,4 +55,4 @@ const userSchema = new mongoose.Schema({
     }
 )
 
-module.exports = mongoose.model('user', userSchema); // cllection name will be plural (users)
+module.exports = mongoose.model('User', userSchema); // cllection name will be plural (users)

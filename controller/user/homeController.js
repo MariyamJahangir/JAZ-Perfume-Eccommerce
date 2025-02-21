@@ -16,19 +16,19 @@ const registerUser = async (req, res) => {
 
         if (!firstname || !lastname || !email || !password) {
             req.flash('error', 'All fields are required');
-            return res.redirect('/user/signup');
+            return res.redirect('/signup');
         }
 
         const emailPattern =  /^[a-z0-9]{4,}@[a-z]+.[a-z]{2,3}$/
         if (!emailPattern.test(email)) {
             req.flash('error', 'Please enter a valid email address!');
-            return res.redirect('/user/signup');
+            return res.redirect('/signup');
         }
 
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {
             req.flash('error', 'User already exists');
-            return res.redirect('/user/signup');
+            return res.redirect('/signup');
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -88,7 +88,7 @@ const registerUser = async (req, res) => {
         try {
             await sendEmail(mailOptions);
             req.session.tempEmail = email;
-            res.redirect('/user/otp');
+            res.redirect('/otp');
         } catch (error) {
             console.error('Error sending email:', error);
             return res.render('user/signup', { message: error });
@@ -106,7 +106,7 @@ const verifyOTP = async (req, res) => {
     const email = req.session.tempEmail;
 
     if (!email) {
-        return res.redirect('/user/signup');
+        return res.redirect('/signup');
     }
 
     try {
@@ -192,7 +192,7 @@ const resendOTP = async (req, res) => {
 //get logout
 const logout = (req, res) => {
     req.session.user = null
-    res.redirect('/user/login')
+    res.redirect('/login')
 }
 
 
@@ -202,30 +202,30 @@ const login = async (req, res) => {
         const { email, password } = req.body
         if (!email || !password) {
             req.flash('error', 'All fields are required');
-            return res.redirect('/user/login');
+            return res.redirect('/login');
         }
         const user = await userModel.findOne({ email })
         if (!user) {
             req.flash('error', 'User does not exist');
-            return res.redirect('/user/login')
+            return res.redirect('/login')
         }
         if (user.status == "blocked") {
             req.flash('error', 'User is Blocked');
-            return res.redirect('/user/login')
+            return res.redirect('/login')
         }
         const isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch) {
             req.flash('error', 'Incorrect password');
-            return res.redirect('/user/login')
+            return res.redirect('/login')
         }
         req.session.user = { email, id: user._id  }
         req.flash('success', 'Login successful');
-        res.redirect('/user/home')
+        res.redirect('/home')
 
     } catch (error) {
         console.error('Error during login:', error);
         req.flash('error', 'Something went wrong');
-        res.redirect('/user/login')
+        res.redirect('/login')
     }
 }
 
@@ -307,7 +307,7 @@ console.log(req.body)
                 return res.status(500).send('Failed to send OTP. Please try again later.');
             }
             req.session.email = email; 
-            res.redirect('/user/forget-otp');
+            res.redirect('/forget-otp');
         });
     } catch (error) {
         console.error('Error in forgot password:', error);

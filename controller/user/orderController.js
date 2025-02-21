@@ -16,6 +16,7 @@ const LoadOrders = async (req, res) => {
                 path: 'items.productId',
                 select: 'name images variant'  // Include variants in the populated data
             })
+            .sort({ orderDate: -1 })
             .lean();
 
         // Step 2: Match variants manually
@@ -36,8 +37,6 @@ const LoadOrders = async (req, res) => {
             });
             return order;
         });
-
-        console.log(populatedOrders);  // Debug to verify the populated data
 
         res.render('user/orders', { orders: populatedOrders });
 
@@ -87,8 +86,79 @@ const OrderDetail = async (req, res) => {
 };
 
 
+const ReturnOrder = async (req, res) => {
+    try {
+        const { orderId, productId } = req.params;
+
+        // Find the order
+        let order = await orderModel.findById(orderId);
+        if (!order) {
+            return res.status(404).send('Order not found');
+        }
+
+        // Find the ordered item
+        let orderedItem = order.items.find(item => item.productId.toString() === productId);
+        if (!orderedItem) {
+            return res.status(404).send('Product not found in order');
+        }
+
+        // Ensure the status is "Delivered" before allowing return
+        if (orderedItem.status !== "Delivered") {
+            return res.status(400).send('Only delivered items can be returned');
+        }
+
+        // Update status to "Returned"
+        orderedItem.status = "Returned";
+        await order.save();
+
+        res.redirect('/orders'); // Redirect to orders page
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+
+const CancelOrder = async (req, res) => {
+    try {
+        const { orderId, productId } = req.params;
+
+        // Find the order
+        let order = await orderModel.findById(orderId);
+        if (!order) {
+            return res.status(404).send('Order not found');
+        }
+
+        // Find the ordered item
+        let orderedItem = order.items.find(item => item.productId.toString() === productId);
+        if (!orderedItem) {
+            return res.status(404).send('Product not found in order');
+        }
+
+        // Ensure the status is NOT "Delivered" before allowing cancellation
+        if (orderedItem.status === "Delivered") {
+            return res.status(400).send('Delivered items cannot be cancelled');
+        }
+
+        // Update status to "Cancelled"
+        orderedItem.status = "Cancelled";
+        await order.save();
+
+        console.log("orderedItem:", orderedItem)
+        res.redirect(`/order-detail/${orderId}/${productId}`); // Redirect to orders page
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+
+
+
 
 module.exports = {
     LoadOrders,
     OrderDetail,
+    ReturnOrder,
+    CancelOrder
 }

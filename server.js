@@ -87,7 +87,7 @@ app.use((err, req, res, next) => {
 
 
 
-app.use('/user', userRoutes)
+app.use('/', userRoutes)
 app.use('/admin', adminRoutes)
 
 

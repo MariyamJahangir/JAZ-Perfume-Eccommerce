@@ -60,7 +60,7 @@ document.getElementById('reset-form').addEventListener('submit', async function 
 
     // Send the data to the server
     try {
-        const response = await fetch('/user/reset-password', {
+        const response = await fetch('/reset-password', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ password: newPassword }) // Send new password to the server
@@ -75,7 +75,7 @@ document.getElementById('reset-form').addEventListener('submit', async function 
                 icon: 'success',
                 confirmButtonText: 'OK'
             }).then(() => {
-                window.location.href = '/user/login'; // Redirect to login page
+                window.location.href = '/login'; // Redirect to login page
             });
         } else {
             Swal.fire({

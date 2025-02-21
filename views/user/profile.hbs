@@ -143,7 +143,7 @@
             }
 
             try {
-                const response = await fetch("/user/profile-update", {
+                const response = await fetch("/profile-update", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(formData)
@@ -161,7 +161,7 @@
                     }); // Show success message
                     // If the email was updated and logout is required, redirect to logout page
                     if (data.logout) {
-                        window.location.href = "/user/logout"; // Redirect to the logout page
+                        window.location.href = "/logout"; // Redirect to the logout page
                     } else {
                         location.reload(); // Reload the page if no logout is required
                     }

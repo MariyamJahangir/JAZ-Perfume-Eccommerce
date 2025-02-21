@@ -7,7 +7,7 @@ const and = (a, b) => a && b
 const inc = (value) => {
   return parseInt(value) + 1;
 }
-
+const multiply = (a, b) => a * b
 
 const json = (context) => {
   return JSON.stringify(context, null, 2); // Pretty-print JSON for readability
@@ -42,5 +42,6 @@ module.exports = {
   json,
   formatDate,
   getVariantQuantity,
-  isReturnEligible
+  isReturnEligible,
+  multiply
 }

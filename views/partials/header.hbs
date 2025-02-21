@@ -9,7 +9,7 @@
         <div class="container-fluid">
             <div class="logo-container">
                 <img src="/images/JAZ-PERFUME.jpg" alt="" class="logo_image">
-                <a class="navbar-brand pt-3" href="#">PERFUMES</a>
+                <a class="navbar-brand pt-3" href="/">PERFUMES</a>
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -19,10 +19,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/user/home">Home</a>
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/user/all-products">Shop</a>
+                        <a class="nav-link" href="/all-products">Shop</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -55,162 +55,21 @@
                     </div>
                 </form>
                 <div class="d-flex">
-                    {{!-- <div>
-                        <a href="#" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas"
-                            aria-controls="cartOffcanvas">
-                            <i class="bi bi-cart4 px-3 fs-3 text-secondary"></i>
-                        </a>
-                    </div> --}}
+                   
                     <div>
-                        <a href="/user/cart">
+                        <a href="/cart">
                             <i class="bi bi-cart4 px-2 fs-3 text-secondary"></i>
                         </a>
-                        <a href="/user/profile">
+                        <a href="/profile">
                             <i class="bi bi-person-circle px-2 fs-4 text-secondary"></i>
                         </a>
                     </div>
-                    
-
-
-                    {{!-- <div class="dropdown">
-                        <a href="#" class="d-inline-block text-secondary" id="dropdownMenuButton"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle fs-4"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="/user/profile">Profile</a></li>
-                            <li><a class="dropdown-item" href="/user/logout">Logout</a></li>
-                        </ul>
-                    </div> --}}
+                          
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Offcanvas for Cart -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas" aria-labelledby="cartOffcanvasLabel">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="cartOffcanvasLabel">Your Cart</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <!-- Dynamic Content for Cart -->
-            {{!-- {{#if cartProducts}} --}}
-            <ul class="list-group">
-                {{!-- {{#each cartProducts}} --}}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <!-- Product Info -->
-                    <div class="d-flex align-items-center">
-                        <div>
-                            <strong>{{name}}Name</strong>
-                            <p class="mb-0 text-muted">{{quantity}}quantity x {{price}}price</p>
-                        </div>
-                    </div>
-                    <!-- Quantity and Actions -->
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-sm btn-outline-secondary rounded-circle me-1"
-                            onclick="decreaseQuantity('{{@index}}')">-</button>
-                        <span class="quantity">{{quantity}}quantity</span>
-                        <button class="btn btn-sm btn-outline-secondary rounded-circle ms-1"
-                            onclick="increaseQuantity('{{@index}}')">+</button>
-                        <button class="btn btn-sm btn-danger ms-3" onclick="removeProduct('{{@index}}')">X</button>
-                    </div>
-                </li>
-                {{!-- {{/each}} --}}
-            </ul>
-            <!-- Total Price Section -->
-            <div class="mt-3">
-                <div class="d-flex justify-content-between">
-                    <strong>Total</strong>
-                    <span id="total-price">{{totalCartPrice}}</span>
-                </div>
-                <!-- Buttons -->
-                <div class="mt-3">
-                    <a href="/user/cart" class="btn btn-dark w-100 mb-2">View Cart</a>
-                    <a href="/user/checkout" class="btn btn-outline-dark text-center w-100">Checkout</a>
-                </div>
-            </div>
-            {{!-- {{else}} --}}
-            <p class="text-center text-muted">Your cart is empty!</p>
-            {{!-- {{/if}} --}}
-
-        </div>
-
-
-    </div>
 
 </header>
 
-<script>
-    // Example Cart Data (replace with your backend/cart logic)
-    let cartProducts = [
-        { id: 1, name: 'Product 1', price: 25.00, quantity: 1 },
-        { id: 2, name: 'Product 2', price: 15.00, quantity: 2 },
-    ];
-
-    // Function to calculate total cart price
-    function calculateTotalCartPrice() {
-        const totalPrice = cartProducts.reduce((sum, product) => sum + product.price * product.quantity, 0);
-        document.getElementById('total-price').textContent = `$${totalPrice.toFixed(2)}`;
-    }
-
-    // Function to increase quantity
-    function increaseQuantity(index) {
-        cartProducts[index].quantity += 1;
-        renderCart(); // Re-render the cart
-    }
-
-    // Function to decrease quantity
-    function decreaseQuantity(index) {
-        if (cartProducts[index].quantity > 1) {
-            cartProducts[index].quantity -= 1;
-            renderCart(); // Re-render the cart
-        } else {
-            alert("Quantity cannot be less than 1.");
-        }
-    }
-
-    // Function to remove a product
-    function removeProduct(index) {
-        cartProducts.splice(index, 1); // Remove the product
-        renderCart(); // Re-render the cart
-    }
-
-    // Function to render the cart dynamically
-    function renderCart() {
-        // This should invoke your server-side rendering or dynamically update the cartProducts UI.
-        // Example: You may re-render the cart here dynamically in the DOM.
-        const cartList = document.querySelector('.list-group');
-        cartList.innerHTML = '';
-
-        if (cartProducts.length > 0) {
-            cartProducts.forEach((product, index) => {
-                const listItem = document.createElement('li');
-                listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
-                listItem.innerHTML = `
-                <div class="d-flex align-items-center">
-                    <div>
-                        <strong>${product.name}</strong>
-                        <p class="mb-0 text-muted">${product.quantity} x $${product.price.toFixed(2)}</p>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center">
-                    <button class="btn btn-sm btn-outline-secondary me-1" onclick="decreaseQuantity(${index})">-</button>
-                    <span class="quantity">${product.quantity}</span>
-                    <button class="btn btn-sm btn-outline-secondary ms-1" onclick="increaseQuantity(${index})">+</button>
-                    <button class="btn btn-sm btn-danger ms-3" onclick="removeProduct(${index})">X</button>
-                </div>
-            `;
-                cartList.appendChild(listItem);
-            });
-        } else {
-            cartList.innerHTML = '<p class="text-center text-muted">Your cart is empty!</p>';
-        }
-
-        calculateTotalCartPrice();
-    }
-
-    // Initial Render
-    renderCart();
-
-</script>

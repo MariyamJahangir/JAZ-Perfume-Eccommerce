@@ -9,7 +9,7 @@
 
     <div class="signup-container">
         <button class="btn btn-google w-100 mb-3">
-            <a href="/user/auth/google" class="link-underline-opacity-0 link-secondary">
+            <a href="/auth/google" class="link-underline-opacity-0 link-secondary">
                 <img src="/images/google.webp" alt="Google Icon" style="width: 20px; height: 20px;" class="me-2">
 
                 Sign up using Google</a>
@@ -19,7 +19,7 @@
             <span class="mx-2 text-muted">OR</span>
             <hr class="flex-grow-1 border-secondary">
         </div>
-        <form action="/user/signup" method="post">
+        <form action="/signup" method="post">
             {{#if succesMessage}}
             <input type="text" id="message" value="{{{successMessage}}}" name="message" hidden>
             {{/if}}
@@ -55,7 +55,7 @@
             <button type="submit" class="btn btn-primary w-100">Create Account</button>
         </form>
         <p class="text-center mt-4">
-            Already have an account? <a href="/user/login"
+            Already have an account? <a href="/login"
                 class="link-secondary link-underline-opacity-0 link-underline-opacity-75-hover">Log in</a>
         </p>
     </div>

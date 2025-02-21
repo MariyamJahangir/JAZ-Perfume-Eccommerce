@@ -18,7 +18,7 @@
                         <img src="/uploads/{{this.products.images.[0]}}" alt="" style="width: 70%;">
                     </div>
                     <div class="col-5 align-content-center">
-                        <p><a href="/user/product-details/{{this.products._id}}"
+                        <p><a href="/product-details/{{this.products._id}}"
                                 class="fw-bold text-black link-underline link-underline-opacity-0">{{this.products.name}}</a>
                         </p>
                         <span>Variant: {{this.selectedVariant.quantityML}}ML</span>
@@ -39,7 +39,7 @@
                 {{else}}
                 <div class="text-center p-5">
                     <h3>Your cart is empty!</h3>
-                    <a href="/user/all-products" class="btn btn-dark mt-3 px-3">Shop Now</a>
+                    <a href="/all-products" class="btn btn-dark mt-3 px-3">Shop Now</a>
                 </div>
                 {{/if}}
 
@@ -57,10 +57,10 @@
                     <hr>
                     <div class="d-flex justify-content-between py-2"><span>Total:</span><span>₹{{totalPrice}}</span>
                     </div>
-                    {{!-- <a href="/user/checkout" class="btn btn-dark w-100 my-2">Checkout</a> --}}
+                    {{!-- <a href="/checkout" class="btn btn-dark w-100 my-2">Checkout</a> --}}
                     <!-- Checkout Button -->
                     <button id="checkoutButton" class="btn btn-dark w-100 my-2">Checkout</button>
-                    <a href="/user/home" class="btn btn-link link-dark my-2">Continue Shopping..</a>
+                    <a href="/" class="btn btn-link link-dark my-2">Continue Shopping..</a>
                 </div>
             </div>
 
@@ -87,13 +87,13 @@
             });
         }else {
             // Cart has items: redirect to checkout page
-            window.location.href = "/user/checkout";
+            window.location.href = "/checkout";
         }
     });
 
     async function increaseQuantity(cartItemId) {
         try {
-            const response = await fetch(`/user/cart/increase/${cartItemId}`, {
+            const response = await fetch(`/cart/increase/${cartItemId}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" }
             });
@@ -117,7 +117,7 @@
 
     async function decreaseQuantity(cartItemId) {
         try {
-            const response = await fetch(`/user/cart/decrease/${cartItemId}`, {
+            const response = await fetch(`/cart/decrease/${cartItemId}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" }
             });
@@ -156,7 +156,7 @@
         }
         
         try {
-            const response = await fetch(`/user/cart/remove/${cartItemId}`, {
+            const response = await fetch(`/cart/remove/${cartItemId}`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" }
             });

@@ -63,9 +63,9 @@
                     <div>
                         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/user/home"
+                                <li class="breadcrumb-item"><a href="/"
                                         class="link-secondary link-underline-opacity-0">Home</a></li>
-                                <li class="breadcrumb-item"><a href="/user/all-products"
+                                <li class="breadcrumb-item"><a href="/all-products"
                                         class="link-secondary link-underline-opacity-0">All Products</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">product-details</li>
                             </ol>
@@ -469,7 +469,7 @@
             const productId = this.getAttribute("data-product-id");
 
             try {
-                const response = await fetch("/user/cart/add", {
+                const response = await fetch("/cart/add", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -494,7 +494,7 @@
                             confirmButtonText: 'Great!',
                             confirmButtonColor: '#28a745'
                         });
-                        //window.location.href = "/user/cart"; // Redirect to cart page
+                        //window.location.href = "/cart"; // Redirect to cart page
                     } else if (response.status === 401) {
                         Swal.fire({
                             icon: 'warning',
@@ -502,7 +502,7 @@
                             text: data.message,
                             confirmButtonColor: '#d33'
                         });
-                        window.location.href = "/user/login";
+                        window.location.href = "/login";
                     } else {
                         Swal.fire({
                             icon: 'error',
@@ -521,7 +521,7 @@
                         text: 'You need to log in to add products to the cart.',
                         confirmButtonColor: '#d33'
                     });
-                    window.location.href = "/user/login";
+                    window.location.href = "/login";
                 }
 
             } catch (error) {

@@ -50,7 +50,8 @@ router.patch('/delete-product', adminAuth.checkSession, productController.delete
 
 
 router.get('/orders', orderController.LoadOrders);
-router.get('/order-detail', orderController.LoadOrderDetail);
+router.get('/order-detail/:id', orderController.LoadOrderDetail);
+router.post("/update-order-status/:orderId/:productId",orderController.updateOrderStatus)
 
 
 

@@ -1,3 +1,7 @@
+body{
+    overflow-x: hidden;
+}
+
 hr{
     width:30%;
     margin: auto;
