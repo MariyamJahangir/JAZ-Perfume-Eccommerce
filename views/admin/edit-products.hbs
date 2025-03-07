@@ -134,10 +134,9 @@
                                         <option value="" disabled {{#unless product.category}}selected{{/unless}}>
                                             Select a category</option>
                                         {{#each categories}}
-                                        <option value="{{_id}}" {{#if (isEqual ../product.category
-                                            _id)}}selected{{/if}}>
-                                            {{name}}
-                                        </option>
+                                        {{#if (isEqual deleted false)}}
+                                        <option value="{{_id}}" {{#if (isEqual ../product.category_id)}}selected{{/if}}>{{name}}</option>
+                                        {{/if}}
                                         {{/each}}
                                     </select>
                                 </div>
@@ -217,6 +216,7 @@
                                 <div class="variantsContainer border px-4" id="variantSection">
                                     {{#each product.variant}}
                                     <div id="variant-{{@index}}" class="variant pt-3 pb-2">
+                                        <input type="hidden" id="variantId" name="variant[{{@index}}][_id]" value="{{this._id}}" />
                                         <span class="fw-bold">Variant:</span>
                                         <div class="mb-3">
                                             <label for="stockQuantity" class="form-label">Available Stock
@@ -392,7 +392,7 @@
         }
 
         cropper = new Cropper(cropImage, {
-            aspectRatio: 1,
+            aspectRatio: NaN,
             viewMode: 1,
             cropBoxResizable: true,
             zoomable: true,
@@ -535,6 +535,7 @@
         const newIndex = variantSection.children.length;
         const newVariant = `
             <div id="variant-${newIndex}" class="variant pt-3 pb-2">
+                <input type="hidden" name="variant[${newIndex}][_id]"  />
                 <span class="fw-bold">Variant:</span>
                 <div class="mb-3">
                     <label for="stockQuantity" class="form-label">Available Stock

@@ -34,7 +34,7 @@ router.get('/auth/google/callback',
   (req, res) => {
    // req.session.user={email: req.user.email};
     req.session.user={email: req.user.email, id: req.user.id};
-    res.redirect('/user/home'); }
+    res.redirect('/'); }
 );
 
 
@@ -44,7 +44,15 @@ router.get('/', homeController.loadHome)  //auth.isLogin,
 
 
 //List products on the user side
-router.get('/all-products', productController.allProducts)  //auth.isLogin,
+//router.get('/all-products', productController.allProducts)  //auth.isLogin,
+// Route to handle search, sort, and filter
+// router.get('/all-products/search', productController.searchProducts);
+// Route to get all products
+router.get('/all-products', productController.allProducts);
+
+
+
+
 router.get('/product-details/:id',  productController.productDetails)  //auth.isLogin,
 router.post('/cart/add', auth.isLogin, productController.AddToCart)
 
@@ -64,6 +72,7 @@ router.get('/profile',auth.isLogin, profileController.LoadProfile)
 router.put("/profile-update",auth.isLogin, profileController.profileUpdate)
 
 
+
 //address
 router.get('/address',auth.isLogin, addressController.LoadAddress)
 router.post('/address', addressController.AddAddress)
@@ -75,9 +84,10 @@ router.delete("/delete-address/:id", addressController.deleteAddress)
 
 // cart
 router.get('/cart', auth.isLogin, cartController.LoadCart)
-router.post("/cart/increase/:cartItemId", cartController.increaseCart)
-router.post("/cart/decrease/:cartItemId", cartController.decreaseCart)
+
 router.delete("/cart/remove/:cartItemId", cartController.removeProduct)
+router.post("/cart/update-quantity", cartController.updateCartQuantity);
+
 router.get('/checkout',auth.isLogin, cartController.LoadCheckout)
 router.post("/order/place",auth.isLogin, cartController.PlaceOrder)
 router.get('/order-placed', cartController.OrderPlaced)
@@ -87,9 +97,14 @@ router.get('/order-placed', cartController.OrderPlaced)
 
 //orders
 router.get('/orders',auth.isLogin, orderController.LoadOrders)
-router.get('/order-detail/:orderId/:itemId', auth.isLogin, orderController.OrderDetail)
+router.get('/order-detail/:orderId', auth.isLogin, orderController.OrderDetail)
 router.post('/order/return/:orderId/:productId',auth.isLogin, orderController.ReturnOrder)
-router.post('/order/cancel/:orderId/:productId',auth.isLogin, orderController.CancelOrder)
+router.post('/order/cancel/:orderId/:productId/:variantId',auth.isLogin, orderController.CancelOrder)
 
+
+
+//password
+router.get('/change-password',auth.isLogin, profileController.LoadPassword)
+router.post('/change-password',auth.isLogin, profileController.ChangePassword)
 
 module.exports = router;

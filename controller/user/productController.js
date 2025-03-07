@@ -6,7 +6,8 @@ const categoryModel = require('../../model/categoryModel')
 const productDetails = async (req,res)=>{
     const productId = req.params.id;
     const product = await productModel.findById(productId).lean();
-    res.render('user/product-details', { product })
+    const allproducts = await productModel.find({}).lean().sort({updatedAt : -1}).limit(6)
+    res.render('user/product-details', { product, allproducts })
 }
 
 const AddToCart = async (req, res) => {
@@ -76,88 +77,41 @@ const AddToCart = async (req, res) => {
     }
 };
 
-// get all-products
-// const allProducts = async (req, res)=>{
-//     const products = await productModel.find().lean()
-//     const categories = await categoryModel.find().lean()
-//     res.render('user/all-products', { products, categories, title: 'All Products' })
 
-// }
 
 const allProducts = async (req, res) => {
     try {
-      const categories = await categoryModel.find({ deleted: false }).lean();
-      const products = await productModel.find({ deleted: false }).populate('category');
-      //const offers = await Offer.find({ status: true });
-  
-    
-      //const userWishlist =  await Wishlist.findOne({ user: req.session.user.id });
-     
-     
-    //   const getProductDiscount = (product, category) => {
-    //     let productDiscount = 0;
-    //     let categoryDiscount = 0;
-      
-    //     if (product.offers) {
-    //       const productOffer = offers.find(offer => offer.name === product.offers);
-    //       if (productOffer && productOffer.status) {
-    //         productDiscount = productOffer.discount;
-    //       }
-    //     }
-      
-    //     if (category && category.offers) {
-    //       const categoryOffer = offers.find(offer => offer.name === category.offers);
-    //       if (categoryOffer && categoryOffer.status) {
-    //         categoryDiscount = categoryOffer.discount;
-    //       }
-    //     }
-      
-    //     return Math.max(productDiscount, categoryDiscount);
-    //   };
-      console.log(categories)
-  
-      const allProducts = products.flatMap(product => {
-        return product.variant.map(variant => {
-                  const category = categories.find(cat => cat._id.toString() === product.category.toString()); 
-                 // const discount = getProductDiscount(product, category);
-                   product.images = product.images[0]; 
-                //  const originalPrice = variant.price;
-                //   let discountedPrice = originalPrice;
-          
-                //   if (discount > 0) {
-                //     discountedPrice = originalPrice - (originalPrice * discount / 100);
-                //   }
-          return {
-            ...product.toObject(),
-            variantId: variant._id,
-            price: variant.price,
-            // discountedPrice: discountedPrice,
-            stock: variant.stockQuantity,
-            size: variant.quantityML,
-            // isWishlisted: userWishlist?.products.some(p => p.variant.equals(variant._id)),
-            
-            popularity: product.popularity,
-            averageRating: product.averageRating,
-            featured: product.featured,
-            createdAt: product.createdAt
-          };
-        });
-      });
-  
-      res.render('user/all-products', { 
-        allProducts: JSON.stringify(allProducts), 
-        categories 
-      });
-    } catch (err) {
-      console.error('Error fetching products:', err);
-      res.status(500).send('Server Error');
+        const products = await productModel.find({ deleted: false }).populate('category').lean();
+        const categories = await categoryModel.find().lean();
+
+        // Flatten the products into individual variants
+        const flattenedProducts = products.flatMap(product =>
+            product.variant.map(variant => ({
+                ...variant,
+                productId: product._id,
+                productName: product.name,
+                images: product.images,
+                category: product.category,
+                description: product.description,
+                deleted: product.deleted
+            }))
+        );
+
+        res.status(200).render('user/all-products', { products: flattenedProducts, categories });
+    } catch (error) {
+        res.status(500).render('error', { message: 'Error fetching products', error });
     }
-  }
+};
+
+
+
   
+
 
 module.exports = {
     productDetails,
     AddToCart,
-    allProducts
+    allProducts,
+    
 
 }

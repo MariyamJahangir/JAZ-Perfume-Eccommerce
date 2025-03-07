@@ -174,60 +174,77 @@
 
 
 <script>
-  // Select form and related elements
-const categoryForm = document.getElementById('categoryForm');
-const categoryImageInput = document.getElementById('categoryImage');
-const fileNameSpan = document.getElementById('catinput');
-const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-const imagePreview = document.getElementById('imagePreview');
+    document.addEventListener("DOMContentLoaded", () => {
+        // Select form and related elements
+        const categoryForm = document.getElementById('categoryForm');
+        const categoryImageInput = document.getElementById('categoryImage');
+        const fileNameSpan = document.getElementById('catinput');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePreview = document.getElementById('imagePreview');
 
-// Display the selected file name
-categoryImageInput.addEventListener('change', (event) => {
-    const file = categoryImageInput.files[0];
-    fileNameSpan.textContent = file?.name || 'No file chosen';
+        // Display the selected file name
+        categoryImageInput.addEventListener('change', (event) => {
+            const file = categoryImageInput.files[0];
+            fileNameSpan.textContent = file?.name || 'No file chosen';
 
-    // Preview the image
-    if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            imagePreview.src = e.target.result; // Set the image source
-            imagePreviewContainer.style.display = 'block'; // Show the preview container
-        };
-        reader.readAsDataURL(file); // Read the file as a Data URL
-    } else {
-        imagePreviewContainer.style.display = 'none'; // Hide the preview container if no image
-    }
-});
-
-// Handle form submission
-categoryForm.addEventListener('submit', async (e) => {
-    e.preventDefault(); // Prevent the default form submission
-
-    // Create FormData object
-    const formData = new FormData(categoryForm);
-
-    try {
-        // Send form data to the server using fetch
-        const response = await fetch('/admin/add-category', {
-            method: 'POST',
-            body: formData,
+            // Preview the image
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imagePreview.src = e.target.result; // Set the image source
+                    imagePreviewContainer.style.display = 'block'; // Show the preview container
+                };
+                reader.readAsDataURL(file); // Read the file as a Data URL
+            } else {
+                imagePreviewContainer.style.display = 'none'; // Hide the preview container if no image
+            }
         });
 
-        // Handle the response
-        if (response.ok) {
-            const result = await response.json();
-            swal(result.message || 'Category added successfully!');
-            categoryForm.reset(); // Reset the form
-            fileNameSpan.textContent = 'No file chosen'; // Reset the file name display
-            imagePreviewContainer.style.display = 'none'; // Hide the preview container
-            window.location.href = '/admin/category';
-        } else {
-            const error = await response.json();
-            swal(`Error: ${error.message}`);
-        }
-    } catch (error) {
-        swal(`Error: ${error.message}`);
-    }
-});
+        // Handle form submission
+        categoryForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevent the default form submission
 
+            // Create FormData object
+            const formData = new FormData(categoryForm);
+
+            try {
+                // Send form data to the server using fetch
+                const response = await fetch('/admin/add-category', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                // Handle the response
+                if (response.ok) {
+                    const result = await response.json();
+                    Swal.fire({
+                        title: 'Success!',
+                        text: result.message || 'Category added successfully!',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                    categoryForm.reset(); // Reset the form
+                    fileNameSpan.textContent = 'No file chosen'; // Reset the file name display
+                    imagePreviewContainer.style.display = 'none'; // Hide the preview container
+                    window.location.href = '/admin/category';
+                } else {
+                    const error = await response.json();
+                    Swal.fire({
+                        title: 'Error!',
+                        text: `Error: ${error.message}`,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: error.message,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+
+    });
 </script>

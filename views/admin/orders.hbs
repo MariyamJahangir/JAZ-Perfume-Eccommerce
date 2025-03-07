@@ -187,10 +187,12 @@
                         <!-- Order Status -->
                         <div class="col-2">
                             <span class="badge 
-                {{#if (isEqual this.status 'Completed')}}text-bg-success
-                {{else if (isEqual this.status 'Pending')}}text-bg-warning
+                {{#if (isEqual this.status 'Delivered')}}text-bg-success
+                {{else if (isEqual this.status 'Pending')}}text-bg-primary
+                {{else if (isEqual this.status 'Processing')}}text-bg-warning
+                {{else if (isEqual this.status 'Shipped')}}text-bg-info
                 {{else if (isEqual this.status 'Cancelled')}}text-bg-danger
-                {{else}}text-bg-secondary{{/if}}">
+                {{else}}text-bg-dark{{/if}}">
                                 {{this.status}}
                             </span>
                         </div>

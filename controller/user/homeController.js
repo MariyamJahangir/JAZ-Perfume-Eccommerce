@@ -4,8 +4,8 @@ const categoryModel = require('../../model/categoryModel')
 const OtpModel = require('../../model/otpModel');
 const bcrypt = require('bcrypt')
 const transporter = require('../../config/emailService')
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+//const crypto = require('crypto');
+//const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 
@@ -220,7 +220,7 @@ const login = async (req, res) => {
         }
         req.session.user = { email, id: user._id  }
         req.flash('success', 'Login successful');
-        res.redirect('/home')
+        res.redirect('/')
 
     } catch (error) {
         console.error('Error during login:', error);

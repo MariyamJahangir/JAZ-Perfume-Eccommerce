@@ -56,27 +56,20 @@ const LoadOrders = async (req, res) => {
 
 const OrderDetail = async (req, res) => {
     try {
-        const { orderId, itemId } = req.params;
+        const { orderId } = req.params;
         const userId = req.session.user.id; // Ensure this is retrieved correctly (e.g., from authentication middleware)
 
         // Fetch the order based on orderId and userId
         const order = await orderModel.findOne({ _id: orderId, userId }).populate('items.productId').lean();
-
+        
         if (!order) {
             return res.status(404).send('Order not found');
         }
 
-        // Find the specific item within the order's items array
-        const item = order.items.find(item => item._id.toString() === itemId);
-
-        if (!item) {
-            return res.status(404).send('Item not found in this order');
-        }
-
+        
         // Render the order detail page with specific item data
         res.render('user/order-detail', {
             order,
-            item, // Send only the specific item
             userId
         });
     } catch (error) {
@@ -89,7 +82,7 @@ const OrderDetail = async (req, res) => {
 const ReturnOrder = async (req, res) => {
     try {
         const { orderId, productId } = req.params;
-
+        const { returnReason } = req.body; 
         // Find the order
         let order = await orderModel.findById(orderId);
         if (!order) {
@@ -102,16 +95,18 @@ const ReturnOrder = async (req, res) => {
             return res.status(404).send('Product not found in order');
         }
 
-        // Ensure the status is "Delivered" before allowing return
+
+        // Only allow return if the item is delivered
         if (orderedItem.status !== "Delivered") {
             return res.status(400).send('Only delivered items can be returned');
         }
 
         // Update status to "Returned"
         orderedItem.status = "Returned";
+        orderedItem.returnReason = returnReason; // ✅ Save return reason
         await order.save();
 
-        res.redirect('/orders'); // Redirect to orders page
+        res.redirect(`/order-detail/${orderId}`); 
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
@@ -121,7 +116,15 @@ const ReturnOrder = async (req, res) => {
 
 const CancelOrder = async (req, res) => {
     try {
-        const { orderId, productId } = req.params;
+        const { orderId, productId, variantId } = req.params;
+        const { cancelReason } = req.body; // ✅ Get cancellation reason from request body
+        //console.log("req.params:", req.params)
+
+        let product = await productModel.findById(productId);
+        let variant = product.variant.find(v=>v._id.toString() === variantId)
+        // console.log("Product:", product)
+        // console.log("Variant:", variant)
+
 
         // Find the order
         let order = await orderModel.findById(orderId);
@@ -131,21 +134,31 @@ const CancelOrder = async (req, res) => {
 
         // Find the ordered item
         let orderedItem = order.items.find(item => item.productId.toString() === productId);
+        // console.log("orderedItem:", orderedItem)
         if (!orderedItem) {
             return res.status(404).send('Product not found in order');
         }
 
-        // Ensure the status is NOT "Delivered" before allowing cancellation
-        if (orderedItem.status === "Delivered") {
+        // If the item was returned, cancel the return and revert to "Delivered"
+        if (orderedItem.status === "Returned") {
+            orderedItem.status = "Delivered";
+        } 
+        // Otherwise, cancel the order normally (if it's not yet delivered)
+        else if (orderedItem.status !== "Delivered") {
+            orderedItem.status = "Cancelled";
+            orderedItem.cancelReason = cancelReason; // ✅ Save cancellation reason
+            variant.stockQuantity += orderedItem.quantityCount
+        } 
+        else {
             return res.status(400).send('Delivered items cannot be cancelled');
         }
 
-        // Update status to "Cancelled"
-        orderedItem.status = "Cancelled";
         await order.save();
+        await product.save();
 
-        console.log("orderedItem:", orderedItem)
-        res.redirect(`/order-detail/${orderId}/${productId}`); // Redirect to orders page
+        
+        res.redirect(`/order-detail/${orderId}`); 
+       
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');

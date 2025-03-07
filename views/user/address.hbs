@@ -38,7 +38,7 @@
                             class="bi bi-heart p-2"></i>Wishlist</a>
                     <a href="orders" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
                             class="bi bi-truck p-2"></i>Orders</a>
-                    <a href="password" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+                    <a href="change-password" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
                             class="bi bi-key p-2"></i>Password</a>
                     <a href="wallet" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
                             class="bi bi-wallet2 p-2"></i>Wallet</a>
@@ -68,8 +68,8 @@
                                         <div>
                                             <p><span>{{this.firstname}}
                                                     {{this.lastname}}</span>&emsp;<span>{{this.phone}}</span></p>
-                                            <span>{{this.address}}, {{this.locality}}, {{this.district}}, {{this.state}}
-                                                - {{this.pincode}}</span>
+                                            <span>{{ formatAddress address locality district state pincode }}</span>
+
                                         </div>
                                     </label>
                                 </div>
@@ -87,7 +87,7 @@
                                         data-addressid="{{this._id}}">Delete</button>
                                 </div>
                             </div>
-                             {{/if}}
+                            {{/if}}
                             {{/each}}
 
 
@@ -286,7 +286,6 @@
 
         submitButton.addEventListener("click", async function (event) {
             event.preventDefault(); // Prevent default form submission
-            console.log(submitButton);
             // Collect form data
             const formData = {
                 firstname: document.getElementById("firstname").value.trim(),
@@ -300,29 +299,63 @@
                 country: document.getElementById("country").value.trim(),
             };
 
-            console.log(
-                document.getElementById("firstname"),
-                document.getElementById("lastname"),
-                document.getElementById("address"),
-                document.getElementById("locality"),
-                document.getElementById("pincode"),
-                document.getElementById("district"),
-                document.getElementById("state"),
-                document.getElementById("phone"),
-                document.getElementById("country")
-            );
-            console.log(formData.firstname, formData.lastname, formData.address, formData.locality, formData.phone, formData.pincode, formData.district, formData.state, formData.country)
 
-            // Validate inputs
-            if (!formData.firstname || !formData.lastname || !formData.address || !formData.phone || !formData.pincode) {
+
+            // Validate First Name
+            if (!formData.firstname) {
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Incomplete Form',
-                    text: 'Please fill in all required fields.',
+                    title: 'Missing First Name',
+                    text: 'Please enter your first name.',
                     confirmButtonText: 'OK'
                 });
                 return;
             }
+
+            // Validate Last Name
+            if (!formData.lastname) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing Last Name',
+                    text: 'Please enter your last name.',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            // Validate Address
+            if (!formData.address) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing Address',
+                    text: 'Please enter your address.',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            // Validate Phone Number
+            if (!formData.phone) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing Phone Number',
+                    text: 'Please enter your phone number.',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            // Validate Pincode
+            if (!formData.pincode) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing Pincode',
+                    text: 'Please enter your pincode.',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
 
             if (!/^\d{6}$/.test(formData.pincode)) {
                 Swal.fire({
@@ -434,7 +467,7 @@
                 country: modal.querySelector("#edcountry").value
             };
 
-            console.log(updatedData)
+
 
             try {
                 const response = await fetch(`/update-address/${addressId}`, {
@@ -453,13 +486,13 @@
                         title: 'Success!',
                         text: 'Address updated successfully!',
                         confirmButtonColor: '#3085d6'
-                        
+
                     }).then((result) => {
                         if (result.isConfirmed) {
                             location.reload(); // Reload the page to reflect the updated data
                         }
                     });
-                   
+
                     //location.reload(); // Reload to reflect the updated data
                 } else {
                     Swal.fire({

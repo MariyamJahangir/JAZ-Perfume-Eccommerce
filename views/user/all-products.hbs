@@ -1,21 +1,25 @@
 <link rel="stylesheet" href="/styles/products.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+
+
 
 <style>
-    
+    .searchinput .input-group-text,
+    .searchinput .form-control {
+        box-shadow: none !important;
+        border-color: #ced4da !important;
+        /* Default border color */
+        outline: none !important;
+    }
 
+    .searchinput:focus-within {
+        border-color: inherit !important;
+        box-shadow: none !important;
+    }
 
-.search-input .input-group-text,
-.search-input .form-control {
-    box-shadow: none !important;
-    border-color: #ced4da !important; /* Default border color */
-    outline: none !important;
-}
-
-.search-input:focus-within {
-    border-color: inherit !important; 
-    box-shadow: none !important;
-}
-
+    .dropdown-item {
+        cursor: pointer;
+    }
 
 
 
@@ -40,7 +44,9 @@
                     <div class="row pt-3">
                         <div class="d-flex flex-wrap gap-2 justify-content-center">
 
-                            {{!-- <div class="dropdown">
+
+                            <!-- Price Filter -->
+                            <div class="dropdown">
                                 <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
                                     data-bs-toggle="dropdown" aria-expanded="false">
                                     Price
@@ -50,12 +56,12 @@
                                         <div class="price-input">
                                             <div class="field">
                                                 <span>Min</span>
-                                                <input type="number" class="input-min" value="0">
+                                                <input type="number" class="input-min" value="0" id="min-price">
                                             </div>
                                             <div class="separator">-</div>
                                             <div class="field">
                                                 <span>Max</span>
-                                                <input type="number" class="input-max" value="10000">
+                                                <input type="number" class="input-max" value="10000" id="max-price">
                                             </div>
                                         </div>
                                         <div class="slider">
@@ -69,19 +75,20 @@
                                         </div>
                                     </li>
                                 </ul>
-                            </div> --}}
+                            </div>
 
-
-                            {{!-- <form class="d-flex w-50">
-                                <div class="input-group search-input" style="height: 80%;">
+                            <!-- Search Input -->
+                            <form class="d-flex w-50" id="search-form">
+                                <div class="input-group searchinput" style="height: 80%;">
                                     <span class="input-group-text bg-white border-end-0  h-100">
                                         <i class="bi bi-search" id="search-button"></i>
                                     </span>
-                                    <input class="form-control border-start-0 h-100" id="search-input" type="search" placeholder="Search"
-                                        aria-label="Search">
+                                    <input class="form-control border-start-0 h-100" id="search-input" type="search"
+                                        placeholder="Search products.." aria-label="Search">
                                 </div>
                             </form>
 
+                            <!-- Category Filter -->
                             <div class="dropdown">
                                 <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
                                     data-bs-toggle="dropdown" aria-expanded="false">
@@ -96,463 +103,276 @@
                                 </ul>
                             </div>
 
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    Sort By:
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="/list-products?sort=popularity">Popularity</a></li>
-                                    <li><a class="dropdown-item" href="/list-products?sort=priceLowToHigh">Price: Low to High</a></li>
-                                    <li><a class="dropdown-item" href="/list-products?sort=priceHighToLow">Price: High to Low</a></li>
-                                    <li><a class="dropdown-item" href="/list-products?sort=averageRatings">Average Ratings</a></li>
-                                    <li><a class="dropdown-item" href="/list-products?sort=featured">Featured</a></li>
-                                    <li><a class="dropdown-item" href="/list-products?sort=newArrivals">New Arrivals</a></li>
-                                    <li><a class="dropdown-item" href="/list-products?sort=aToZ">A - Z</a></li>
-                                    <li><a class="dropdown-item" href="/list-products?sort=zToA">Z - A</a></li>
-                                </ul>
-                            </div> --}}
 
-<div class="search-container text-center" style="margin-top: 2%;">
-  <input 
-    type="text" 
-    id="search-input" 
-    placeholder="Search for products..." 
-    style="padding: 10px; width: 40%; border: 1px solid #ccc; border-radius: 5px;">
-  
-  <select 
-    id="category-filter" 
-    style="padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-    <option value="">All Categories</option>
-    {{#each categories}}
-      <option value="{{this._id}}">{{this.name}}</option>
-    {{/each}}
-  </select>
-  
-  <button 
-    id="search-button" 
-    style="padding: 10px 20px; background-color: #000; color: #fff; border: none; border-radius: 5px;">
-    Search
-  </button>
-  <div class="btn-group">
-    <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-      Sort By
-    </button>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="/all-products?sort=popularity">Popularity</a></li>
-      <li><a class="dropdown-item" href="/all-products?sort=priceLowToHigh">Price: low to high</a></li>
-      <li><a class="dropdown-item" href="/all-products?sort=priceHighToLow">Price: high to low</a></li>
-      <li><a class="dropdown-item" href="/all-products?sort=averageRatings">Average ratings</a></li>
-      <li><a class="dropdown-item" href="/all-products?sort=featured">Featured</a></li>
-      <li><a class="dropdown-item" href="/all-products?sort=newArrivals">New arrivals</a></li>
-      <li><a class="dropdown-item" href="/all-products?sort=aToZ">aA - zZ</a></li>
-      <li><a class="dropdown-item" href="/all-products?sort=zToA">zZ - aA</a></li>
-    </ul>
-  </div>
-</div>
+                            <!-- Sort By Filter -->
+                            <div class="dropdown">
+                                <button id="sort-button" class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Sort By: <span id="selected-sort">Select</span>
+                                </button>
+                                <ul class="dropdown-menu" id="sort-options">
+                                    <li><button class="dropdown-item" type="button" data-sort="priceLowToHigh">Price:
+                                            Low to High</button></li>
+                                    <li><button class="dropdown-item" type="button" data-sort="priceHighToLow">Price:
+                                            High to Low</button></li>
+                                    <li><button class="dropdown-item" type="button" data-sort="newArrivals">New
+                                            Arrivals</button></li>
+                                    <li><button class="dropdown-item" type="button" data-sort="aToZ">A - Z</button></li>
+                                    <li><button class="dropdown-item" type="button" data-sort="zToA">Z - A</button></li>
+                                </ul>
+                            </div>
 
                         </div>
                     </div>
                     <hr>
                 </div>
 
-<div class="sortdiv" style="margin-left:47%; margin-top:3%">
-  
-</div>
-
                 <div class="container py-5">
                     <div class="row text-center d-flex justify-content-around" id="products-container">
-                        {{!-- <!-- Product Card -->
-                        {{#each products}}
-                        {{#if (isEqual deleted false)}}
-                        {{#each variant}} <!-- Loop through each variant -->
-                        <div class="col-md-2 m-3">
-                            <div class="card text-center">
-                                <a href="/product-details/{{../_id}}">
-                                    <img src="/uploads/{{../images.[0]}}" class="card-img-top" alt="Product Image"
-                                        style="width: 100%; height: 230px; object-fit: cover;">
-                                </a>
-                                <button type="button" class="btn-hover btncartbtm">Add to Cart</button>
-                            </div>
-                            <div class="card-body px-0">
-                                <h6 class="card-title pt-2">{{../name}} - {{quantityML}} ML</h6>
-                                <!-- Product Name + Variant -->
-                                <div class="d-flex justify-content-between align-items-center pe-4">
-                                    <button type="button"
-                                        class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill">{{stockStatus}}</button>
-                                    <p class="card-text text-muted">Rs. {{price}}</p> <!-- Variant Price -->
-                                </div>
-                            </div>
-                        </div>
-                        {{/each}}
-                        {{/if}}
-                        {{/each}} --}}
 
                     </div>
-
                 </div>
 
+                <nav aria-label="Page navigation" class="d-flex justify-content-center m-2">
+                    <ul class="pagination" id="pagination">
+
+                    </ul>
+                </nav>
 
             </div>
-
-
-
         </div>
     </div>
 </section>
 
-<nav aria-label="Page navigation" class="d-flex justify-content-end mt-4">
-  <ul class="pagination" id="pagination-controls">
-    <li class="page-item" id="prev-btn">
-      <a class="page-link" href="#" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
-      </a>
-    </li>
-
-    <li class="page-item" id="next-btn">
-      <a class="page-link" href="#" aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
-      </a>
-    </li>
-  </ul>
-</nav>
 
 {{>footer}}
 
-{{!-- <script>
-
-    const rangeInput = document.querySelectorAll(".range-input input"),
-        priceInput = document.querySelectorAll(".price-input input"),
-        range = document.querySelector(".slider .progress");
-    let priceGap = 1000;
-
-    priceInput.forEach((input) => {
-        input.addEventListener("input", (e) => {
-            let minPrice = parseInt(priceInput[0].value),
-                maxPrice = parseInt(priceInput[1].value);
-
-            if (maxPrice - minPrice >= priceGap && maxPrice <= rangeInput[1].max) {
-                if (e.target.className === "input-min") {
-                    rangeInput[0].value = minPrice;
-                    range.style.left = (minPrice / rangeInput[0].max) * 100 + "%";
-                } else {
-                    rangeInput[1].value = maxPrice;
-                    range.style.right = 100 - (maxPrice / rangeInput[1].max) * 100 + "%";
-                }
-            }
-        });
-    });
-
-    rangeInput.forEach((input) => {
-        input.addEventListener("input", (e) => {
-            let minVal = parseInt(rangeInput[0].value),
-                maxVal = parseInt(rangeInput[1].value);
-
-            if (maxVal - minVal < priceGap) {
-                if (e.target.className === "range-min") {
-                    rangeInput[0].value = maxVal - priceGap;
-                } else {
-                    rangeInput[1].value = minVal + priceGap;
-                }
-            } else {
-                priceInput[0].value = minVal;
-                priceInput[1].value = maxVal;
-                range.style.left = (minVal / rangeInput[0].max) * 100 + "%";
-                range.style.right = 100 - (maxVal / rangeInput[1].max) * 100 + "%";
-            }
-        });
-    });
-
-</script> --}}
 
 
 <script id="products-data" type="application/json">
-  {{{allProducts}}}
+  {{{json products}}}
 </script>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const products = document.querySelectorAll(".product-item");
-    const productsPerPage = 20;
-    const totalPages = Math.ceil(products.length / productsPerPage);
-    let currentPage = 1;
+    document.addEventListener('DOMContentLoaded', function () {
+        const rangeInput = document.querySelectorAll(".range-input input"),
+            priceInput = document.querySelectorAll(".price-input input"),
+            range = document.querySelector(".slider .progress");
+        let priceGap = 1000;
 
-
-    function showPage(page) {
-      const startIndex = (page - 1) * productsPerPage;
-      const endIndex = startIndex + productsPerPage;
-
-      products.forEach((product, index) => {
-        if (index >= startIndex && index < endIndex) {
-          product.style.display = "block";
-        } else {
-          product.style.display = "none";
-        }
-      });
-
-
-      document.getElementById("prev-btn").style.display = page === 1 ? "none" : "block";
-      document.getElementById("next-btn").style.display = page === totalPages ? "none" : "block";
-
-
-      updatePageNumbers(page);
-    }
-
-
-    function updatePageNumbers(currentPage) {
-      const paginationControls = document.getElementById("pagination-controls");
-
-      const pageItems = document.querySelectorAll(".page-number");
-      pageItems.forEach(item => item.remove());
-
-
-      for (let i = 1; i <= totalPages; i++) {
-        const pageItem = document.createElement("li");
-        pageItem.classList.add("page-item");
-        pageItem.classList.add("page-number");
-
-        const pageLink = document.createElement("a");
-        pageLink.classList.add("page-link");
-        pageLink.href = "#";
-        pageLink.textContent = i;
-
-        if (i === currentPage) {
-          pageLink.classList.add("active");
+        // Function to filter products based on price range
+        function filterProductsByPrice(minPrice, maxPrice) {
+            const products = document.querySelectorAll('.product-card');
+            products.forEach(product => {
+                const productPrice = parseFloat(product.getAttribute('data-price'));
+                if (productPrice >= minPrice && productPrice <= maxPrice) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
         }
 
-        pageLink.addEventListener("click", function (e) {
-          e.preventDefault();
-          currentPage = i;
-          showPage(currentPage);
+
+        // Event listeners for price input fields
+        priceInput.forEach((input) => {
+            input.addEventListener("input", (e) => {
+                let minPrice = parseInt(priceInput[0].value),
+                    maxPrice = parseInt(priceInput[1].value);
+
+                if (maxPrice - minPrice >= priceGap && maxPrice <= rangeInput[1].max) {
+                    if (e.target.className === "input-min") {
+                        rangeInput[0].value = minPrice;
+                        range.style.left = (minPrice / rangeInput[0].max) * 100 + "%";
+                    } else {
+                        rangeInput[1].value = maxPrice;
+                        range.style.right = 100 - (maxPrice / rangeInput[1].max) * 100 + "%";
+                    }
+                    filterProductsByPrice(minPrice, maxPrice);
+                }
+            });
         });
 
-        pageItem.appendChild(pageLink);
-        paginationControls.insertBefore(pageItem, document.getElementById("next-btn"));
-      }
-    }
+        // Event listeners for range slider inputs
+        rangeInput.forEach((input) => {
+            input.addEventListener("input", (e) => {
+                let minVal = parseInt(rangeInput[0].value),
+                    maxVal = parseInt(rangeInput[1].value);
 
-    document.getElementById("prev-btn").addEventListener("click", function (e) {
-      e.preventDefault();
-      if (currentPage > 1) {
-        currentPage--;
-        showPage(currentPage);
-      }
+                if (maxVal - minVal < priceGap) {
+                    if (e.target.className === "range-min") {
+                        rangeInput[0].value = maxVal - priceGap;
+                    } else {
+                        rangeInput[1].value = minVal + priceGap;
+                    }
+                } else {
+                    priceInput[0].value = minVal;
+                    priceInput[1].value = maxVal;
+                    range.style.left = (minVal / rangeInput[0].max) * 100 + "%";
+                    range.style.right = 100 - (maxVal / rangeInput[1].max) * 100 + "%";
+                    filterProductsByPrice(minVal, maxVal);
+                }
+            });
+        });
+
+        // Initial filter on page load
+        const initialMinPrice = parseInt(priceInput[0].value);
+        const initialMaxPrice = parseInt(priceInput[1].value);
+        filterProductsByPrice(initialMinPrice, initialMaxPrice);
     });
-
-    document.getElementById("next-btn").addEventListener("click", function (e) {
-      e.preventDefault();
-      if (currentPage < totalPages) {
-        currentPage++;
-        showPage(currentPage);
-      }
-    });
-
-
-    showPage(currentPage);
-  });
 </script>
 
 
+
+
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-  const products = JSON.parse(document.getElementById('products-data').textContent);
-  let filteredProducts = [...products];
-  let currentSort = 'newArrivals';
-  let currentPage = 1;
-  const productsPerPage = 20;
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('search-input');
+        const productsContainer = document.getElementById('products-container');
+        const categoryCheckboxes = document.querySelectorAll('.category-checkbox');
+        const sortOptions = document.getElementById('sort-options');
+        const selectedSortSpan = document.getElementById('selected-sort');
+        const paginationContainer = document.getElementById('pagination');
 
-  // Initialize
-  renderProducts();
-  setupEventListeners();
+        const productsDataElement = document.getElementById('products-data');
+        const products = JSON.parse(productsDataElement.textContent);
 
-function renderProducts() {
-    const container = document.getElementById('products-container');
-    const paginatedProducts = filteredProducts.slice(
-        (currentPage - 1) * productsPerPage,
-        currentPage * productsPerPage
-    );
+        let currentSort = '';
+        let currentPage = 1;
+        const productsPerPage = 10;
 
-    container.innerHTML = paginatedProducts.map(product => `
-        <div class="col-md-2 m-3">
-                            <div class="card text-center" data-name="${product.name}" data-category="${product.category}">
-                                <a href="/product-details/${product._id}">
-                                    <img src="/uploads/${product.images}" class="card-img-top" alt="Product Image"
-                                        style="width: 100%; height: 230px; object-fit: cover;">
-                                </a>
-                                <button type="button" class="btn-hover btncartbtm">Add to Cart</button>
-                            </div>
-                            <div class="card-body px-0">
-                                <h6 class="card-title pt-2">${product.name} - ${product.size} ML </h6>
-                                <!-- Product Name + Variant -->
-                                <div class="d-flex justify-content-between align-items-center pe-4">
-                                    <button type="button"
-                                        class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill">${product.stock > 0 ? 'IN STOCK' : 'OUT OF STOCK'}</button>
-                                    <p class="card-text text-muted">Rs. ${product.price}</p> <!-- Variant Price -->
-                                </div>
-                            </div>
-                        </div>
-    `).join('');
+        function displayProducts(filteredProducts, page = 1) {
+            productsContainer.innerHTML = '';
 
-    updatePagination();
-}
+            if (filteredProducts.length === 0) {
+                productsContainer.innerHTML = '<p>No products found.</p>';
+                paginationContainer.innerHTML = '';
+                return;
+            }
 
-function updatePagination() {
-    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-    const pagination = document.getElementById('pagination-controls');
-    
-    pagination.innerHTML = `
-      <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-        <a class="page-link" href="#" data-page="prev">«</a>
-      </li>
-      ${Array.from({length: totalPages}, (_, i) => `
-        <li class="page-item ${i + 1 === currentPage ? 'active' : ''}">
-          <a class="page-link" href="#" data-page="${i + 1}">${i + 1}</a>
-        </li>
-      `).join('')}
-      <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-        <a class="page-link" href="#" data-page="next">»</a>
-      </li>
-    `;
-  }
- /*  function handleWishlistClick(event) {
-    const button = event.target.closest(".wishlist-btn");
-    if (!button) return;
+            const start = (page - 1) * productsPerPage;
+            const end = start + productsPerPage;
+            const paginatedProducts = filteredProducts.slice(start, end);
 
-    const icon = button.querySelector("i");
-    const productId = button.getAttribute("data-product");
-    const variantId = button.getAttribute("data-variant");
+            paginatedProducts.forEach(product => {
+                productsContainer.innerHTML += `
+            <div class="col-md-2 m-3 product-card" data-price="${product.price}">
+                <div class="card text-center">
+                    <a href="/product-details/${product.productId}">
+                        <img src="/uploads/${product.images[0]}" class="card-img-top" alt="Product Image"
+                            style="width: 100%; height: 230px; object-fit: cover;">
+                    </a>
+                    <button type="button" class="btn-hover btncartbtm">Add to Cart</button>
+                </div>
+                <div class="card-body px-0">
+                    <h6 class="card-title pt-2">${product.productName} - ${product.quantityML} ML</h6>
+                    <div class="d-flex justify-content-between align-items-center pe-4">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill">${product.stockStatus}</button>
+                        <p class="card-text text-muted">Rs. ${product.price}</p>
+                    </div>
+                    <p class="card-text text-muted">${product.category.name}</p>
+                </div>
+            </div>`;
+            });
 
-    fetch("/wishlist/add-product", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ product_id: productId, variant_id: variantId }),
-    })
-    .then(response => response.json())
-    .then(result => {
-      Swal.fire({
-        icon: result.success ? "success" : "error",
-        title: result.message,
-        confirmButtonText: "OK",
-      });
-      
-      if (result.success) {
-        icon.classList.toggle("bi-heart-fill");
-        icon.classList.toggle("bi-heart");
-        icon.style.color = result.message.includes("Added") ? "red" : "black";
-      }
-    })
-    .catch(error => {
-      console.error("Error updating wishlist:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Something went wrong! Please try again.",
-        confirmButtonText: "OK",
-      });
-    });
-  }
+            setupPagination(filteredProducts);
+        }
 
-*/
+        function setupPagination(filteredProducts) {
+            paginationContainer.innerHTML = '';
+            const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
+            if (totalPages <= 1) return;
 
+            let paginationHTML = '';
 
+            if (currentPage > 1) {
+                paginationHTML += `<li class="page-item"><button class="pagination-btn page-link" data-page="${currentPage - 1}">&laquo;</button></li>`;
+            }
 
-  function handleSearch() {
-    const searchQuery = document.getElementById('search-input').value.toLowerCase();
-    const category = document.getElementById('category-filter').value;
-    
-       filteredProducts = products.filter(product => {
-        const matchesSearch = product.name.toLowerCase().includes(searchQuery);
-        const matchesCategory = category === "" || product.category._id === category;
-        return matchesSearch && matchesCategory;
-    });
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHTML += `<li class="page-item"><button class="pagination-btn page-link ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button></li>`;
+            }
 
-    applySort(currentSort);
-    currentPage = 1;
-    renderProducts();
-  }
+            if (currentPage < totalPages) {
+                paginationHTML += `<li class="page-item"><button class="pagination-btn page-link" data-page="${currentPage + 1}">&raquo;</button></li>`;
+            }
 
-  function applySort(sortType) {
-    currentSort = sortType;
-    
-    switch(sortType) {
-      case 'popularity':
-        filteredProducts.sort((a, b) => b.popularity - a.popularity);
-        break;
-      case 'priceLowToHigh':
-        filteredProducts.sort((a, b) => a.price - b.price);
-        break;
-      case 'priceHighToLow':
-        filteredProducts.sort((a, b) => b.price - a.price);
-        break;
-      case 'averageRatings':
-        filteredProducts.sort((a, b) => b.averageRating - a.averageRating);
-        break;
-      case 'featured':
-        filteredProducts.sort((a, b) => b.featured - a.featured);
-        break;
-      case 'newArrivals':
-        filteredProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        break;
-      case 'aToZ':
-        filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case 'zToA':
-        filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-    }
-    
-    renderProducts();
-  }
+            paginationContainer.innerHTML = paginationHTML;
 
-  function setupEventListeners() {
-    // Search and Filter
-    document.getElementById('search-input').addEventListener('input', debounce(handleSearch, 300));
-    document.getElementById('category-filter').addEventListener('change', handleSearch);
+            document.querySelectorAll('.pagination-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    currentPage = parseInt(this.getAttribute('data-page'));
+                    filterProducts();
+                });
+            });
+        }
 
-    document.getElementById('search-button').addEventListener('click', handleSearch);
-  document.getElementById('products-container').addEventListener('click', handleWishlistClick);
-    // Sorting
-    document.querySelectorAll('.dropdown-item').forEach(item => {
-      item.addEventListener('click', (e) => {
-        e.preventDefault();
-        const sortType = e.target.getAttribute('href').split('=')[1];
-        applySort(sortType);
-      });
+        function filterProducts() {
+            const query = searchInput.value.toLowerCase();
+            const selectedCategories = Array.from(categoryCheckboxes)
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.value);
+
+            let filteredProducts = products.filter(product => {
+                const matchesSearch = product.productName.toLowerCase().includes(query);
+                const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category.name);
+                return matchesSearch && matchesCategory;
+            });
+
+            filteredProducts = sortProducts(filteredProducts, currentSort);
+            displayProducts(filteredProducts, currentPage);
+        }
+
+        function sortProducts(productsArray, sortOption) {
+            const sortedProducts = [...productsArray];
+
+            switch (sortOption) {
+                case 'priceLowToHigh':
+                    sortedProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'priceHighToLow':
+                    sortedProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case 'newArrivals':
+                    sortedProducts.sort((a, b) => new Date(b.arrivalDate) - new Date(a.arrivalDate));
+                    break;
+                case 'aToZ':
+                    sortedProducts.sort((a, b) => a.productName.localeCompare(b.productName));
+                    break;
+                case 'zToA':
+                    sortedProducts.sort((a, b) => b.productName.localeCompare(a.productName));
+                    break;
+            }
+
+            return sortedProducts;
+        }
+
+        searchInput.addEventListener('input', () => {
+            currentPage = 1;
+            filterProducts();
+        });
+
+        categoryCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                currentPage = 1;
+                filterProducts();
+            });
+        });
+
+        sortOptions.addEventListener('click', function (event) {
+            const sortOption = event.target.getAttribute('data-sort');
+            const sortText = event.target.textContent.trim();
+            if (sortOption) {
+                currentSort = sortOption;
+                selectedSortSpan.textContent = sortText;
+                currentPage = 1;
+                filterProducts();
+            }
+        });
+
+        displayProducts(products);
     });
 
-    // Pagination
-     document.getElementById('pagination-controls').addEventListener('click', (e) => {
-      e.preventDefault();
-      if (e.target.tagName === 'A') {
-        const page = e.target.dataset.page;
-        if (page === 'prev' && currentPage > 1) currentPage--;
-        else if (page === 'next' && currentPage < Math.ceil(filteredProducts.length / productsPerPage)) currentPage++;
-        else if (!isNaN(page)) currentPage = parseInt(page);
-        renderProducts();
-      }
-    });
 
-    // Wishlist
-    document.getElementById('products-container').addEventListener('click', async (e) => {
-      if (e.target.closest('.wishlist-btn')) {
-        const btn = e.target.closest('.wishlist-btn');
-        // Add your wishlist logic here
-      }
-    });
-  }
-
-  function debounce(func, timeout = 300) {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => { func.apply(this, args); }, timeout);
-    };
-  }
-});
-
-
-
-renderProducts();
-  setupEventListeners();
 </script>

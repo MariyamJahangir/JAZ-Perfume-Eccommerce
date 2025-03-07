@@ -3,6 +3,7 @@ const addressModel = require('../../model/addressModel')
 const productModel = require('../../model/productModel')
 const cartModel = require('../../model/cartModel')
 const orderModel = require('../../model/orderModel')
+const bcrypt = require('bcrypt')
 
 
 // get profile
@@ -68,9 +69,33 @@ const profileUpdate = async (req, res) => {
 
 
 
+const LoadPassword = async (req, res) => {
+  const user = await userModel.findOne({ email: req.session.user.email }).lean();
+  res.render('user/change-password', {user})
+}
 
+const ChangePassword = async (req, res) => {
+  const {OldPassword, password} = req.body;
+  const exists = await userModel.findOne({_id: req.session.user.id});
+  if (!exists) {
+      return res.status(404).json({success: false, message: `User not found`});
+  }
+  
+  const comparePassword = await bcrypt.compare(OldPassword, exists.password);
 
+  if (!comparePassword) {
+      return res.status(400).json({success: false, message: "Current password is incorrect"});
+  }
+  const salt = await bcrypt.genSalt(10);
+  const hashed_password = await bcrypt.hash(password, salt);
 
+  
+    await userModel.updateOne({_id: req.session.user.id}, {$set: {password: hashed_password}});
+    return res.status(200).json({success: true, message: "Password updated successfully"});
+  
+
+  
+};
 
 
 
@@ -88,8 +113,8 @@ const profileUpdate = async (req, res) => {
 module.exports = {
   LoadProfile,
   profileUpdate,
-  
- 
+  LoadPassword,
+  ChangePassword
  
 
 }

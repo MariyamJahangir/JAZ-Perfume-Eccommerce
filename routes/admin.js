@@ -28,8 +28,8 @@ router.patch('/status', adminAuth.checkSession, userController.statusUpdate);
 router.get('/category', adminAuth.checkSession, categoryController.category)
 router.get('/add-category', adminAuth.checkSession, categoryController.loadAddCategory)
 router.post('/add-category', adminAuth.checkSession, categoryMulter.upload.single('image'), categoryController.addCategory)
-router.get('/edit-category/:id',  categoryController.loadEditCategory) //adminAuth.checkSession,
-router.post('/edit-category/:id',  categoryMulter.upload.single('image'), categoryController.editCategory) //adminAuth.checkSession,
+router.get('/edit-category/:id', adminAuth.checkSession, categoryController.loadEditCategory) 
+router.post('/edit-category/:id', adminAuth.checkSession, categoryMulter.upload.single('image'), categoryController.editCategory) 
 router.post('/delete-category/:id', adminAuth.checkSession, categoryController.deleteCategory);
 
 
@@ -49,9 +49,9 @@ router.patch('/delete-product', adminAuth.checkSession, productController.delete
 
 
 
-router.get('/orders', orderController.LoadOrders);
-router.get('/order-detail/:id', orderController.LoadOrderDetail);
-router.post("/update-order-status/:orderId/:productId",orderController.updateOrderStatus)
+router.get('/orders',adminAuth.checkSession, orderController.LoadOrders);
+router.get('/order-detail/:id',adminAuth.checkSession, orderController.LoadOrderDetail);
+router.post("/update-order-status/:orderId/:productId",adminAuth.checkSession, orderController.updateOrderStatus)
 
 
 

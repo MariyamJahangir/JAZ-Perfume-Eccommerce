@@ -13,7 +13,14 @@ const orderSchema = new mongoose.Schema({
             variantId: { type: mongoose.Schema.Types.ObjectId, required: true },
             quantityCount: { type: Number, required: true },
             price: { type: Number, required: true },
-            status: { type: String, enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Returned"], default: "Pending" },
+            status: { type: String, enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Returned", "Return Approved"], default: "Pending" },
+            deliveredDate:{ type: Date, default: null },
+            cancelReason: { 
+                type: String, 
+                enum: ["Order by mistake", "Found a better price", "Delivery taking too long"], 
+                default: null 
+            }, // ✅ Added cancellation reason field
+            returnReason: { type: String, default: null },
         }
     ],
     totalAmount: { type: Number, required: true },

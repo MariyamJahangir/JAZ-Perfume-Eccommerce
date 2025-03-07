@@ -68,7 +68,7 @@
                         <div class="d-flex gap-2 flex-grow-1">
                             {{#each cartItems}}
                             <div class="d-flex justify-content-center align-items-center rounded-circle bg-light"
-                                style="width: 40px; height: 40px;">
+                                style="width: 40px; height: 40px;" data-quantityCount="{{quantityCount}}" id="quantity">
                                 <img src="/uploads/{{this.products.images.[0]}}" alt="" class="img-fluid"
                                     style="width: 24px; object-fit: contain;">
                             </div>
@@ -266,8 +266,10 @@
             variantId: item.variant,
             quantityCount: item.quantityCount,
             price: item.totalPrice
+
         }));
 
+        
         // Total amount
         const totalAmount = items.reduce((total, item) => total + (item.price * item.quantityCount), 0);
 
@@ -278,6 +280,10 @@
             items,  // items array with the correct structure
             totalAmount
         };
+
+        console.log(orderData)
+
+        
 
         try {
             // Send data to the backend via POST request

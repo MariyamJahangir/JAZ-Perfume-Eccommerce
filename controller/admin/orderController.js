@@ -1,4 +1,5 @@
-const orderModel = require('../../model/orderModel')
+const orderModel = require('../../model/orderModel');
+const productModel = require('../../model/productModel');
 
 
 const LoadOrders = async (req, res) => {
@@ -16,59 +17,6 @@ const LoadOrders = async (req, res) => {
 };
 
 
-
-
-// const LoadOrderDetail = async (req, res) => {
-//     try {
-//         const orderId = req.params.id; // Get order ID from URL params
-//         const productId = req.query.productId; // Get product ID from query
-
-//         // Fetch the order and populate necessary fields
-//         const order = await orderModel.findById(orderId)
-//             .populate('userId')
-//             .populate('items.productId')
-//             .lean();
-
-//         if (!order) {
-//             return res.status(404).send('Order not found');
-//         }
-
-//         // Find the specific ordered item based on productId
-//         const orderedItem = order.items.find(item => item.productId._id.toString() === productId);
-
-//         console.log(orderedItem)
-
-//         if (!orderedItem) {
-//             return res.status(404).send('Ordered item not found');
-//         }
-
-//         let statusOptions = [];
-
-//         switch (orderedItem.status) {
-//             case "Pending":
-//                 statusOptions = ["Processing", "Cancelled"];
-//                 break;
-//             case "Processing":
-//                 statusOptions = ["Shipped", "Cancelled"];
-//                 break;
-//             case "Shipped":
-//                 statusOptions = ["Delivered"];
-//                 break;
-//             case "Delivered":
-//                 statusOptions = ["Returned"];
-//                 break;
-//             default:
-//                 statusOptions = []; // If already Cancelled or Returned, no options
-//         }
-
-
-//         res.render('admin/order-detail', { order, orderedItem, statusOptions }); // Pass order and single item
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).send('Internal Server Error');
-//     }
-// };
-
 const LoadOrderDetail = async (req, res) => {
     try {
         const orderId = req.params.id;
@@ -78,12 +26,34 @@ const LoadOrderDetail = async (req, res) => {
             .populate('userId')
             .populate('items.productId')
             .lean();
+        
+
 
         if (!order) {
             return res.status(404).send('Order not found');
         }
-
+        
+        if (order) {
+            order.items = order.items.map(item => {
+                if (item.productId && item.productId.variant) {
+                    item.variantId = item.productId.variant.find(v => v._id.toString() === item.variantId.toString());
+                }
+                return item;
+            });
+        }
+        console.log("*************")
+        console.log("order: ", order)
+        console.log("*************")
         const orderedItem = order.items.find(item => item.productId._id.toString() === productId);
+
+        // console.log("order:", order)
+        console.log("orderedItem: ", orderedItem)
+
+        let product = await productModel.findById(productId)
+        let productVariant = product.variant.find(v=>v._id.toString() === orderedItem.variantId._id.toString())
+        console.log("*************")
+        console.log("productVariant: ", productVariant)
+        console.log("*************")
         if (!orderedItem) {
             return res.status(404).send('Ordered item not found');
         }
@@ -98,7 +68,12 @@ const LoadOrderDetail = async (req, res) => {
                 statusOptions = ["Shipped", "Cancelled"]; // Can move to Shipped or be Cancelled
                 break;
             case "Shipped":
-                statusOptions = ["Delivered"]; // Can only move to Delivered
+                statusOptions = ["Delivered", "Cancelled"]; // Can move to Delivered or be Cancelled
+                break;
+            case "Returned":
+                statusOptions = ["Return Approved"]; // Can only move to Returned
+                productVariant.stockQuantity += orderedItem.quantityCount
+                await product.save()
                 break;
             // case "Delivered":
             //     statusOptions = []; // Can only be Returned
@@ -115,37 +90,15 @@ const LoadOrderDetail = async (req, res) => {
 };
 
 
-// const updateOrderStatus = async (req, res) => {
-//     try {
-//         const { status } = req.body;
-//         const { orderId, productId } = req.params;
 
-//         const order = await orderModel.findById(orderId);
-//         if (!order) {
-//             return res.status(404).json({ error: "Order not found" });
-//         }
 
-//         // Find the ordered item and update its status
-//         const orderedItem = order.items.find(item => item.productId.toString() === productId);
-//         if (!orderedItem) {
-//             return res.status(404).json({ error: "Ordered item not found" });
-//         }
-
-//         orderedItem.status = status;
-//         await order.save();
-
-//         res.status(200).json({ message: "Status updated successfully!" });
-//     } catch (error) {
-//         console.error("Error updating order status:", error);
-//         res.status(500).json({ error: "Internal Server Error" });
-//     }
-// };
 
 const updateOrderStatus = async (req, res) => {
     try {
         const { orderId, productId } = req.params;
         const { status } = req.body;
 
+        console.log("status:", status)
         // Find the order by ID
         const order = await orderModel.findById(orderId);
         if (!order) {
@@ -159,6 +112,9 @@ const updateOrderStatus = async (req, res) => {
         }
 
         // Update the item's status
+        if(status == 'Delivered'){
+            orderedItem.deliveredDate = new Date()
+        }
         orderedItem.status = status;
         await order.save();
 

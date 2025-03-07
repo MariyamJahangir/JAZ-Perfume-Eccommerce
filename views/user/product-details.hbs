@@ -87,7 +87,13 @@
                             <i class="bi bi-star-fill text-secondary pe-2"></i>
                             <span>4.2 — 86 ratings & 54 Reviews</span>
                         </div>
-                        <span class="discount-badge" id="stockDisplay">{{product.variant.[0].stockStatus}}</span>
+                       
+                        
+                        <span class="discount-badge" id="stockDisplay">
+                            
+                        </span>
+                        
+                        
                     </div>
 
                     <div class="mb-3">
@@ -264,63 +270,31 @@
     <p class="text-black mb-4">SIMILAR PRODUCTS</p>
     <div class="row text-center d-flex justify-content-around">
         <!-- Product Card -->
-        <div class="col-md-2 p-0">
+        {{#each allproducts}}
+        {{#if (and (isEqual trending true) (isEqual deleted false) (isEqual stock "In Stock"))}}
+        <div class="col-md-2 m-2">
             <div class="card text-center">
-                <img src="/images/trend1.jpg" class="card-img-top" alt="Product Image">
+                <img src="/uploads/{{images.[0]}}" class="card-img-top" alt="Product Image"
+                    style="width: 100%; height: 250px; object-fit: cover;">
                 <button type="button" class="btn-hover btncartbtm">Add to Cart</button>
             </div>
             <div class="card-body px-0">
-                <h6 class="card-title pt-2">DOLOE, GABBANA, The only one-50 ml</h6>
+                <h6 class="card-title pt-2">{{name}}</h6>
                 <div class="d-flex justify-content-between align-items-center pe-4">
-                    <button type="button" class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill ">30%
-                        off</button>
-                    <p class="card-text text-muted"> $65.00</p>
+                    <button type="button"
+                        class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill ">{{variant.[0].quantityML}}ml</button>
+                    <p class="card-text text-muted">Rs. {{variant.[0].price}}</p>
                 </div>
+                <span class="text-muted">
+                    {{#each ../categories}}
+                    {{#if (isEqual ../product.category _id)}}{{name}}{{/if}}
+                    {{/each}}
+                </span>
             </div>
         </div>
-        <!-- Duplicate Product Cards -->
-        <div class="col-md-2 p-0">
-            <div class="card text-center">
-                <img src="/images/trend1.jpg" class="card-img-top" alt="Product Image">
-                <button type="button" class="btn-hover btncartbtm">Add to Cart</button>
-            </div>
-            <div class="card-body px-0">
-                <h6 class="card-title pt-2">DOLOE, GABBANA, The only one-50 ml</h6>
-                <div class="d-flex justify-content-between align-items-center pe-4">
-                    <button type="button" class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill ">30%
-                        off</button>
-                    <p class="card-text text-muted"> $65.00</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 p-0">
-            <div class="card text-center">
-                <img src="/images/trend1.jpg" class="card-img-top" alt="Product Image">
-                <button type="button" class="btn-hover btncartbtm">Add to Cart</button>
-            </div>
-            <div class="card-body px-0">
-                <h6 class="card-title pt-2">DOLOE, GABBANA, The only one-50 ml</h6>
-                <div class="d-flex justify-content-between align-items-center pe-4">
-                    <button type="button" class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill ">30%
-                        off</button>
-                    <p class="card-text text-muted"> $65.00</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 p-0">
-            <div class="card text-center">
-                <img src="/images/trend1.jpg" class="card-img-top" alt="Product Image">
-                <button type="button" class="btn-hover btncartbtm">Add to Cart</button>
-            </div>
-            <div class="card-body px-0">
-                <h6 class="card-title pt-2">DOLOE, GABBANA, The only one-50 ml</h6>
-                <div class="d-flex justify-content-between align-items-center pe-4">
-                    <button type="button" class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill ">30%
-                        off</button>
-                    <p class="card-text text-muted"> $65.00</p>
-                </div>
-            </div>
-        </div>
+        {{/if}}
+        {{/each}}
+
     </div>
 
 </section>
@@ -388,12 +362,23 @@
             selectedVariantId = firstVariant.getAttribute("data-variant-id");
             basePrice = parseFloat(firstVariant.getAttribute("data-price"));
             stockQuantity = parseInt(firstVariant.getAttribute("data-stockQuantity"));  // Get stock quantity
+            stockStatus = firstVariant.getAttribute("data-stockStatus"); 
 
             console.log("Default variant selected:", selectedVariantId); // ✅ Debugging
 
             // Update the displayed values
             priceDisplay.textContent = firstVariant.getAttribute("data-price");
-            stockDisplay.textContent = firstVariant.getAttribute("data-stockStatus");
+
+            
+            // ✅ Update stock display based on conditions
+            if (stockStatus === "A few stocks left" && stockQuantity <= 5) {
+                stockDisplay.textContent = `Only ${stockQuantity} stocks left`;
+            } else {
+                stockDisplay.textContent = stockStatus;
+            }
+
+
+            
             addToCartBtn.setAttribute("data-variant-id", selectedVariantId);
             firstVariant.classList.add("active");
         }
@@ -403,13 +388,21 @@
                 selectedVariantId = this.getAttribute("data-variant-id");
                 basePrice = parseFloat(this.getAttribute("data-price"));
                 stockQuantity = parseInt(this.getAttribute("data-stockQuantity"));
+                stockStatus = this.getAttribute("data-stockStatus");
                 quantityCount = 1; // Reset quantity when variant changes
                 console.log("Variant selected:", selectedVariantId, "Stock Quantity:", stockQuantity); // ✅ Debugging output
 
                 // Update displayed values
                 priceDisplay.textContent = basePrice
                 quantityDisplay.textContent = quantityCount;
-                stockDisplay.textContent = this.getAttribute("data-stockStatus");
+
+
+                // ✅ Update stock display based on conditions
+                if (stockStatus === "A few stocks left" && stockQuantity <= 5) {
+                    stockDisplay.textContent = `Only ${stockQuantity} stocks left`;
+                } else {
+                    stockDisplay.textContent = stockStatus;
+                }
 
                 addToCartBtn.setAttribute("data-variant-id", selectedVariantId);
 
@@ -462,6 +455,22 @@
                     text: 'Please select a variant before adding to cart.',
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#f39c12'
+                });
+                return;
+            }
+
+            // ✅ Get stock status and quantity
+            const stockStatus = stockDisplay.textContent.trim();
+            const stockQuantity = parseInt(document.querySelector(".active").getAttribute("data-stockQuantity"));
+
+            // ✅ Prevent adding if "Out of Stock"
+            if (stockStatus.toLowerCase() === "out of stock" || stockQuantity <= 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Out of Stock',
+                    text: 'This product is currently out of stock and cannot be added to the cart.',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#d33'
                 });
                 return;
             }

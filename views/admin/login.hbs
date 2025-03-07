@@ -9,7 +9,7 @@
 
 
         <form action="/admin/login" method="post">
-        <input type="text" id="message" value="{{message}}" hidden>
+            <input type="text" id="message" value="{{message}}" hidden>
             <div class="mb-4">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" class="form-control" name="email" id="username">
@@ -27,10 +27,14 @@
 
 <script>
 
-    const message = document.getElementById('message').value
+    const message = document.getElementById('message').value;
     if (message) {
-      swal(message)
+        Swal.fire({
+            text: message,
+            icon: 'info', // You can change this to 'success', 'error', 'warning', or 'question'
+            confirmButtonText: 'OK'
+        });
     }
-  
+
 
 </script>

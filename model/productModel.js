@@ -16,10 +16,13 @@ const variantSchema = new mongoose.Schema(
         stockStatus: {
             type: String,
             enum: ["In Stock", "A few stocks left", "Out of Stock"],
-            
+        },
+        _id: {
+            type: mongoose.Schema.Types.ObjectId,
+            default: () => new mongoose.Types.ObjectId(),
         },
     },
-    
+
 );
 
 
@@ -69,7 +72,7 @@ const productSchema = new mongoose.Schema(
 );
 
 
-productSchema.index({ category: 1 });  
+productSchema.index({ category: 1 });
 productSchema.index({ price: 1 });
 
 module.exports = mongoose.model('Product', productSchema);

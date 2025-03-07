@@ -23,7 +23,7 @@
                     <span class="nav-text">Dashboard</span>
                 </a>
 
-                <a href="products" class="nav-link">
+                <a href="/admin/products" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/126b232c82239fc3740982b7c8240f84671d1b6e2a4d00141995b3c82d24c4a5?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Products" loading="lazy">
@@ -31,7 +31,7 @@
                     <span class="nav-text">Products</span>
                 </a>
 
-                <a href="category" class="nav-link" aria-current="page">
+                <a href="/admin/category" class="nav-link" aria-current="page">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/c46200642d44aab62899b16a25fc8bfe94e9df6fede3e3512b370b3d4f514356?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Categories" loading="lazy">
@@ -39,7 +39,7 @@
                     <span class="nav-text">Categories</span>
                 </a>
 
-                <a href="orders" class="nav-link active">
+                <a href="/admin/orders" class="nav-link active">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/395e632ba7027a03ce2c35c1aa8bcc4534da249d8c136cdcc01b5043a72ddc87?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Orders" loading="lazy">
@@ -47,7 +47,7 @@
                     <span class="nav-text">Orders</span>
                 </a>
 
-                <a href="customers" class="nav-link">
+                <a href="/admin/customers" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f933064a6bab49b74f8d5722595a056cbddbca1247d9b1a20a7e0fc8d56413a0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Customers" loading="lazy">
@@ -122,6 +122,8 @@
                             <h3 class="fw-bold">Order Detail</h3>
                         </div>
                     </div>
+
+
                     <div class="row ">
                         <div class="col-6 d-flex border p-4">
                             <div class="col-3">
@@ -141,21 +143,36 @@
                             </div>
                         </div>
                         <div class="col-6 d-flex border p-4">
-                            <div class="col-5">
+                            <div class="col-6">
+                                <p>Order ID :</p>
                                 <p>Order Date :</p>
                                 <p>Payment Method :</p>
                                 <p>Total Amount :</p>
+                                <p>Total products in this order :</p>
+
                             </div>
-                            <div>
+                            <div class="col-6">
+                                <p>{{order.orderId}}</p>
                                 <p>{{formatDate order.orderDate}}</p>
                                 <p>{{order.paymentMethod}}</p>
                                 <p>Rs. {{order.totalAmount}}</p>
+                                <p>
+                                    {{#each order.items}}
+                                    <a
+                                        href="/admin/order-detail/{{../order._id}}?productId={{this.productId._id}}">{{this.productId.name}}</a>
+                                    <br>({{this.quantityCount}} items) <br>
+                                    {{/each}}
+                                </p>
+
                             </div>
+
                         </div>
+
                     </div>
 
+
                     <div class="row ">
-                        <div class="col-3 d-flex justify-content-center border p-4">
+                        <div class="col-2 d-flex justify-content-center border p-2">
                             <div id="carouselExampleIndicators" class="carousel slide d-flex justify-content-center"
                                 data-bs-ride="carousel">
                                 <!-- Indicators -->
@@ -188,60 +205,98 @@
                                     <span class="visually-hidden">Next</span>
                                 </button>
                             </div>
-
-
-
-
                         </div>
-                        <div class="col-9 border p-4">
+                        <div class="col-10 border p-0">
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        
-                                        <th scope="col">Products</th>
+                                        <th scope="col">Sl.No</th>
+                                        <th scope="col" class="col-3">Products</th>
+                                        <th scope="col">Variant</th>
                                         <th scope="col">Quantity</th>
                                         <th scope="col">Price</th>
-                                        <th scope="col">Total</th>
+                                        <th scope="col">Final Price</th>
+                                        <th scope="col" class="col-3">Product Status</th>
 
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        
+                                        <td scope="col">1.</td>
                                         <td>{{orderedItem.productId.name}}</td>
+                                        <td>{{orderedItem.variantId.quantityML}} ML</td>
                                         <td class="text-center">{{orderedItem.quantityCount}}</td>
                                         <td>Rs. {{orderedItem.price}}</td>
                                         <td>Rs. {{multiply orderedItem.quantityCount orderedItem.price}}</td>
+                                        <td>
+                                            {{#if (isEqual orderedItem.status "Returned")}}
+                                                <div class="d-flex pb-2">
+                                                    <button type="button" class="btn btn-success me-2">Approve</button>
+                                                    <button type="button" class="btn btn-danger">Reject</button>
+                                                </div>
+                                                <p><span class="fw-bold">Return Reason:</span><br>
+                                                    {{orderedItem.returnReason}}</p>
+
+                                            {{else}}
+
+                                                <div class="d-flex pb-3">
+                                                    
+                                                    {{#if statusOptions.length}}
+                                                    <div class="col-7 me-1">
+                                                        <form id="setstatus"
+                                                            action="/admin/update-order-status/{{order._id}}/{{orderedItem.productId._id}}"
+                                                            method="POST">
+                                                            <!-- Display the current status as plain text -->
+
+                                                            <select class="form-select" id="status" name="status">
+                                                                <!-- Show the current status as a disabled, selected option -->
+                                                                <option value="{{orderedItem.status}}" selected disabled>
+                                                                    {{orderedItem.status}}</option>
+
+                                                                <!-- Show only the next available statuses -->
+                                                                {{#each statusOptions}}
+                                                                {{#unless (isEqual this ../orderedItem.status)}}
+                                                                <option value="{{this}}">{{this}}</option>
+                                                                {{/unless}}
+                                                                {{/each}}
+                                                            </select>
+
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <button type="submit" class="btn btn-dark px-2">Set Status</button>
+                                                    </div>
+                                                        </form>
+                                                    {{else}}
+                                                    <div class="col">
+                                                        <div class="mb-2"><strong>Current Status:</strong>
+                                                        {{orderedItem.status}} </div>
+                                                        <span class="text-muted">No further status changes allowed</span>
+                                                    </div>
+                                                    {{/if}}
+                                                </div>
+                                            {{/if}}
+                                        </td>
                                     </tr>
 
 
                                 </tbody>
                             </table>
 
-                            <div class="container pt-4 px-0 " >
+                            {{!-- <div class="container pt-4 px-0 ">
                                 <p>Order Status</p>
-                                {{!-- <div class="row d-flex justify-content-start">
-                                    <div class="col-4"><select class="form-select" id="status" name="status">
-                                            <option value="Ordered" selected>Order Placed</option>
-                                            <option value="Processing">Processing</option>
-                                            <option value="Cancelled">Cancelled</option>
-                                            <option value="Delivered">Delivered</option>
-                                        </select></div>
-                                    <div class="col-4"><button type="button" class="btn btn-dark px-4">Set
-                                            Status</button></div>
-                                </div> --}}
+
 
                                 <div class="row d-flex justify-content-start mt-4">
                                     <div class="mb-2"><strong>Current Status:</strong> {{orderedItem.status}}
-                                            </div>
+                                    </div>
                                     {{#if statusOptions.length}}
                                     <div class="col-4">
-                                        
+
                                         <form id="setstatus"
                                             action="/admin/update-order-status/{{order._id}}/{{orderedItem.productId._id}}"
                                             method="POST">
                                             <!-- Display the current status as plain text -->
-                                        
+
                                             <select class="form-select" id="status" name="status">
                                                 <!-- Show the current status as a disabled, selected option -->
                                                 <option value="{{orderedItem.status}}" selected disabled>
@@ -254,11 +309,12 @@
                                                 {{/unless}}
                                                 {{/each}}
                                             </select>
+
                                     </div>
                                     <div class="col-6">
                                         <button type="submit" class="btn btn-dark px-4">Set Status</button>
-                                        </form>
                                     </div>
+                                    </form>
                                     {{else}}
                                     <div class="col-6">
                                         <span class="text-muted">No further status changes allowed</span>
@@ -266,13 +322,22 @@
                                     {{/if}}
                                 </div>
 
-
-
-
-                            </div>
+                            </div> --}}
 
                         </div>
                     </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
                 </div>
             </div>
@@ -300,6 +365,7 @@
                 const actionUrl = statusForm.getAttribute("action");
 
                 try {
+                    //const response = await fetch(/admin/update - order - status / ${ order._id } / ${ orderedItem.productId._id }, {
                     const response = await fetch(/admin/update - order - status / ${ order._id } / ${ orderedItem.productId._id }, {
                         method: "POST",
                         headers: {

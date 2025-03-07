@@ -46,56 +46,57 @@
                 <div class="container m-4 p-4">
                     <h1 class="text-center pb-4">ALL ORDERS</h1>
                     {{#each orders}}
-                    {{#each items}}
-                        <div class="grid gap-1 d-flex justify-content-between border bg-light p-3">
+                    
+                    <div class="grid gap-1 d-flex justify-content-between align-items-center border bg-light p-3">
                         <!-- Product Image -->
-                        <div class="col-2 text-center p-2">
-                            <img src="/uploads/{{productDetails.images.[0]}}" alt="{{productDetails.name}}" class="img-fluid">
+                        <div class="col-3 text-center">
+
+                            <a href="product-details/{{items.[0].productId._id}}"><img
+                                    src="/uploads/{{items.[0].productDetails.images.[0]}}" alt="{{items.[0].productDetails.name}}"
+                                    class="img-fluid"></a>
                         </div>
 
                         <!-- Product Details -->
-                        <div class="col-5">
-                            <p>{{productDetails.name}} - {{productDetails.variant.quantityML}} ML</p>
-                            <span>Rs. {{productDetails.variant.price}}</span>
-                            <p class="fw-5">Ordered on: {{formatDate ../orderDate}}</p>
-                            
+                        <div class="col-7">
+                            <p>{{items.[0].productDetails.name}} - {{items.[0].productDetails.variant.quantityML}} ML</p>
+                            {{#if (gt items.length 1)}}
+                                <p>+{{dec items.length}} more {{#if (isEqual items.length 2)}}product {{else}} products{{/if}} </p>
+                            {{/if}}
+                            <span class="fw-5">Ordered on: {{formatDate orderDate}}</span>
+
                         </div>
 
-                        <!-- Order Status -->
+                        {{!-- <!-- Order Status -->
                         <div class="col-2 d-flex align-items-center">
-                {{#if (isEqual status "Delivered")}}
-                    <button type="button" class="btn btn-success rounded-circle p-1 m-2"></button>
-                {{else if (isEqual status "Cancelled")}}
-                    <button type="button" class="btn btn-danger rounded-circle p-1 m-2"></button>
-                {{else if (isEqual status "Returned")}}
-                    <button type="button" class="btn btn-warning rounded-circle p-1 m-2"></button>
-                {{else if (isEqual status "Pending")}}
-                    <button type="button" class="btn btn-secondary rounded-circle p-1 m-2"></button>
-                {{else if (isEqual status "Processing")}}
-                    <button type="button" class="btn btn-primary rounded-circle p-1 m-2"></button>
-                {{else}}
-                    <button type="button" class="btn btn-dark rounded-circle p-1 m-2"></button>
-                {{/if}}
-                <span>{{status}}</span>
-            </div>
+                            {{#if (isEqual status "Delivered")}}
+                            <button type="button" class="btn btn-success rounded-circle p-1 m-2"></button>
+                            {{else if (isEqual status "Cancelled")}}
+                            <button type="button" class="btn btn-danger rounded-circle p-1 m-2"></button>
+                            {{else if (isEqual status "Returned")}}
+                            <button type="button" class="btn btn-warning rounded-circle p-1 m-2"></button>
+                            {{else if (isEqual status "Pending")}}
+                            <button type="button" class="btn btn-secondary rounded-circle p-1 m-2"></button>
+                            {{else if (isEqual status "Processing")}}
+                            <button type="button" class="btn btn-primary rounded-circle p-1 m-2"></button>
+                            {{else}}
+                            <button type="button" class="btn btn-dark rounded-circle p-1 m-2"></button>
+                            {{/if}}
+                            <span>{{status}}</span>
+                        </div> --}}
 
                         <!-- Action Buttons -->
                         <div class="col-2 d-flex align-items-center">
                             <div class="p-2">
-                            <a href="/order-detail/{{../_id}}/{{_id}}" type="button" class="btn btn-outline-primary px-3">View</a>
+                                <a href="/order-detail/{{_id}}" type="button"
+                                    class="btn btn-outline-primary px-3">View</a>
                             </div>
-                            {{!-- <div class="p-2">
-                            <button type="button" class="btn btn-outline-danger">Cancel</button>
-                            </div>
-                            <div class="p-2">
-                            <button type="button" class="btn btn-outline-warning" disabled>Return</button>
-                            </div> --}}
+                            
                         </div>
-                        </div>
-                    {{/each}}
+                    </div>
+                    
                     {{/each}}
 
-                    
+
 
                 </div>
             </div>

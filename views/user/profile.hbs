@@ -34,7 +34,7 @@
                             class="bi bi-heart p-2"></i>Wishlist</a>
                     <a href="orders" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
                             class="bi bi-truck p-2"></i>Orders</a>
-                    <a href="password" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+                    <a href="change-password" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
                             class="bi bi-key p-2"></i>Password</a>
                     <a href="wallet" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
                             class="bi bi-wallet2 p-2"></i>Wallet</a>
@@ -85,7 +85,7 @@
                                 <div class="mb-4">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" class="form-control" name="email" id="email"
-                                        value="{{user.email}}">
+                                        value="{{user.email}}" readonly disabled>
                                 </div>
 
                                 <div class="mb-4">
@@ -134,6 +134,48 @@
             const originalEmail = document.getElementById("email").defaultValue;
             console.log("Form Data Sent:", formData);
 
+            if(!formData.firstname){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Missing',
+                    text: 'Please enter your firstname',
+                    confirmButtonText: 'Try Again',
+                    confirmButtonColor: '#d33'  // Red color for error
+                });
+                return; 
+            }
+            if(!formData.lastname){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Missing',
+                    text: 'Please enter your lastname',
+                    confirmButtonText: 'Try Again',
+                    confirmButtonColor: '#d33'  // Red color for error
+                });
+                return; 
+            }
+            if(!formData.phone){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Missing',
+                    text: 'Please enter your phone number',
+                    confirmButtonText: 'Try Again',
+                    confirmButtonColor: '#d33'  // Red color for error
+                });
+                return; 
+            }
+            const phoneRegex = /^\d{10}$/;  
+            if (!phoneRegex.test(formData.phone)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Phone Number',
+                    text: 'Phone number must be exactly 10 digits',
+                    confirmButtonText: 'Try Again',
+                    confirmButtonColor: '#d33'
+                });
+                return;
+            }
+
             if (formData.email !== originalEmail) {
                 // Ask for confirmation before updating the email
                 const confirmChange = confirm("Are you sure you want to change your email? This will log you out.");
@@ -141,6 +183,7 @@
                     return; // Stop form submission if the user cancels the email change
                 }
             }
+        
 
             try {
                 const response = await fetch("/profile-update", {

@@ -89,7 +89,7 @@ app.use((err, req, res, next) => {
 
 app.use('/', userRoutes)
 app.use('/admin', adminRoutes)
-
+app.use((req, res) => res.render('user/error', {title: "Error"}));
 
 connectDB();
 

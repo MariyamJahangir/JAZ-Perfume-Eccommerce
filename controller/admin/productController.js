@@ -160,59 +160,6 @@ const getProductImages = async (req, res) => {
 
 
 
-// Post Edit Products
-// const editProducts = async (req, res) => {
-//     try {
-//       const productId = req.params.id;
-//       const { name, category, offer, description, variant, trending, images } = req.body;
-
-//       if (!name || !category || !description || !variant || variant.length === 0) {
-//         return res.status(400).json({
-//           error: "All required fields (name, category, description, variant) must be provided.",
-//         });
-//       }
-
-//       const product = await productModel.findById(productId);
-//       if (!product) {
-//         return res.status(404).json({ error: "Product not found" });
-//       }
-
-//       // Handle image processing
-//       const finalImages = images.map((image) => {
-//         if (image.startsWith("data:image")) {
-//           const fileName = `${Date.now()}-image.jpg`;
-//           const base64Data = image.split(",")[1];
-//           const buffer = Buffer.from(base64Data, "base64");
-//           fs.writeFileSync(`uploads/${fileName}`, buffer);
-//           return fileName;
-//         }
-//         return image;
-//       });
-
-//       // Update product fields
-//       product.name = name;
-//       product.category = category;
-//       product.offer = offer;
-//       product.description = description;
-//       product.trending = trending;
-//       product.variant = variant.map((v) => ({
-//         stockQuantity: v.stockQuantity || 0,
-//         quantityML: v.quantityML || 0,
-//         price: v.price || 0,
-//         stockStatus: v.stockStatus || "In Stock",
-//       }));
-//       product.images = finalImages;
-
-//       await product.save();
-
-//       res.status(200).json({ message: "Product updated successfully", product });
-//     } catch (error) {
-//       console.error("Error editing product:", error);
-//       res.status(500).json({ error: "An error occurred while editing the product. Please try again later." });
-//     }
-//   };
-
-
 const editProducts = async (req, res) => {
     try {
         const productId = req.params.id;
@@ -230,7 +177,8 @@ const editProducts = async (req, res) => {
 
         const { name, category, offer, description, variant, trending, images } = req.body;
 
-        console.log(req.body)
+        console.log(variant)
+        
         if (!variant || !Array.isArray(variant) || variant.length === 0) {
             return res.status(400).json({ message: "At least one valid variant is required." });
         }
@@ -248,6 +196,7 @@ const editProducts = async (req, res) => {
 
 
         const parsedVariants = variant.map((variant, index) => {
+            
             const quantityML = variant.quantityML.trim()
             const price = Number(variant.price);
             const stockQuantity = Number(variant.stockQuantity);
@@ -266,14 +215,19 @@ const editProducts = async (req, res) => {
                 stockStatus = "In Stock";
             }
 
+            
 
             return {
+                _id: variant._id,
                 quantityML: quantityML,
                 price,
                 stockQuantity: stockQuantity,
                 stockStatus,
             };
         });
+
+        
+        
 
         // Handle image processing
         const finalImages = images.map((image) => {

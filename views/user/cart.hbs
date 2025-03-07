@@ -13,7 +13,7 @@
 
                 {{#if cartItems.length}}
                 {{#each cartItems}}
-                <div class="row d-flex justify-content-between border p-2 me-3">
+                <div class="row d-flex justify-content-between border p-2 me-3" data-cart-id="{{this._id}}" data-stockQuantity="{{this.selectedVariant.stockQuantity}}">
                     <div class="col-2">
                         <img src="/uploads/{{this.products.images.[0]}}" alt="" style="width: 70%;">
                     </div>
@@ -22,9 +22,10 @@
                                 class="fw-bold text-black link-underline link-underline-opacity-0">{{this.products.name}}</a>
                         </p>
                         <span>Variant: {{this.selectedVariant.quantityML}}ML</span>
+                        {{#if (isEqual this.selectedVariant.stockStatus "Out of Stock")}}<span class="fw-bold text-danger">{{this.selectedVariant.stockStatus}}</span>{{/if}}
                     </div>
                     <div class="col-2 align-content-center">
-                        <p class="mb-0">₹{{this.totalPrice}}</p>
+                        <p class="mb-0">₹{{this.selectedVariant.price}}</p>
                     </div>
                     <div class="col-3 align-content-center">
                         <button class="btn btn-sm btn-outline-secondary rounded-circle me-1"
@@ -50,12 +51,12 @@
                     <h4>Order Summary</h4>
                 </div>
                 <div class="p-3 text-center">
-                    <div class="d-flex justify-content-between py-2"><span>Subtotal:</span><span>₹{{totalPrice}}</span>
+                    <div class="d-flex justify-content-between py-2"><span>Subtotal:</span><span id="subtotal-price" data-total="{{totalPrice}}">₹{{totalPrice}}</span>
                     </div>
                     <div class="d-flex justify-content-between py-2"><span>Discount</span><span>-₹0</span></div>
                     <div class="d-flex justify-content-between py-2"><span>Shipping:</span><span>Free</span></div>
                     <hr>
-                    <div class="d-flex justify-content-between py-2"><span>Total:</span><span>₹{{totalPrice}}</span>
+                    <div class="d-flex justify-content-between py-2"><span>Total:</span><span id="total-price" data-total="{{totalPrice}}">₹{{totalPrice}}</span>
                     </div>
                     {{!-- <a href="/checkout" class="btn btn-dark w-100 my-2">Checkout</a> --}}
                     <!-- Checkout Button -->
@@ -91,23 +92,86 @@
         }
     });
 
-    async function increaseQuantity(cartItemId) {
+    document.addEventListener("DOMContentLoaded", function () {
+        let cartItems = document.querySelectorAll("[data-stockQuantity]"); 
+        let checkoutButton = document.getElementById("checkoutButton");
+
+        let isOutOfStock = Array.from(cartItems).some(item => item.dataset.stockquantity == "0");
+
+        if (isOutOfStock) {
+            checkoutButton.disabled = true;
+            checkoutButton.classList.add("btn-secondary"); // Optional: Change button style
+            checkoutButton.classList.remove("btn-dark");
+        }
+    });
+
+ /*   async function increaseQuantity(cartItemId) {
         try {
-            const response = await fetch(`/cart/increase/${cartItemId}`, {
+            const cartItemElement = document.querySelector(`[data-stockQuantity][data-cart-id="${cartItemId}"]`);
+            const quantityElement = cartItemElement.querySelector(".quantity");
+
+            let currentQuantity = parseInt(quantityElement.innerText);
+            let stockQuantity = parseInt(cartItemElement.getAttribute("data-stockQuantity"));
+
+            if (currentQuantity < stockQuantity) {
+                await updateQuantity(cartItemId, currentQuantity + 1);
+            } else {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Stock Limit Reached!",
+                    text: "You can't add more than the available stock.",
+                    confirmButtonColor: "#d33"
+                });
+            }
+        } catch (error) {
+            console.error("Error increasing quantity:", error);
+        }
+    }
+
+    async function decreaseQuantity(cartItemId) {
+        try {
+            const cartItemElement = document.querySelector(`[data-stockQuantity][data-cart-id="${cartItemId}"]`);
+            const quantityElement = cartItemElement.querySelector(".quantity");
+
+            let currentQuantity = parseInt(quantityElement.innerText);
+
+            if (currentQuantity > 1) {
+                await updateQuantity(cartItemId, currentQuantity - 1);
+            } else {
+                Swal.fire({
+                    icon: "info",
+                    title: "Minimum Quantity Reached",
+                    text: "You cannot reduce quantity below 1.",
+                    confirmButtonColor: "#3085d6"
+                });
+            }
+        } catch (error) {
+            console.error("Error decreasing quantity:", error);
+        }
+    }
+*/
+ /*   async function updateQuantity(cartItemId, newQuantity) {
+        try {
+            const response = await fetch(`/cart/update-quantity`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" }
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ cartItemId, quantity: newQuantity }),
             });
 
             const data = await response.json();
+
             if (data.success) {
-                location.reload(); // Refresh page to update cart UI
+                const cartItemElement = document.querySelector(`[data-stockQuantity][data-cart-id="${cartItemId}"]`);
+                cartItemElement.querySelector(".quantity").innerText = newQuantity;
+                cartItemElement.querySelector(".mb-0").innerText = `₹${data.newTotal}`;
+                
+
             } else {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Failed to Update Quantity',
-                    text: 'Please try again later.',
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#d33'
+                    icon: "error",
+                    title: "Update Failed",
+                    text: data.message,
+                    confirmButtonColor: "#d33"
                 });
             }
         } catch (error) {
@@ -115,29 +179,98 @@
         }
     }
 
-    async function decreaseQuantity(cartItemId) {
-        try {
-            const response = await fetch(`/cart/decrease/${cartItemId}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" }
-            });
+*/
 
-            const data = await response.json();
-            if (data.success) {
-                location.reload(); // Refresh page to reflect updated values
-            } else {
-                Swal.fire({
-                    icon: 'error', 
-                    title: 'Oops!',
-                    text: data.message,
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#d33'
-                }); // Show alert if quantity can't be reduced further
-            }
-        } catch (error) {
-            console.error("Error decreasing quantity:", error);
+async function increaseQuantity(cartItemId) {
+    try {
+        const cartItemElement = document.querySelector(`[data-stockQuantity][data-cart-id="${cartItemId}"]`);
+        const quantityElement = cartItemElement.querySelector(".quantity");
+
+        let currentQuantity = parseInt(quantityElement.innerText) || 0;
+        let stockQuantity = parseInt(cartItemElement.getAttribute("data-stockQuantity")) || 0;
+
+        if (stockQuantity === 0) {
+            Swal.fire({
+                icon: "error",
+                title: "Out of Stock!",
+                text: "This item is currently unavailable.",
+                confirmButtonColor: "#d33"
+            });
+            return;
         }
+
+        if (currentQuantity < stockQuantity) {
+            await updateQuantity(cartItemId, currentQuantity + 1);
+        } else {
+            Swal.fire({
+                icon: "warning",
+                title: "Stock Limit Reached!",
+                text: "You can't add more than the available stock.",
+                confirmButtonColor: "#d33"
+            });
+        }
+    } catch (error) {
+        console.error("Error increasing quantity:", error);
     }
+}
+
+async function decreaseQuantity(cartItemId) {
+    try {
+        const cartItemElement = document.querySelector(`[data-stockQuantity][data-cart-id="${cartItemId}"]`);
+        const quantityElement = cartItemElement.querySelector(".quantity");
+
+        let currentQuantity = parseInt(quantityElement.innerText) || 0;
+
+        if (currentQuantity > 1) {
+            await updateQuantity(cartItemId, currentQuantity - 1);
+        } else {
+            Swal.fire({
+                icon: "info",
+                title: "Minimum Quantity Reached",
+                text: "You cannot reduce quantity below 1.",
+                confirmButtonColor: "#3085d6"
+            });
+        }
+    } catch (error) {
+        console.error("Error decreasing quantity:", error);
+    }
+}
+
+
+    
+async function updateQuantity(cartItemId, newQuantity) {
+    try {
+        const response = await fetch(`/cart/update-quantity`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ cartItemId, quantity: newQuantity }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            const cartItemElement = document.querySelector(`[data-stockQuantity][data-cart-id="${cartItemId}"]`);
+            cartItemElement.querySelector(".quantity").innerText = newQuantity;
+            cartItemElement.querySelector(".mb-0").innerText = `₹${data.newTotal}`;
+
+            // ✅ Update both Subtotal and Total Price
+            document.querySelector("#subtotal-price").innerText = `₹${data.updatedCartTotal}`;
+            document.querySelector("#total-price").innerText = `₹${data.updatedCartTotal}`;
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Update Failed",
+                text: data.message,
+                confirmButtonColor: "#d33"
+            });
+        }
+    } catch (error) {
+        console.error("Error updating quantity:", error);
+    }
+}
+
+
+
 
     async function removeProduct(cartItemId) {
          const result = await Swal.fire({

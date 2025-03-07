@@ -15,7 +15,7 @@ const LoadCart = async (req, res) => {
                 select: 'name images variant',  // Populate product details
             })
             .lean();
-
+        
         // Loop through cart items and attach selected variant data to each cart item
         cartItems.forEach(item => {
             const selectedVariant = item.products.variant.find(v => v._id.toString() === item.variant.toString());
@@ -27,6 +27,8 @@ const LoadCart = async (req, res) => {
             }
         });
 
+        console.log("cartItems:",cartItems)
+
         // Calculate the total price based on the selected variant's price
         let totalPrice = 0;
         cartItems.forEach(item => {
@@ -34,8 +36,6 @@ const LoadCart = async (req, res) => {
                 totalPrice += item.selectedVariant.price * item.quantityCount;  // Use the selected variant's price
             }
         });
-
-        
 
         // Render the cart page with the cart items and total price
         res.render('user/cart', {
@@ -50,74 +50,111 @@ const LoadCart = async (req, res) => {
 
 
 
+// const updateCartQuantity = async (req, res) => {
+//     try {
+//         const { cartItemId, quantity } = req.body;
+
+//         // Find the cart item
+//         const cartItem = await cartModel.findById(cartItemId).populate({
+//             path: "products",
+//             select: "variant", // Populate variant details
+//         });
+
+//         if (!cartItem) {
+//             return res.status(404).json({ success: false, message: "Cart item not found" });
+//         }
+
+//         // Get the selected variant stock quantity
+//         const selectedVariant = cartItem.products.variant.find(
+//             (v) => v._id.toString() === cartItem.variant.toString()
+//         );
+
+//         if (!selectedVariant) {
+//             return res.status(404).json({ success: false, message: "Variant not found" });
+//         }
+
+//         // Check if the requested quantity is within stock limit
+//         if (quantity > selectedVariant.stockQuantity) {
+//             return res.status(400).json({ success: false, message: "Stock limit exceeded" });
+//         }
+
+//         // Update the quantity in the database
+//         cartItem.quantityCount = quantity;
+//         await cartItem.save();
+
+//         // Recalculate the total price
+//         const newTotal = cartItem.quantityCount * selectedVariant.price;
+
+//         res.json({ success: true, message: "Quantity updated successfully", newTotal });
+//     } catch (error) {
+//         console.error("Error updating cart quantity:", error);
+//         res.status(500).json({ success: false, message: "Server error" });
+//     }
+// };
 
 
-
-const increaseCart = async (req, res) => {
+const updateCartQuantity = async (req, res) => {
     try {
-        const cartItemId = req.params.cartItemId;
+        const { cartItemId, quantity } = req.body;
 
         // Find the cart item
-        let cartItem = await cartModel.findById(cartItemId);
+        const cartItem = await cartModel.findById(cartItemId).populate({
+            path: "products",
+            select: "variant",
+        });
+
         if (!cartItem) {
             return res.status(404).json({ success: false, message: "Cart item not found" });
         }
 
-        // Find the associated product variant price
-        const product = await productModel.findById(cartItem.products);
-        const variant = product.variant.find(v => v._id.toString() === cartItem.variant.toString());
-        if (!variant) {
+        // Get the selected variant stock quantity
+        const selectedVariant = cartItem.products.variant.find(
+            (v) => v._id.toString() === cartItem.variant.toString()
+        );
+
+        if (!selectedVariant) {
             return res.status(404).json({ success: false, message: "Variant not found" });
         }
 
-        // Increase quantity
-        cartItem.quantityCount += 1;
-        cartItem.totalPrice = cartItem.quantityCount * variant.price; // Correct price calculation
+        // Check if requested quantity is within stock limit
+        if (quantity > selectedVariant.stockQuantity) {
+            return res.status(400).json({ success: false, message: "Stock limit exceeded" });
+        }
 
-        // Save the updated cart item
+        // Update the quantity in the database
+        cartItem.quantityCount = quantity;
         await cartItem.save();
 
-        res.json({ success: true, message: "Quantity updated", cartItem });
+        // Recalculate the individual item total
+        const newTotal = cartItem.quantityCount * selectedVariant.price;
+
+        // ✅ Calculate the updated total cart price
+        const cartItems = await cartModel.find({ user: cartItem.user }).populate({
+            path: "products",
+            select: "variant",
+        });
+
+        const updatedCartTotal = cartItems.reduce((total, item) => {
+            const variant = item.products.variant.find(v => v._id.toString() === item.variant.toString());
+            return total + (variant ? item.quantityCount * variant.price : 0);
+        }, 0);
+
+        // Send response with updated item and cart total
+        res.json({ 
+            success: true, 
+            message: "Quantity updated successfully", 
+            newTotal, 
+            updatedCartTotal 
+        });
 
     } catch (error) {
-        console.error("Error increasing quantity:", error);
+        console.error("Error updating cart quantity:", error);
         res.status(500).json({ success: false, message: "Server error" });
     }
-}
+};
 
-const decreaseCart = async (req, res) => {
-    try {
-        const cartItemId = req.params.cartItemId;
 
-        // Find the cart item
-        let cartItem = await cartModel.findById(cartItemId);
-        if (!cartItem) {
-            return res.status(404).json({ success: false, message: "Cart item not found" });
-        }
 
-        // Find the associated product variant price
-        const product = await productModel.findById(cartItem.products);
-        const variant = product.variant.find(v => v._id.toString() === cartItem.variant.toString());
-        if (!variant) {
-            return res.status(404).json({ success: false, message: "Variant not found" });
-        }
-
-        // Ensure quantity does not go below 1
-        if (cartItem.quantityCount > 1) {
-            cartItem.quantityCount -= 1;
-            cartItem.totalPrice = cartItem.quantityCount * variant.price; // Update total price
-            await cartItem.save();
-            return res.json({ success: true, message: "Quantity decreased", cartItem });
-        } else {
-            // If quantity is 1, do nothing
-            return res.json({ success: false, message: "Minimum quantity reached" });
-        }
-
-    } catch (error) {
-        console.error("Error decreasing quantity:", error);
-        res.status(500).json({ success: false, message: "Server error" });
-    }
-}
 
 const removeProduct = async (req, res) => {
     try {
@@ -186,6 +223,40 @@ const PlaceOrder = async (req, res) => {
     try {
         const { shippingAddress, paymentMethod, items, totalAmount } = req.body;
 
+         // Iterate over each item in the order
+         for (const item of items) {
+            const product = await productModel.findById(item.productId);
+
+            if (!product) {
+                return res.status(404).json({ message: `Product not found: ${item.productId}` });
+            }
+
+            // Find the correct variant
+            const variant = product.variant.id(item.variantId);
+            if (!variant) {
+                return res.status(404).json({ message: `Variant not found: ${item.variantId}` });
+            }
+
+            // Check if there's enough stock
+            if (variant.stockQuantity < item.quantityCount) {
+                return res.status(400).json({ message: `Not enough stock for product: ${product.name}` });
+            }
+
+            // Subtract the ordered quantity from stock
+            variant.stockQuantity -= item.quantityCount;
+
+            // // Update stock status
+            // if (variant.stockQuantity === 0) {
+            //     variant.stockStatus = "Out of Stock";
+            // } else if (variant.stockQuantity <= 10) {
+            //     variant.stockStatus = "A few stocks left";
+            // } else {
+            //     variant.stockStatus = "In Stock";
+            // }
+
+            await product.save();
+        }
+
         const newOrder = new orderModel({
             userId: req.session.user.id, // Assuming you're using Passport.js for authentication
             items,
@@ -202,6 +273,7 @@ const PlaceOrder = async (req, res) => {
         console.error('Error placing order:', error);
         res.status(500).json({ message: 'Failed to place order.' });
     }
+
 }
 
 
@@ -217,8 +289,7 @@ const OrderPlaced = (req, res) => {
 
 module.exports = {
     LoadCart,
-    increaseCart,
-    decreaseCart,
+    updateCartQuantity,
     removeProduct,
     LoadCheckout,
     PlaceOrder,

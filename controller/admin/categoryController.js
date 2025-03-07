@@ -74,7 +74,7 @@ const editCategory = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, description } = req.body;
-        console.log(`Body:`, req.body, `File:`, req.file);
+        
         
         if (!name || !description) {
             return res.json({ message: 'Name and description are required.' });
