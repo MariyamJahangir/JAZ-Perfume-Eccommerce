@@ -53,7 +53,7 @@ router.get('/all-products', productController.allProducts);
 
 
 
-router.get('/product-details/:id',  productController.productDetails)  //auth.isLogin,
+router.get('/product-details/:id/:variantId',  productController.productDetails)  //auth.isLogin,
 router.post('/cart/add', auth.isLogin, productController.AddToCart)
 
 
@@ -84,7 +84,7 @@ router.delete("/delete-address/:id", addressController.deleteAddress)
 
 // cart
 router.get('/cart', auth.isLogin, cartController.LoadCart)
-
+router.get('/cart/count', auth.isLogin, cartController.cartCount)
 router.delete("/cart/remove/:cartItemId", cartController.removeProduct)
 router.post("/cart/update-quantity", cartController.updateCartQuantity);
 

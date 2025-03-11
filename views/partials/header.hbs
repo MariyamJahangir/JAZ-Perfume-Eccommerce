@@ -24,7 +24,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/all-products">Shop</a>
                     </li>
-                    <li class="nav-item dropdown">
+                    {{!-- <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             Category
@@ -37,7 +37,7 @@
                             <li><a class="dropdown-item" href="#">Dakhoon</a></li>
                             <li><a class="dropdown-item" href="#">Combo</a></li>
                         </ul>
-                    </li>
+                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link" href="#">About us</a>
                     </li>
@@ -45,7 +45,7 @@
                         <a class="nav-link" href="#">Contact us</a>
                     </li>
                 </ul>
-                <form class="d-flex">
+                {{!-- <form class="d-flex">
                     <div class="input-group search-input">
                         <span class="input-group-text bg-white border-end-0">
                             <i class="bi bi-search"></i>
@@ -53,18 +53,26 @@
                         <input class="form-control border-start-0" type="search" placeholder="Search"
                             aria-label="Search">
                     </div>
-                </form>
+                </form> --}}
                 <div class="d-flex">
-                   
-                    <div>
-                        <a href="/cart">
-                            <i class="bi bi-cart4 px-2 fs-3 text-secondary"></i>
+
+                    <div class="d-flex align-items-center gap-3">
+                        {{!-- <a href="/cart">
+                            <i class="bi bi-cart4 px-2 fs-3 text-secondary"><span id="cart-count"
+                                    class="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-pill">0</span></i>
+                        </a> --}}
+                        <a href="/cart" class="position-relative">
+                            <svg xmlns="http://www.w3.org/2000/svg"  width="30" height="30" fill="currentColor" class="bi bi-cart4 text-secondary" viewBox="0 0 16 16">
+                            <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l.5 2H5V5zM6 5v2h2V5zm3 0v2h2V5zm3 0v2h1.36l.5-2zm1.11 3H12v2h.61zM11 8H9v2h2zM8 8H6v2h2zM5 8H3.89l.5 2H5zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
+                            </svg>
+                            <span id="cart-count"
+                                class="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-pill">0</span>
                         </a>
                         <a href="/profile">
                             <i class="bi bi-person-circle px-2 fs-4 text-secondary"></i>
                         </a>
                     </div>
-                          
+
                 </div>
             </div>
         </div>
@@ -73,3 +81,22 @@
 
 </header>
 
+
+<script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        const cartCountElement = document.getElementById("cart-count");
+
+        try {
+            const response = await fetch("/cart/count");
+            const data = await response.json();
+            if (data.count > 0) {
+                cartCountElement.textContent = data.count;
+                cartCountElement.style.display = "flex";
+            } else {
+                cartCountElement.style.display = "none";
+            }
+        } catch (error) {
+            console.error("Error fetching cart count:", error);
+        }
+    });
+</script>

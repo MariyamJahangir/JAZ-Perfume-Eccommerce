@@ -14,6 +14,7 @@ const dec = (value) => {
 }
 
 const gt = (a, b) => a > b
+const lt = (a, b) => a < b
 
 const multiply = (a, b) => a * b
 
@@ -56,6 +57,14 @@ const formatAddress = (address, locality, district, state, pincode) => {
 }
 
 
+const range = (start, end) => {
+  let arr = [];
+  for (let i = start; i <= end; i++) {
+      arr.push(i);
+  }
+  return arr;
+}
+
 
 module.exports = {
   isEqual,
@@ -65,10 +74,12 @@ module.exports = {
   inc,
   dec,
   gt,
+  lt,
   json,
   formatDate,
   getVariantQuantity,
   isReturnEligible,
   multiply,
-  formatAddress
+  formatAddress,
+  range
 }

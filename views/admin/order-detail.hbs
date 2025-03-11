@@ -177,19 +177,23 @@
                                 data-bs-ride="carousel">
                                 <!-- Indicators -->
                                 <div class="carousel-indicators">
-                                    {{#each orderedItem.productId.images}}
+                                    {{#each order.items}}
+                                    
                                     <button type="button" data-bs-target="#carouselExampleIndicators"
                                         data-bs-slide-to="{{@index}}" class="{{#if @first}}active{{/if}}"
                                         aria-current="true" aria-label="Slide {{inc @index}}"></button>
+                                    
                                     {{/each}}
                                 </div>
 
                                 <!-- Carousel Slides -->
                                 <div class="carousel-inner">
-                                    {{#each orderedItem.productId.images}}
+                                    {{#each order.items}}
+                                    {{#if this.productId.images.length}} <!-- Ensure there are images -->
                                     <div class="carousel-item {{#if @first}}active{{/if}}">
-                                        <img src="/uploads/{{this}}" class="d-block w-100" alt="Product Image">
+                                        <img src="/uploads/{{this.productId.images.[0]}}" class="d-block w-100" alt="Product Image">
                                     </div>
+                                    {{/if}}
                                     {{/each}}
                                 </div>
 
@@ -221,43 +225,51 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {{#each order.items}}
                                     <tr>
-                                        <td scope="col">1.</td>
-                                        <td>{{orderedItem.productId.name}}</td>
-                                        <td>{{orderedItem.variantId.quantityML}} ML</td>
-                                        <td class="text-center">{{orderedItem.quantityCount}}</td>
-                                        <td>Rs. {{orderedItem.price}}</td>
-                                        <td>Rs. {{multiply orderedItem.quantityCount orderedItem.price}}</td>
+                                        <td scope="col">{{inc @index}}.</td>
+                                        <td>{{this.productId.name}}</td>
+                                        <td>{{this.variantId.quantityML}} ML</td>
+                                        <td class="text-center">{{this.quantityCount}}</td>
+                                        <td>Rs. {{this.price}}</td>
+                                        <td>Rs. {{multiply this.quantityCount this.price}}</td>
                                         <td>
-                                            {{#if (isEqual orderedItem.status "Returned")}}
+                                            {{#if (isEqual this.status "Returned")}}
                                                 <div class="d-flex pb-2">
-                                                    <button type="button" class="btn btn-success me-2">Approve</button>
-                                                    <button type="button" class="btn btn-danger">Reject</button>
+                                                    <!-- Approve Return -->
+                                                    <form action="/admin/update-order-status/{{../order._id}}/{{this.productId._id}}" method="POST">
+                                                        <input type="hidden" name="status" value="Return Approved">
+                                                        <button type="submit" class="btn btn-success me-2">Approve</button>
+                                                    </form>
+
+                                                    <!-- Reject Return -->
+                                                    <form action="/admin/update-order-status/{{../order._id}}/{{this.productId._id}}" method="POST">
+                                                        <input type="hidden" name="status" value="Delivered">
+                                                        <button type="submit" class="btn btn-danger">Reject</button>
+                                                    </form>
                                                 </div>
                                                 <p><span class="fw-bold">Return Reason:</span><br>
-                                                    {{orderedItem.returnReason}}</p>
+                                                    {{this.returnReason}}</p>
 
                                             {{else}}
 
                                                 <div class="d-flex pb-3">
                                                     
-                                                    {{#if statusOptions.length}}
+                                                    {{#if this.statusOptions.length}}
                                                     <div class="col-7 me-1">
                                                         <form id="setstatus"
-                                                            action="/admin/update-order-status/{{order._id}}/{{orderedItem.productId._id}}"
+                                                            action="/admin/update-order-status/{{../order._id}}/{{this.productId._id}}"
                                                             method="POST">
                                                             <!-- Display the current status as plain text -->
 
                                                             <select class="form-select" id="status" name="status">
                                                                 <!-- Show the current status as a disabled, selected option -->
-                                                                <option value="{{orderedItem.status}}" selected disabled>
-                                                                    {{orderedItem.status}}</option>
+                                                                <option value="{{this.status}}" selected >
+                                                                    {{this.status}}</option>
 
                                                                 <!-- Show only the next available statuses -->
-                                                                {{#each statusOptions}}
-                                                                {{#unless (isEqual this ../orderedItem.status)}}
-                                                                <option value="{{this}}">{{this}}</option>
-                                                                {{/unless}}
+                                                                {{#each this.statusOptions}}                                                                                                                      
+                                                                <option value="{{this}}">{{this}}</option>                                                                                                                            
                                                                 {{/each}}
                                                             </select>
 
@@ -268,8 +280,9 @@
                                                         </form>
                                                     {{else}}
                                                     <div class="col">
-                                                        <div class="mb-2"><strong>Current Status:</strong>
-                                                        {{orderedItem.status}} </div>
+                                                        <div class="mb-2"><strong>Current Status:</strong> {{this.status}} </div>
+                                                        {{#if (isEqual this.status "Return Approved")}} <p><span class="fw-bold">Reason:</span>
+                                                    {{this.returnReason}}</p> {{/if}}
                                                         <span class="text-muted">No further status changes allowed</span>
                                                     </div>
                                                     {{/if}}
@@ -277,66 +290,15 @@
                                             {{/if}}
                                         </td>
                                     </tr>
-
+                                    {{/each}}
 
                                 </tbody>
                             </table>
 
-                            {{!-- <div class="container pt-4 px-0 ">
-                                <p>Order Status</p>
-
-
-                                <div class="row d-flex justify-content-start mt-4">
-                                    <div class="mb-2"><strong>Current Status:</strong> {{orderedItem.status}}
-                                    </div>
-                                    {{#if statusOptions.length}}
-                                    <div class="col-4">
-
-                                        <form id="setstatus"
-                                            action="/admin/update-order-status/{{order._id}}/{{orderedItem.productId._id}}"
-                                            method="POST">
-                                            <!-- Display the current status as plain text -->
-
-                                            <select class="form-select" id="status" name="status">
-                                                <!-- Show the current status as a disabled, selected option -->
-                                                <option value="{{orderedItem.status}}" selected disabled>
-                                                    {{orderedItem.status}}</option>
-
-                                                <!-- Show only the next available statuses -->
-                                                {{#each statusOptions}}
-                                                {{#unless (isEqual this ../orderedItem.status)}}
-                                                <option value="{{this}}">{{this}}</option>
-                                                {{/unless}}
-                                                {{/each}}
-                                            </select>
-
-                                    </div>
-                                    <div class="col-6">
-                                        <button type="submit" class="btn btn-dark px-4">Set Status</button>
-                                    </div>
-                                    </form>
-                                    {{else}}
-                                    <div class="col-6">
-                                        <span class="text-muted">No further status changes allowed</span>
-                                    </div>
-                                    {{/if}}
-                                </div>
-
-                            </div> --}}
+                            
 
                         </div>
                     </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
                 </div>

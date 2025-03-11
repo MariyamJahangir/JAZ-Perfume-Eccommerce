@@ -3,6 +3,8 @@
     integrity="sha512-7DgGWBKHddtgZ9Cgu8aGfJXvgcVv4SWSESomRtghob4k4orCBUTSRQ4s5SaC2Rz+OptMqNk0aHHsaUBk6fzIXw=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
 <section class="m-0 bgcolor ">
     <div class="row d-flex justify-content-between">
 
@@ -120,20 +122,13 @@
 
                     <div class="d-flex justify-content-between align-items-center flex-wrap">
                         <h3 class="fw-medium">Customers</h3>
-                        <form action="/admin/search">
-                            <div class=" input-group w-auto">
-                                <input type="text" class="form-control" placeholder="Search customers"
-                                    aria-label="Search customers">
-                                <button class="btn border" type="submit">
-                                    <i class="bi bi-search"></i>
-                                </button>
-                            </div>
-                        </form>
+                        
                     </div>
 
                     <div class="table-responsive mt-4">
-                        <table class="table table-bordered align-middle text-center">
-                            <thead class="table-light">
+
+                        <table class="table table-striped table-hover table-bordered align-middle text-center" id="customerTable">
+                            <thead class="table-dark">
                                 <tr>
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
@@ -147,52 +142,22 @@
                                     <td>{{firstname}} {{lastname}}</td>
                                     <td>{{email}}</td>
                                     <td>
-
-                                        {{#if (isEqual status "active")}}
-                                        <span class="badge text-bg-success">{{status}}</span>
-                                        {{else}}
-                                        <span class="badge text-bg-danger">{{status}}</span>
-                                        {{/if}}
-
+                                        <span class="badge {{#if (isEqual status 'active')}}text-bg-success{{else}}text-bg-danger{{/if}}">
+                                            {{status}}
+                                        </span>
                                     </td>
                                     <td>
-                                        {{#if (isEqual status "active")}}
-                                        <button type="button" class="btn btn-outline-primary btn-sm me-2 toggle-status"
-                                            data-id="{{_id}}" data-status="active">Block</button>
-                                        {{else}}
-                                        <button type="button" class="btn btn-outline-primary btn-sm me-2 toggle-status"
-                                            data-id="{{_id}}" data-status="blocked">Unblock</button>
-                                        {{/if}}
-
+                                        <button type="button" class="btn {{#if (isEqual status 'active')}}btn-outline-danger{{else}}btn-outline-success{{/if}} btn-sm toggle-status"
+                                            data-id="{{_id}}" data-status="{{status}}">
+                                            {{#if (isEqual status 'active')}}Block{{else}}Unblock{{/if}}
+                                        </button>
                                     </td>
                                 </tr>
                                 {{/each}}
-
                             </tbody>
                         </table>
+
                     </div>
-
-                    <nav aria-label="Page navigation" class="d-flex justify-content-end mt-4">
-                        <ul class="pagination">
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-
-
-
-
 
                 </div>
             </div>
@@ -270,5 +235,21 @@
             button.dataset.status === 'active' ? 'badge text-bg-success' : 'badge text-bg-danger';
     }
 
-
 </script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script>
+     $('#customerTable').DataTable({
+      paging: true,
+      searching: true,
+      ordering: true,
+      info: true,
+      autoWidth: false,
+      responsive: true,
+      order: [[2, 'desc']] 
+    });
+</script>
+
+
+

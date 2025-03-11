@@ -113,8 +113,7 @@
                                     method="POST">
                                     <button type="button" class="btn btn-outline-danger px-3"
                                         onclick="confirmAction('cancel', '{{../order._id}}', '{{this.productId._id}}', '{{this.status}}')"
-                                        {{#if (or (isEqual this.status "Cancelled" ) (isEqual this.status "Returned" )
-                                        (isEqual this.status "Return Approved" ))}}hidden{{/if}}>
+                                        {{#if (or (or (isEqual this.status "Cancelled" ) (isEqual this.status "Returned" )) (isEqual this.status "Return Approved" ))}}hidden{{/if}}>
                                         Cancel
                                     </button>
 

@@ -283,7 +283,27 @@ const OrderPlaced = (req, res) => {
 }
 
 
+const cartCount = async (req, res) => {
+    try {
+        const userId = req.session?.user?.id;
+        if (!userId) {
+            return res.json({ count: 0 });
+        }
 
+        const cart = await cartModel.findOne({ user: userId });
+        if (!cart) {
+            return res.json({ count: 0 });
+        }
+
+        // If quantityCount exists, use it; otherwise, default to 1
+        const itemCount = cart.quantityCount ? cart.quantityCount : 1;
+
+        res.json({ count: itemCount });
+    } catch (error) {
+        console.error("Error fetching cart count:", error);
+        res.status(500).json({ count: 0 });
+    }
+};
 
 
 
@@ -294,5 +314,6 @@ module.exports = {
     LoadCheckout,
     PlaceOrder,
     OrderPlaced,
+    cartCount
 }
 

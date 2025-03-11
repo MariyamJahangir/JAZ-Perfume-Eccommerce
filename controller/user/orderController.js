@@ -104,6 +104,8 @@ const ReturnOrder = async (req, res) => {
         // Update status to "Returned"
         orderedItem.status = "Returned";
         orderedItem.returnReason = returnReason; // ✅ Save return reason
+        order.orderStatus = 'Not completed'
+
         await order.save();
 
         res.redirect(`/order-detail/${orderId}`); 
@@ -140,11 +142,13 @@ const CancelOrder = async (req, res) => {
         }
 
         // If the item was returned, cancel the return and revert to "Delivered"
-        if (orderedItem.status === "Returned") {
-            orderedItem.status = "Delivered";
-        } 
+        // if (orderedItem.status === "Returned") {
+        //     orderedItem.status = "Delivered";
+        // } 
+
+
         // Otherwise, cancel the order normally (if it's not yet delivered)
-        else if (orderedItem.status !== "Delivered") {
+        if (orderedItem.status !== "Delivered") {
             orderedItem.status = "Cancelled";
             orderedItem.cancelReason = cancelReason; // ✅ Save cancellation reason
             variant.stockQuantity += orderedItem.quantityCount
@@ -152,6 +156,11 @@ const CancelOrder = async (req, res) => {
         else {
             return res.status(400).send('Delivered items cannot be cancelled');
         }
+
+
+        if ( order.items.every(item => item.status === "Delivered" || item.status === "Cancelled")) {
+            await orderModel.updateOne({ _id: orderId }, { $set: { orderStatus: "Completed" } });
+        }else await orderModel.updateOne({ _id: orderId }, { $set: { orderStatus: "Not completed" } });
 
         await order.save();
         await product.save();

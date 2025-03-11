@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="/styles/admin.css">
-
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 <section class=" m-0 bgcolor ">
 
     <div class="row d-flex justify-content-between">
@@ -112,13 +112,27 @@
             </div>
 
             {{!-- content box --}}
-            <div class="row m-0">
+            {{!-- <div class="row m-0">
                 <div class="containerboxcat mt-4 p-4">
-
+                    <div class="col-3">
+                        <h3 class="fw-bold">Orders</h3>
+                    </div>
 
                     <div class="row d-flex justify-content-between align-items-center my-4">
-                        <div class="col-3">
-                            <h3 class="fw-bold">Orders</h3>
+                        <div class="col-3 d-flex">
+                            <span>Show</span>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary py-1 mx-2 dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    10
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">10</a></li>
+                                    <li><a class="dropdown-item" href="#">25</a></li>
+                                    <li><a class="dropdown-item" href="#">50</a></li>
+                                </ul>
+                            </div>
+                            <span>entries</span>
                         </div>
                         <div class="col-4">
                             <form>
@@ -132,12 +146,11 @@
                             </form>
                         </div>
                     </div>
+
                     <div class="row d-flex justify-content-between align-items-center border-top border-bottom p-2">
-                        <div class="col-1">
-                            <i class="bi bi-arrow-down-up"></i>
-                        </div>
+
                         <div class="col-2">
-                            <span>Order</span>
+                            <span>Order ID</span>
                         </div>
                         <div class="col-2">
                             <span>customer</span>
@@ -146,10 +159,10 @@
                             <span>Date</span>
                         </div>
                         <div class="col-2">
-                            <span>Total</span>
+                            <span>Total Amount</span>
                         </div>
                         <div class="col-2">
-                            <span>Status</span>
+                            <span>Order Status</span>
                         </div>
                         <div class="col-1">
                             <span>Action</span>
@@ -157,63 +170,170 @@
                     </div>
 
                     {{#each orders}}
-                    {{#each this.items}}
+
                     <div class="row d-flex justify-content-between align-items-center p-2 border-bottom">
-                        <!-- Product Image -->
-                        <div class="col-1">
-                            <img src="/uploads/{{this.productId.images.[0]}}" alt="Product Image" style="width: 100%;">
+
+                        <div class="col-2">
+                            <span>{{orderId}}</span>
+                        </div>
+
+                        <div class="col-2">
+                            <span>{{userId.firstname}} {{userId.lastname}}</span>
+                        </div>
+
+                        <div class="col-2">
+                            <span>{{formatDate orderDate}}</span>
+                        </div>
+
+                        <div class="col-2">
+                            <span>Rs. {{totalAmount}}</span>
                         </div>
 
                         <!-- Product Name -->
                         <div class="col-2">
-                            <span>{{this.productId.name}}</span>
-                        </div>
-
-                        <!-- User Name (Fetched from order) -->
-                        <div class="col-2">
-                            <span>{{../userId.firstname}} {{../userId.lastname}}</span>
-                        </div>
-
-                        <!-- Order Date (Fetched from order) -->
-                        <div class="col-2">
-                            <span>{{formatDate ../orderDate}}</span>
-                        </div>
-
-                        <!-- Price -->
-                        <div class="col-2">
-                            <span>Rs. {{this.price}}</span>
-                        </div>
-
-                        <!-- Order Status -->
-                        <div class="col-2">
-                            <span class="badge 
-                {{#if (isEqual this.status 'Delivered')}}text-bg-success
-                {{else if (isEqual this.status 'Pending')}}text-bg-primary
-                {{else if (isEqual this.status 'Processing')}}text-bg-warning
-                {{else if (isEqual this.status 'Shipped')}}text-bg-info
-                {{else if (isEqual this.status 'Cancelled')}}text-bg-danger
-                {{else}}text-bg-dark{{/if}}">
-                                {{this.status}}
+                            <span class="badge
+                                {{#if (isEqual orderStatus 'Completed')}}text-bg-success
+                                {{else}}text-bg-warning{{/if}}">
+                                {{orderStatus}}
                             </span>
                         </div>
 
                         <!-- Action Buttons -->
                         <div class="col-1 text-center">
-                            <a href="/admin/order-detail/{{../_id}}?productId={{this.productId._id}}"
-                                class="btn btn-outline-primary btn-sm my-1">View</a>
-                            {{!-- <button type="button" class="btn btn-outline-danger btn-sm my-1">Cancel</button> --}}
+                            <a href="/admin/order-detail/{{_id}}" class="btn btn-outline-primary btn-sm my-1">Edit</a>
                         </div>
                     </div>
                     {{/each}}
-                    {{/each}}
+                </div>
+            </div> --}}
+
+            <div class="row m-0">
+                <div class="containerboxcat mt-4 p-4">
+                    <div class="col-3 pb-3">
+                        <h3 class="fw-bold">Orders</h3>
+                    </div>
+
+                    
+
+                    {{!-- <!-- Table Headers -->
+                    <div class="row d-flex justify-content-between align-items-center border-top border-bottom p-2">
+                        <div class="col-2"><span>Order ID</span></div>
+                        <div class="col-2"><span>Customer</span></div>
+                        <div class="col-2"><span>Date</span></div>
+                        <div class="col-2"><span>Total Amount</span></div>
+                        <div class="col-2"><span>Order Status</span></div>
+                        <div class="col-1"><span>Action</span></div>
+                    </div>
+
+                    <!-- Orders List -->
+                    {{#each orders}}
+                    <div class="row d-flex justify-content-between align-items-center p-2 border-bottom">
+                        <div class="col-2"><span>{{orderId}}</span></div>
+                        <div class="col-2"><span>{{userId.firstname}} {{userId.lastname}}</span></div>
+                        <div class="col-2"><span>{{formatDate orderDate}}</span></div>
+                        <div class="col-2"><span>Rs. {{totalAmount}}</span></div>
+                        <div class="col-2">
+                            <span
+                                class="badge {{#if (isEqual orderStatus 'Completed')}}text-bg-success{{else}}text-bg-warning{{/if}}">
+                                {{orderStatus}}
+                            </span>
+                        </div>
+                        <div class="col-1 text-center">
+                            <a href="/admin/order-detail/{{_id}}" class="btn btn-outline-primary btn-sm my-1">Edit</a>
+                        </div>
+                    </div>
+                    {{/each}} --}}
+
+
+                    <table id="orderTable" class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Total Amount</th>
+                                <th>Order Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each orders}}
+                            <tr>
+                                <td>{{orderId}}</td>
+                                <td>{{userId.firstname}} {{userId.lastname}}</td>
+                                <td>{{formatDate orderDate}}</td>
+                                <td>Rs. {{totalAmount}}</td>
+                                <td>
+                                    <span
+                                        class="badge {{#if (isEqual orderStatus 'Completed')}}text-bg-success{{else}}text-bg-warning{{/if}}">
+                                        {{orderStatus}}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <a href="/admin/order-detail/{{_id}}"
+                                        class="btn btn-outline-primary btn-sm">Edit</a>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
 
 
 
+
+                    {{!--
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-center align-items-center mt-4">
+                        <nav>
+                            <ul class="pagination">
+                                {{#if (gt currentPage 1)}}
+                                <li class="page-item"><a class="page-link"
+                                        href="?page={{dec currentPage 1}}&limit={{limit}}&search={{search}}">&laquo;</a>
+                                </li>
+                                {{/if}}
+
+                                {{#each (range 1 totalPages)}}
+                                <li class="page-item {{#if (isEqual this ../currentPage)}}active{{/if}}">
+                                    <a class="page-link"
+                                        href="?page={{this}}&limit={{../limit}}&search={{../search}}">{{this}}</a>
+                                </li>
+                                {{/each}}
+
+                                {{#if (lt currentPage totalPages)}}
+                                <li class="page-item"><a class="page-link"
+                                        href="?page={{inc currentPage 1}}&limit={{limit}}&search={{search}}">&raquo;</a>
+                                </li>
+                                {{/if}}
+                            </ul>
+                        </nav>
+                    </div> --}}
                 </div>
             </div>
+
+
+
+
         </div>
     </div>
 
 
 
 </section>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#orderTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            autoWidth: false,
+            responsive: true,
+            order: [[2, 'desc']],
+        });
+    });
+</script>
