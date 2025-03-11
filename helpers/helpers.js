@@ -1,3 +1,6 @@
+const moment = require('moment');
+
+
 const isEqual = (a, b) => a === b
 
 const or = (a, b) => a || b
@@ -29,6 +32,10 @@ const formatDate = (date) => {
   if (!date) return '';
   const options = { weekday: 'short', year: 'numeric', month: 'short', day: '2-digit' };
   return new Date(date).toLocaleDateString('en-US', options);
+}
+
+const dateFormat = (date, format) => {
+    return moment(date).format(format);
 }
 
 
@@ -77,6 +84,7 @@ module.exports = {
   lt,
   json,
   formatDate,
+  dateFormat,
   getVariantQuantity,
   isReturnEligible,
   multiply,

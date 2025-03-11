@@ -270,7 +270,7 @@ const forgetPassword = (req, res) => {
 // post forget
 const forget = async (req, res) => {
     const { email } = req.body;
-console.log(req.body)
+
     try {
         
         const user = await userModel.findOne({ email });
@@ -368,7 +368,7 @@ const forgetOtpResend = async (req, res) => {
                 return res.status(500).json({ success: false, message: 'Failed to send OTP.' });
             }
 
-            console.log('OTP sent to:', email);
+            
             return res.status(200).json({ success: true, message: 'OTP resent successfully.' });
         });
     } catch (error) {
@@ -422,7 +422,7 @@ const resetPass = async (req, res) => {
         const email = req.session.email; 
 
         if (!email || !password) {
-            console.log("Invalid request:", { email, password });
+            
             return res.status(400).json({ success: false, message: 'Invalid request!' });
         }
 

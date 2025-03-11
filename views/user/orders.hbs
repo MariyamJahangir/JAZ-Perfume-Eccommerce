@@ -11,6 +11,14 @@
         background-color: #DFF2FA;
         /* Fixed light blue background for active */
     }
+
+    .bg-theme-dark{
+        background-color: #9FCEE2;
+    }
+    .bg-theme{
+        background-color: #DFF2FA;
+    }
+
 </style>
 
 <section style="background-color: #DFF2FA;">
@@ -47,9 +55,9 @@
                     <h1 class="text-center pb-4">ALL ORDERS</h1>
                     {{#each orders}}
                     
-                    <div class="grid gap-1 d-flex justify-content-between align-items-center border bg-light p-3">
+                    <div class="grid gap-1 d-flex justify-content-between align-items-center border bg-theme p-3 m-2">
                         <!-- Product Image -->
-                        <div class="col-3 text-center">
+                        <div class="col-1 text-center">
 
                             <a href="product-details/{{items.[0].productId._id}}"><img
                                     src="/uploads/{{items.[0].productDetails.images.[0]}}" alt="{{items.[0].productDetails.name}}"
@@ -58,10 +66,11 @@
 
                         <!-- Product Details -->
                         <div class="col-7">
-                            <p>{{items.[0].productDetails.name}} - {{items.[0].productDetails.variant.quantityML}} ML</p>
+                            <p>{{items.[0].productDetails.name}} - {{items.[0].productDetails.variant.quantityML}} ML
                             {{#if (gt items.length 1)}}
-                                <p>+{{dec items.length}} more {{#if (isEqual items.length 2)}}product {{else}} products{{/if}} </p>
-                            {{/if}}
+                                (+{{dec items.length}} more {{#if (isEqual items.length 2)}}product {{else}} products{{/if}})
+                            {{/if}}</p>
+                            <p>Total Price: {{totalAmount}}</p>
                             <span class="fw-5">Ordered on: {{formatDate orderDate}}</span>
 
                         </div>

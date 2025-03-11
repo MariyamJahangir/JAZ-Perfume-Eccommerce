@@ -11,6 +11,10 @@
         background-color: #DFF2FA;
         /* Fixed light blue background for active */
     }
+
+    .bg-theme{
+        background-color: #DFF2FA;
+    }
 </style>
 
 <section style="background-color: #DFF2FA;">
@@ -47,7 +51,7 @@
 
 
             <div class="col-10">
-                <div class="container m-4 p-4 border bg-light">
+                <div class="container m-4 p-4 border bg-theme">
                     <h1 class="text-center pb-4">ORDER DETAILS</h1>
 
 
@@ -133,7 +137,7 @@
                     {{/each}}
 
                     <!-- Delivery Address -->
-                    <div class="grid gap-1 d-flex justify-content-between p-3">
+                    <div class="grid gap-1 d-flex justify-content-between p-3 border border-2">
                         <div class="col-7 ps-3">
 
                             <p class="fw-bold">Shipping Address</p>
@@ -146,7 +150,7 @@
                         </div>
                         <div class="col-5 ps-3">
                             <p>Total Amount: {{order.totalAmount}}</p>
-                            <span>Order ID: {{order._id}}</span><br>
+                            <p>Order ID: {{order.orderId}}</p>
                             <span>Ordered On: {{formatDate order.orderDate}}</span>
                         </div>
 

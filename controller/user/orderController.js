@@ -120,12 +120,9 @@ const CancelOrder = async (req, res) => {
     try {
         const { orderId, productId, variantId } = req.params;
         const { cancelReason } = req.body; // ✅ Get cancellation reason from request body
-        //console.log("req.params:", req.params)
 
         let product = await productModel.findById(productId);
         let variant = product.variant.find(v=>v._id.toString() === variantId)
-        // console.log("Product:", product)
-        // console.log("Variant:", variant)
 
 
         // Find the order
@@ -136,16 +133,10 @@ const CancelOrder = async (req, res) => {
 
         // Find the ordered item
         let orderedItem = order.items.find(item => item.productId.toString() === productId);
-        // console.log("orderedItem:", orderedItem)
+        
         if (!orderedItem) {
             return res.status(404).send('Product not found in order');
         }
-
-        // If the item was returned, cancel the return and revert to "Delivered"
-        // if (orderedItem.status === "Returned") {
-        //     orderedItem.status = "Delivered";
-        // } 
-
 
         // Otherwise, cancel the order normally (if it's not yet delivered)
         if (orderedItem.status !== "Delivered") {

@@ -16,61 +16,16 @@ const LoadOrders = async (req, res) => {
     }
 };
 
-// const LoadOrders = async (req, res) => {
-//     try {
-//         let { page = 1, limit = 5, search = "" } = req.query;
-//         page = parseInt(page);
-//         limit = parseInt(limit);
-
-//         const query = {};
-
-//         if (search) {
-//             query.$or = [
-//                 { orderId: { $regex: search, $options: "i" } },
-//                 { "orderId.userId.firstname": { $regex: search, $options: "i" } },
-//                 { "userId.lastname": { $regex: search, $options: "i" } }
-//             ];
-//         }
-
-//         const orders = await orderModel.find(query)
-//             .populate("userId", "firstname lastname email")
-//             .populate("items.productId", "name images")
-//             .sort({ orderDate: -1 })
-//             .skip((page - 1) * limit)
-//             .limit(limit)
-//             .lean();
-
-//         const totalOrders = await orderModel.countDocuments(query);
-//         const totalPages = Math.ceil(totalOrders / limit);
-
-//         res.render("admin/orders", {
-//             orders,
-//             currentPage: page,
-//             totalPages,
-//             limit,
-//             search
-//         });
-//     } catch (err) {
-//         console.error("Error fetching orders:", err);
-//         res.status(500).send("Server Error");
-//     }
-// };
-
-
 
 const LoadOrderDetail = async (req, res) => {
     try {
         const orderId = req.params.id;
-        //const productId = req.query.productId;
+        
 
         const order = await orderModel.findById(orderId)
             .populate('userId')
             .populate('items.productId')
             .lean();
-
-
-
-
 
         if (!order) {
             return res.status(404).send('Order not found');
@@ -104,7 +59,6 @@ const LoadOrderDetail = async (req, res) => {
             return item;
         });
 
-        console.log("order : ", order)
 
         res.render('admin/order-detail', { order });
     } catch (error) {
@@ -112,42 +66,6 @@ const LoadOrderDetail = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
-
-
-
-
-
-// const updateOrderStatus = async (req, res) => {
-//     try {
-//         const { orderId, productId } = req.params;
-//         const { status } = req.body;
-
-//         console.log("status:", status)
-//         // Find the order by ID
-//         const order = await orderModel.findById(orderId);
-//         if (!order) {
-//             return res.status(404).send("Order not found");
-//         }
-
-//         // Find the ordered item within the order
-//         const orderedItem = order.items.find(item => item.productId.toString() === productId);
-//         if (!orderedItem) {
-//             return res.status(404).send("Ordered item not found");
-//         }
-
-//         // Update the item's status
-//         if (status == 'Delivered') {
-//             orderedItem.deliveredDate = new Date()
-//         }
-//         orderedItem.status = status;
-//         await order.save();
-
-//         res.redirect(`/admin/order-detail/${orderId}?productId=${productId}`); // Redirect back to order detail page
-//     } catch (error) {
-//         console.error("Error updating order status:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// }
 
 
 const updateOrderStatus = async (req, res) => {

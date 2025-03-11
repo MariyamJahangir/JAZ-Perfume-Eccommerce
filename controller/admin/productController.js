@@ -176,8 +176,6 @@ const editProducts = async (req, res) => {
         }
 
         const { name, category, offer, description, variant, trending, images } = req.body;
-
-        console.log(variant)
         
         if (!variant || !Array.isArray(variant) || variant.length === 0) {
             return res.status(400).json({ message: "At least one valid variant is required." });

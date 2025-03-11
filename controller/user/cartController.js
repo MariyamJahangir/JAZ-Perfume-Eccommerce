@@ -27,7 +27,7 @@ const LoadCart = async (req, res) => {
             }
         });
 
-        console.log("cartItems:",cartItems)
+        
 
         // Calculate the total price based on the selected variant's price
         let totalPrice = 0;
@@ -48,49 +48,6 @@ const LoadCart = async (req, res) => {
     }
 };
 
-
-
-// const updateCartQuantity = async (req, res) => {
-//     try {
-//         const { cartItemId, quantity } = req.body;
-
-//         // Find the cart item
-//         const cartItem = await cartModel.findById(cartItemId).populate({
-//             path: "products",
-//             select: "variant", // Populate variant details
-//         });
-
-//         if (!cartItem) {
-//             return res.status(404).json({ success: false, message: "Cart item not found" });
-//         }
-
-//         // Get the selected variant stock quantity
-//         const selectedVariant = cartItem.products.variant.find(
-//             (v) => v._id.toString() === cartItem.variant.toString()
-//         );
-
-//         if (!selectedVariant) {
-//             return res.status(404).json({ success: false, message: "Variant not found" });
-//         }
-
-//         // Check if the requested quantity is within stock limit
-//         if (quantity > selectedVariant.stockQuantity) {
-//             return res.status(400).json({ success: false, message: "Stock limit exceeded" });
-//         }
-
-//         // Update the quantity in the database
-//         cartItem.quantityCount = quantity;
-//         await cartItem.save();
-
-//         // Recalculate the total price
-//         const newTotal = cartItem.quantityCount * selectedVariant.price;
-
-//         res.json({ success: true, message: "Quantity updated successfully", newTotal });
-//     } catch (error) {
-//         console.error("Error updating cart quantity:", error);
-//         res.status(500).json({ success: false, message: "Server error" });
-//     }
-// };
 
 
 const updateCartQuantity = async (req, res) => {
@@ -244,15 +201,6 @@ const PlaceOrder = async (req, res) => {
 
             // Subtract the ordered quantity from stock
             variant.stockQuantity -= item.quantityCount;
-
-            // // Update stock status
-            // if (variant.stockQuantity === 0) {
-            //     variant.stockStatus = "Out of Stock";
-            // } else if (variant.stockQuantity <= 10) {
-            //     variant.stockStatus = "A few stocks left";
-            // } else {
-            //     variant.stockStatus = "In Stock";
-            // }
 
             await product.save();
         }

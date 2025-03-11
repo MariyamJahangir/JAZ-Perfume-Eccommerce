@@ -90,7 +90,7 @@ const AddToCart = async (req, res) => {
         // Extract productId and variantId from the request body
         const { productId, variantId, quantityCount } = req.body;
 
-        console.log(quantityCount)
+      
 
         // Check if both productId and variantId are provided
         if (!productId || !variantId) {
@@ -199,7 +199,7 @@ const allProducts = async (req, res) => {
             }))
         );
 
-        console.log("flattenedProducts:",flattenedProducts)
+       
 
         res.status(200).render('user/all-products', { products: flattenedProducts, categories });
     } catch (error) {
