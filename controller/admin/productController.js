@@ -8,7 +8,13 @@ const fs = require('fs')
 // Get Products List
 const products = async (req, res) => {
     try {
-        const products = await productModel.find({ deleted: false }).lean(); // Fetch products from MongoDB    
+        let page = parseInt(req.query.page) || 1; // Get current page (default: 1)
+        let limit = 12; // Number of products per page
+        let skip = (page - 1) * limit; // Calculate offset
+
+        const products = await productModel.find({ deleted: false }).skip(skip).limit(limit).lean(); // Fetch products from MongoDB 
+        const totalProducts = await productModel.countDocuments(); // Get total count
+
         // Format the timestamps
         const formattedProducts = products.map((product) => ({
             _id: product._id, // Pass the unique identifier for editing/deleting
@@ -18,9 +24,32 @@ const products = async (req, res) => {
             createdAt: moment(product.createdAt).format('DD MMM YYYY'), // Format the creation date
         }));
         // Render the template with the formatted data
-        res.render('admin/products', { products: formattedProducts }); // Pass products to the template
+        res.render('admin/products', { 
+            products: formattedProducts, 
+            currentPage: page, 
+            totalPages: Math.ceil(totalProducts / limit) 
+        }); // Pass products to the template
     } catch (err) {
+        console.error("Error fetching products:", err);
         res.status(500).send("Error fetching products");
+    }
+}
+
+const searchProduct = async (req, res) => {
+    try {
+        let searchQuery = req.query.query || "";
+        let filter = { deleted: false };
+
+        if (searchQuery) {
+            filter.name = { $regex: searchQuery, $options: "i" };
+        }
+
+        const products = await productModel.find(filter).limit(12).lean(); // Fetch matching products
+
+        res.json({ products }); // Send JSON response
+    } catch (err) {
+        console.error("Error fetching search results:", err);
+        res.status(500).json({ error: "Error fetching search results" });
     }
 }
 
@@ -37,7 +66,9 @@ const loadAddProducts = async (req, res) => {
 
 const addProducts = async (req, res) => {
     try {
-        const { name, category, offer, description, trending, variant } = req.body;
+        const { name, category, offer, description, trending, variant, images } = req.body;
+
+        console.log("images:", images)
 
         // Validate required fields
         if (!name || !category || !description || !variant) {
@@ -45,15 +76,6 @@ const addProducts = async (req, res) => {
                 error: "All required fields (name, category, description, variant) must be provided.",
             });
         }
-
-        if (!req.files || req.files.length === 0) {
-            return res.status(400).json({
-                error: "No images were uploaded. Please upload at least one image.",
-            });
-        }
-
-        // Parse images
-        const imagePaths = req.files.map((file) => file.filename);
 
         // Parse variants
         let parsedVariants = [];
@@ -83,6 +105,19 @@ const addProducts = async (req, res) => {
             }
         }
 
+
+        // Handle image processing
+        const finalImages = images.map((image) => {
+            if (image.startsWith("data:image")) {
+                const fileName = `${Date.now()}-image.jpg`;
+                const base64Data = image.split(",")[1];
+                const buffer = Buffer.from(base64Data, "base64");
+                fs.writeFileSync(`uploads/${fileName}`, buffer);
+                return fileName;
+            }
+            return image;
+        });
+
         // Create new product
         const newProduct = new productModel({
             name,
@@ -91,8 +126,10 @@ const addProducts = async (req, res) => {
             description,
             variant: parsedVariants, // Add validated variants to the product
             trending: trending || false,
-            images: imagePaths,
+            images: finalImages,
         });
+
+        console.log("add-product:", newProduct)
 
         await newProduct.save();
 
@@ -176,6 +213,8 @@ const editProducts = async (req, res) => {
         }
 
         const { name, category, offer, description, variant, trending, images } = req.body;
+
+        console.log('Ed-images:',images)
         
         if (!variant || !Array.isArray(variant) || variant.length === 0) {
             return res.status(400).json({ message: "At least one valid variant is required." });
@@ -248,7 +287,8 @@ const editProducts = async (req, res) => {
         if (trending) product.trending = trending;
         if (images) product.images = finalImages;
         product.variant = parsedVariants;
-
+        
+        console.log("edit-product:", product)
 
         await product.save();
 
@@ -279,6 +319,7 @@ const deleteProduct = async (req, res) => {
 
 module.exports = {
     products,
+    searchProduct,
     loadAddProducts,
     addProducts,
     loadEditProducts,

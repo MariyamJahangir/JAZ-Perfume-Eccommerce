@@ -315,6 +315,8 @@
 
 
 <script>
+
+
     document.addEventListener("DOMContentLoaded", () => {
         const imageInput = document.getElementById("images");
         const previewContainer = document.getElementById("preview-container");
@@ -327,16 +329,19 @@
 
         // Handle image selection
         imageInput.addEventListener("change", () => {
-            previewContainer.innerHTML = ""; // Clear existing previews
-            imagesData = []; // Reset the image data array
+            if (!imageInput.files.length) return;
 
-            Array.from(imageInput.files).forEach((file, index) => {
+            // Convert FileList to an array and append new images
+            Array.from(imageInput.files).forEach((file) => {
                 if (!file.type.startsWith("image/")) {
-                    swal("Only image files are allowed!");
+                    Swal.fire({ icon: "error", title: "Invalid File", text: "Only image files are allowed!" });
                     return;
                 }
+
                 const reader = new FileReader();
                 reader.onload = (e) => {
+                    const existingIndex = imagesData.length; // Get the next available index
+
                     const previewWrapper = document.createElement("div");
                     previewWrapper.className = "position-relative d-inline-block me-2 mb-2";
 
@@ -346,7 +351,7 @@
                     img.className = "img-thumbnail";
                     img.style.width = "100px";
                     img.style.height = "100px";
-                    img.dataset.index = index;
+                    img.dataset.index = existingIndex; // Assign index dynamically
                     previewWrapper.appendChild(img);
 
                     const removeButton = document.createElement("button");
@@ -354,82 +359,87 @@
                     removeButton.textContent = "X";
                     removeButton.addEventListener("click", () => {
                         previewWrapper.remove();
-                        imagesData = imagesData.filter((_, i) => i !== parseInt(img.dataset.index));
-                        // Re-index remaining images
-                        Array.from(previewContainer.children).forEach((child, newIndex) => {
-                            child.querySelector("img").dataset.index = newIndex;
-                        });
-
+                        // Remove the image from imagesData
+                        imagesData.splice(existingIndex, 1);
+                        existingIndex--;
                     });
                     previewWrapper.appendChild(removeButton);
 
                     previewContainer.appendChild(previewWrapper);
 
-                    // Open cropper modal when clicking on the image
+                    // ✅ Append new image data without resetting
+                    imagesData.push(e.target.result);
+
+                    console.log("Images Data After Upload:", imagesData); // Debugging
+
+                    // Click event for cropping
                     img.addEventListener("click", () => {
                         cropImage.src = e.target.result;
                         cropperModal.show();
-                        activeIndex = index; // Set the active index
+                        activeIndex = existingIndex; // Assign correct index
 
-                        // Destroy any existing cropper instance
-                        if (cropper) {
-                            cropper.destroy();
+                        if (cropper) cropper.destroy(); // Destroy existing cropper
 
-                        }
-
-                        // Initialize new cropper
+                        // Initialize Cropper.js
                         cropper = new Cropper(cropImage, {
-                            aspectRatio: NaN, // No fixed aspect ratio
-                            viewMode: 1, // Controls the resizing behavior
-                            cropBoxResizable: true, // Allows the crop box to be resized
-                            zoomable: true, // Allows zooming
-                            scalable: true, // Allows scaling of the image
-                            minContainerHeight: 350, // Minimum height for the container
-                            minContainerWidth: 350, // Minimum width for the container
+                            aspectRatio: 0.8,
+                            viewMode: 1,
+                            cropBoxResizable: true,
+                            zoomable: true,
+                            scalable: true,
+                            minContainerHeight: 350,
+                            minContainerWidth: 350,
                         });
-
-
                     });
                 };
                 reader.readAsDataURL(file);
             });
+
+            // Clear the input field so new files can be selected
+            imageInput.value = "";
         });
 
+
+        
         // Handle crop button click
-        cropButton.addEventListener("click", () => {
-            if (!cropper) return;
+       cropButton.addEventListener("click", () => {
+            if (!cropper || activeIndex === null) return;
 
             const croppedCanvas = cropper.getCroppedCanvas();
             if (!croppedCanvas) {
-                swal("Cropping failed. Please try again.");
+                Swal.fire({
+                    icon: "error",
+                    title: "Cropping Failed",
+                    text: "Please try again.",
+                });
                 return;
             }
-            const croppedData = croppedCanvas.toDataURL();
 
-            // Update image data and thumbnail
+            const croppedData = croppedCanvas.toDataURL(); // Get the cropped image as Base64
+
+            console.log("Before Update:", imagesData);
+            console.log("Active Index:", activeIndex);
+
+            // ✅ Update only the correct index in imagesData[]
             imagesData[activeIndex] = croppedData;
-            const activeImage = previewContainer.querySelector(
-                `img[data-index="${activeIndex}"]`
-            );
-            activeImage.src = croppedData; // Update thumbnail
 
-            // Close the modal and destroy the cropper instance
+            console.log("After Update:", imagesData);
+
+            // ✅ Update only the correct preview image
+            const previewImages = previewContainer.querySelectorAll("img");
+            previewImages.forEach((img) => {
+                if (parseInt(img.dataset.index) === activeIndex) {
+                    img.src = croppedData;
+                }
+            });
+
+            // Close modal and reset cropper
             cropperModal.hide();
             cropper.destroy();
             cropper = null;
+            activeIndex = null;
         });
 
-
-
-        // Reset the cropper image when the modal is closed
-        document.getElementById("cropperModal").addEventListener("hidden.bs.modal", () => {
-            if (cropper) {
-                cropper.destroy();
-                cropper = null;
-            }
-            cropImage.src = ""; // Clear the image source
-            activeIndex = null; // Reset active index
-        });
 
 
         // Submit the form
@@ -476,7 +486,6 @@
             // Append variants to form data
             formData.append("variant", JSON.stringify(variants));
 
-
             try {
                 console.log("FormData contents:");
                 formData.forEach((value, key) => console.log(`${key}: ${value}`)); // Log FormData for debugging
@@ -497,7 +506,7 @@
                     console.log(result);
                     form.reset();
                     previewContainer.innerHTML = "";
-                    window.location.href = "/admin/products"
+                    window.location.href = "/admin/products";
                 } else {
                     Swal.fire({
                         icon: "error",
@@ -520,6 +529,10 @@
     });
 
 
+
+
+    
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>

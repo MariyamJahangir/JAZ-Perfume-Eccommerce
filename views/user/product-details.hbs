@@ -271,11 +271,11 @@
         <!-- Product Card -->
         {{#each allproducts}}
         {{#if (and (isEqual trending true) (isEqual deleted false) (isEqual stock "In Stock"))}}
-        <div class="col-md-2 m-2">
+        <div class="col-md-2 m-1 p-0">
             <div class="card text-center">
                 <a href="/product-details/{{_id}}/{{variant.[0]._id}}">
                 <img src="/uploads/{{images.[0]}}" class="card-img-top" alt="Product Image"
-                    style="width: 100%; height: 250px; object-fit: cover;">
+                    style="width: 100%; height: 260px; object-fit: cover;">
                 </a>
                 <button type="button" class="btn-hover btncartbtm">Add to Cart</button>
             </div>
@@ -366,62 +366,67 @@
         let stockQuantity = 0;  // Initialize stockQuantity
 
 
-        // Select first variant by default if available
-  /*      if (variantButtons.length > 0) {
+        if (variantButtons.length > 0) {
             const pathSegments = window.location.pathname.split("/");
-            const selectedVariantId = pathSegments[pathSegments.length - 1];
+            const urlVariantId = pathSegments[pathSegments.length - 1]; // Get variant ID from URL
 
-            const firstVariant = variantButtons[0];
-          //  selectedVariantId = firstVariant.getAttribute("data-variant-id");
-            console.log("selectedVariantId:", selectedVariantId)
+            let selectedVariant = Array.from(variantButtons).find(button => 
+                button.getAttribute("data-variant-id") === urlVariantId
+            );
 
-            basePrice = parseFloat(firstVariant.getAttribute("data-price"));
-            stockQuantity = parseInt(firstVariant.getAttribute("data-stockQuantity"));  // Get stock quantity
-            stockStatus = firstVariant.getAttribute("data-stockStatus"); 
+            if (!selectedVariant) {
+                selectedVariant = variantButtons[0]; // Default to the first variant if not found
+            }
 
-            
+            // Set selected variant
+            selectedVariantId = selectedVariant.getAttribute("data-variant-id");
+            basePrice = parseFloat(selectedVariant.getAttribute("data-price"));
+            stockQuantity = parseInt(selectedVariant.getAttribute("data-stockQuantity")) || 0;
+            stockStatus = selectedVariant.getAttribute("data-stockStatus");
 
             // Update the displayed values
-            priceDisplay.textContent = firstVariant.getAttribute("data-price");
+            priceDisplay.textContent = basePrice;
+            quantityDisplay.textContent = quantityCount;
 
-            console.log(stockQuantity)
-            // ✅ Update stock display based on conditions
-            
-            if (stockStatus === "A few stocks left" && stockQuantity <= 5) {
+            console.log("Stock Quantity:", stockQuantity);
+
+            // ✅ Update stock display
+            if (stockQuantity === 0) {
+                stockDisplay.textContent = `Out of Stock`;
+            } else if (stockStatus === "A few stocks left" && stockQuantity <= 5) {
                 stockDisplay.textContent = `Only ${stockQuantity} stocks left`;
-            }  
-            else {
+            } else {
                 stockDisplay.textContent = stockStatus;
             }
 
-
-            
             addToCartBtn.setAttribute("data-variant-id", selectedVariantId);
-            firstVariant.classList.add("active");
+
+            // Remove active class from all buttons
+            variantButtons.forEach(btn => btn.classList.remove("active"));
+            // Add active class to selected button
+            selectedVariant.classList.add("active");
         }
+
 
         variantButtons.forEach(button => {
             button.addEventListener("click", function () {
                 selectedVariantId = this.getAttribute("data-variant-id");
                 basePrice = parseFloat(this.getAttribute("data-price"));
-                stockQuantity = parseInt(this.getAttribute("data-stockQuantity"));
+                stockQuantity = parseInt(this.getAttribute("data-stockQuantity")) || 0;
                 stockStatus = this.getAttribute("data-stockStatus");
                 quantityCount = 1; // Reset quantity when variant changes
 
-                if (button.getAttribute("data-variant") === selectedVariantId) {
-                    button.click();
-                }
-                
+                console.log("Selected Variant ID:", selectedVariantId);
+                console.log("Stock Quantity:", stockQuantity);
 
                 // Update displayed values
-                priceDisplay.textContent = basePrice
+                priceDisplay.textContent = basePrice;
                 quantityDisplay.textContent = quantityCount;
 
-
                 // ✅ Update stock display based on conditions
-                if(stockQuantity == 0){
-                    stockDisplay.textContent = `Out of Stock`
-                }else if (stockStatus === "A few stocks left" && stockQuantity <= 5) {
+                if (stockQuantity === 0) {
+                    stockDisplay.textContent = `Out of Stock`;
+                } else if (stockStatus === "A few stocks left" && stockQuantity <= 5) {
                     stockDisplay.textContent = `Only ${stockQuantity} stocks left`;
                 } else {
                     stockDisplay.textContent = stockStatus;
@@ -435,91 +440,6 @@
                 this.classList.add("active");
             });
         });
-
-*/
-
-
-if (variantButtons.length > 0) {
-    const pathSegments = window.location.pathname.split("/");
-    const urlVariantId = pathSegments[pathSegments.length - 1]; // Get variant ID from URL
-
-    let selectedVariant = Array.from(variantButtons).find(button => 
-        button.getAttribute("data-variant-id") === urlVariantId
-    );
-
-    if (!selectedVariant) {
-        selectedVariant = variantButtons[0]; // Default to the first variant if not found
-    }
-
-    // Set selected variant
-    selectedVariantId = selectedVariant.getAttribute("data-variant-id");
-    basePrice = parseFloat(selectedVariant.getAttribute("data-price"));
-    stockQuantity = parseInt(selectedVariant.getAttribute("data-stockQuantity")) || 0;
-    stockStatus = selectedVariant.getAttribute("data-stockStatus");
-
-    // Update the displayed values
-    priceDisplay.textContent = basePrice;
-    quantityDisplay.textContent = quantityCount;
-
-    console.log("Stock Quantity:", stockQuantity);
-
-    // ✅ Update stock display
-    if (stockQuantity === 0) {
-        stockDisplay.textContent = `Out of Stock`;
-    } else if (stockStatus === "A few stocks left" && stockQuantity <= 5) {
-        stockDisplay.textContent = `Only ${stockQuantity} stocks left`;
-    } else {
-        stockDisplay.textContent = stockStatus;
-    }
-
-    addToCartBtn.setAttribute("data-variant-id", selectedVariantId);
-
-    // Remove active class from all buttons
-    variantButtons.forEach(btn => btn.classList.remove("active"));
-    // Add active class to selected button
-    selectedVariant.classList.add("active");
-}
-
-
-variantButtons.forEach(button => {
-    button.addEventListener("click", function () {
-        selectedVariantId = this.getAttribute("data-variant-id");
-        basePrice = parseFloat(this.getAttribute("data-price"));
-        stockQuantity = parseInt(this.getAttribute("data-stockQuantity")) || 0;
-        stockStatus = this.getAttribute("data-stockStatus");
-        quantityCount = 1; // Reset quantity when variant changes
-
-        console.log("Selected Variant ID:", selectedVariantId);
-        console.log("Stock Quantity:", stockQuantity);
-
-        // Update displayed values
-        priceDisplay.textContent = basePrice;
-        quantityDisplay.textContent = quantityCount;
-
-        // ✅ Update stock display based on conditions
-        if (stockQuantity === 0) {
-            stockDisplay.textContent = `Out of Stock`;
-        } else if (stockStatus === "A few stocks left" && stockQuantity <= 5) {
-            stockDisplay.textContent = `Only ${stockQuantity} stocks left`;
-        } else {
-            stockDisplay.textContent = stockStatus;
-        }
-
-        addToCartBtn.setAttribute("data-variant-id", selectedVariantId);
-
-        // Remove active class from all buttons
-        variantButtons.forEach(btn => btn.classList.remove("active"));
-        // Add active class to the selected button
-        this.classList.add("active");
-    });
-});
-
-
-
-
-
-
-
 
 
 

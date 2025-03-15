@@ -238,13 +238,12 @@ const cartCount = async (req, res) => {
             return res.json({ count: 0 });
         }
 
-        const cart = await cartModel.findOne({ user: userId });
-        if (!cart) {
+        const cart = await cartModel.find({ user: userId }) || [];
+        if (!cart.length) {
             return res.json({ count: 0 });
         }
 
-        // If quantityCount exists, use it; otherwise, default to 1
-        const itemCount = cart.quantityCount ? cart.quantityCount : 1;
+        const itemCount = cart.reduce((sum, item) => sum + (item.quantityCount || 1), 0);
 
         res.json({ count: itemCount });
     } catch (error) {

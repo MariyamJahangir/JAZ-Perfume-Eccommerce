@@ -33,7 +33,7 @@
                     <div class="card text-center">
                         <a href="/product-details/{{_id}}/{{variant.[0]._id}}">
                             <img src="/uploads/{{images.[0]}}" class="card-img-top" alt="Product Image"
-                                style="width: 100%; height: 210px; object-fit: cover;">
+                                style="width: 100%; height: 240px; object-fit: cover;">
                         </a>
                         <button type="button" class="btn-hover btncart">Add to Cart</button>
                     </div>
@@ -114,11 +114,11 @@
         <!-- Product Card -->
         {{#each products}}
         {{#if (and (isEqual trending true) (isEqual deleted false) (isEqual stock "In Stock"))}}
-        <div class="col-md-2 p-0">
+        <div class="col-md-2 m-2 p-0">
             <div class="card text-center">
                 <a href="/product-details/{{_id}}/{{variant.[0]._id}}">
                 <img src="/uploads/{{images.[0]}}" class="card-img-top" alt="Product Image"
-                    style="width: 100%; height: 250px; object-fit: cover;">
+                    style="width: 100%; height: 240px; object-fit: cover;">
                 </a>
                 <button type="button" class="btn-hover btncartbtm">Add to Cart</button>
             </div>

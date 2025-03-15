@@ -36,6 +36,7 @@ router.post('/delete-category/:id', adminAuth.checkSession, categoryController.d
 
 //Products Management (Add, Edit, SoftDelete)
 router.get('/products', adminAuth.checkSession, productController.products)
+router.get('/products/search', productController.searchProduct)
 router.get('/add-products', productController.loadAddProducts)  //adminAuth.checkSession,
 router.post('/add-products', productMulter.upload.array('images', 10), productController.addProducts) 
 router.get('/edit-products/:id', adminAuth.checkSession,  productController.loadEditProducts)  // rendering template
