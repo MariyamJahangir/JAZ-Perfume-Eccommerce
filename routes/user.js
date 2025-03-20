@@ -6,6 +6,7 @@ const profileController = require('../controller/user/profileController')
 const addressController = require('../controller/user/addressController')
 const cartController = require('../controller/user/cartController')
 const orderController = require('../controller/user/orderController')
+const reviewController = require('../controller/user/reviewController')
 const auth = require('../middleware/auth')
 const passport = require('passport')
 
@@ -14,8 +15,8 @@ const passport = require('passport')
 router.get('/signup', auth.checkSession, homeController.loadRegister)
 router.post('/signup', homeController.registerUser)  
 router.get('/otp',  homeController.otp)
-router.post('/otp',  homeController.verifyOTP)
-router.post('/otp/resend', homeController.resendOTP);
+router.post('/verify-otp', auth.checkSession, homeController.verifyOTP)
+router.post('/resend-otp', homeController.resendOTP);
 router.get('/login',auth.checkSession,  homeController.loadLogin)
 router.post('/login', homeController.login)
 router.get('/logout', homeController.logout)
@@ -42,19 +43,13 @@ router.get('/auth/google/callback',
 router.get('/', homeController.loadHome)  //auth.isLogin,
 
 
-
-//List products on the user side
-//router.get('/all-products', productController.allProducts)  //auth.isLogin,
-// Route to handle search, sort, and filter
-// router.get('/all-products/search', productController.searchProducts);
-// Route to get all products
 router.get('/all-products', productController.allProducts);
-
-
-
 
 router.get('/product-details/:id/:variantId',  productController.productDetails)  //auth.isLogin,
 router.post('/cart/add', auth.isLogin, productController.AddToCart)
+
+router.get('/order/check-purchase', auth.isLogin, reviewController.checkPurchase)
+router.post('/review/add', auth.isLogin, reviewController.addReview)
 
 
 

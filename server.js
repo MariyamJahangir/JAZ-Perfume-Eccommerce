@@ -16,7 +16,6 @@ const config = require('./config')
 const passport = require('./config/passport')
 const qs = require('qs');
 
-
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
@@ -62,10 +61,8 @@ app.use((req, res, next) => {
     next();
 });
 
-
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 // Handle errors from Multer
 app.use((err, req, res, next) => {
@@ -78,15 +75,6 @@ app.use((err, req, res, next) => {
     }
 });
 
-
-// // centralized error-handling middleware to provide consistent error responses
-// app.use((err, req, res, next) => {
-//     console.error(err.stack);
-//     res.status(500).send('Internal Server Error');
-// });
-
-
-
 app.use('/', userRoutes)
 app.use('/admin', adminRoutes)
 app.use((req, res) => res.render('user/error', {title: "Error"}));
@@ -96,3 +84,4 @@ connectDB();
 app.listen(config.app.port, () => {
     console.log(`Server running on port ${config.app.port} (${config.app.environment})`);
 })
+

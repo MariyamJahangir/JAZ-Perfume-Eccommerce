@@ -78,12 +78,16 @@ const updateCartQuantity = async (req, res) => {
             return res.status(400).json({ success: false, message: "Stock limit exceeded" });
         }
 
+
         // Update the quantity in the database
         cartItem.quantityCount = quantity;
-        await cartItem.save();
 
         // Recalculate the individual item total
-        const newTotal = cartItem.quantityCount * selectedVariant.price;
+        const newTotal = cartItem.quantityCount * selectedVariant.price;  
+
+        cartItem.totalPrice = newTotal;
+        await cartItem.save();
+
 
         // ✅ Calculate the updated total cart price
         const cartItems = await cartModel.find({ user: cartItem.user }).populate({

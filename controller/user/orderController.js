@@ -138,6 +138,8 @@ const CancelOrder = async (req, res) => {
             return res.status(404).send('Product not found in order');
         }
 
+        
+
         // Otherwise, cancel the order normally (if it's not yet delivered)
         if (orderedItem.status !== "Delivered") {
             orderedItem.status = "Cancelled";

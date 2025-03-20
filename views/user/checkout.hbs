@@ -271,7 +271,7 @@
 
         
         // Total amount
-        const totalAmount = items.reduce((total, item) => total + (item.price * item.quantityCount), 0);
+        const totalAmount = items.reduce((total, item) => total + item.price, 0);
 
         // Now prepare the order data to send to the backend
         const orderData = {
@@ -281,7 +281,7 @@
             totalAmount
         };
 
-        console.log(orderData)
+        console.log("orderData:", orderData)
 
         
 

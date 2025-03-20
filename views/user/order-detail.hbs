@@ -60,7 +60,7 @@
                     <div class="grid gap-1 d-flex justify-content-between p-3">
                         <!-- Product Image -->
                         <div class="col-3 text-center p-2">
-                            <a href="/product-details/{{this.productId._id}}"><img
+                            <a href="/product-details/{{this.productId._id}}/{{this.variantId}}"><img
                                     src="/uploads/{{this.productId.images.[0]}}" alt="{{this.productId.name}}"
                                     style="width: 60%"></a>
                         </div>
@@ -68,7 +68,7 @@
                         <!-- Product Details -->
                         <div class="col-5 d-flex align-items-center">
                             <div>
-                                <p><a href="/product-details/{{this.productId._id}}"
+                                <p><a href="/product-details/{{this.productId._id}}/{{this.variantId}}"
                                         class="text-decoration-none link-dark">{{this.productId.name}}</a> -
                                     {{getVariantQuantity this.productId.variant this.variantId}} ML</p>
 

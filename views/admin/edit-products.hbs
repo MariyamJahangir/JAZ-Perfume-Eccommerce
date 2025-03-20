@@ -131,12 +131,9 @@
                                 <div class="mb-3">
                                     <label for="category" class="form-label">Category</label>
                                     <select id="category" name="category" class="form-select">
-                                        <option value="" disabled {{#unless product.category}}selected{{/unless}}>
-                                            Select a category</option>
+                                        <option value="" disabled>Select a category</option>
                                         {{#each categories}}
-                                        {{#if (isEqual deleted false)}}
-                                        <option value="{{_id}}" {{#if (isEqual ../product.category_id)}}selected{{/if}}>{{name}}</option>
-                                        {{/if}}
+                                        <option value="{{_id}} " {{#if (isObjectIdEqual ../product.category _id)}}selected{{/if}}>{{name}}</option>
                                         {{/each}}
                                     </select>
                                 </div>

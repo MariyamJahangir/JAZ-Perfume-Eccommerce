@@ -4,31 +4,155 @@ const categoryModel = require('../../model/categoryModel')
 const OtpModel = require('../../model/otpModel');
 const bcrypt = require('bcrypt')
 const transporter = require('../../config/emailService')
-//const crypto = require('crypto');
+const crypto = require('crypto');
 //const nodemailer = require('nodemailer');
 require('dotenv').config();
+const dns = require('dns');
 
 
 // post signup
+// const registerUser = async (req, res) => {
+//     try {
+//         const { firstname, lastname, email, password, confirmpassword} = req.body;
+
+//         if (!firstname || !lastname || !email || !password || !confirmpassword) {
+//             req.flash('error', 'All fields are required');
+//             return res.redirect('/signup');
+//         }
+
+//         const emailPattern =  /^[a-z0-9]{4,}@[a-z]+\.[a-z]{2,3}$/
+//         if (!emailPattern.test(email)) {
+//             req.flash('error', 'Please enter a valid email address!');
+//             return res.redirect('/signup');
+//         }
+
+//         // // ✅ Extract Domain and Check MX Record
+//         // const domain = email.split('@')[1];
+
+//         // const checkMXRecords = async (domain) => {
+//         //     return new Promise((resolve, reject) => {
+//         //         dns.resolveMx(domain, (err, addresses) => {
+//         //             if (err || addresses.length === 0) {
+//         //                 reject('Invalid email domain. Please use a valid email.');
+//         //             } else {
+//         //                 resolve(true);
+//         //             }
+//         //         });
+//         //     });
+//         // };
+
+//         // try {
+//         //     await checkMXRecords(domain);
+//         // } catch (error) {
+//         //     req.flash('error', error);
+//         //     return res.redirect('/signup');
+//         // }
+
+//         const existingUser = await userModel.findOne({ email });
+//         if (existingUser) {
+//             req.flash('error', 'User already exists');
+//             return res.redirect('/signup');
+//         }
+
+//         const hashedPassword = await bcrypt.hash(password, 10);
+//         const newUser = new userModel({
+//             firstname,
+//             lastname,
+//             email,
+//             password: hashedPassword,
+//             status: 'blocked',
+//             lastOtpSentAt: new Date()
+//         });
+//         await newUser.save();
+
+//         const generateOtp = async (email) => {
+
+//             const existingOtp = await OtpModel.findOne({ email });
+
+//             if (existingOtp && new Date() - existingOtp.createdAt < 5 * 60 * 1000) {
+//                 throw new Error('OTP already sent. Please check your email.');
+//             }
+
+//             const otp = Math.floor(1000 + Math.random() * 9000);
+//             const createdAt = new Date();
+
+
+//             await OtpModel.create({
+//                 email,
+//                 otp,
+//                 createdAt,
+//             });
+
+//             return otp;
+//         };
+
+//         const otp = await generateOtp(email);
+
+
+//         const mailOptions = {
+//             from: process.env.EMAIL_USER,
+//             to: email,
+//             subject: 'Registration OTP',
+//             text: `Your OTP for registration is: ${otp}. It is valid for 5 minutes.`,
+//         };
+
+//         const sendEmail = (mailOptions) => {
+//             return new Promise((resolve, reject) => {
+//                 transporter.sendMail(mailOptions, (error, info) => {
+//                     if (error) {
+//                         reject('Failed to send OTP. Please try again later.');
+//                     } else {
+//                         resolve(info);
+//                     }
+//                 });
+//             });
+//         };
+
+//         try {
+//             await sendEmail(mailOptions);
+//             req.session.tempEmail = email;
+//             res.redirect('/otp');
+//         } catch (error) {
+//             console.error('Error sending email:', error);
+//             return res.render('user/signup', { message: error });
+//         }
+
+//     } catch (error) {
+//         console.error(error);
+//         res.render('user/signup', { message: 'Something went wrong. Please try again later.' });
+//     }
+// };
+
+
 const registerUser = async (req, res) => {
     try {
         const { firstname, lastname, email, password } = req.body;
 
-        if (!firstname || !lastname || !email || !password) {
-            req.flash('error', 'All fields are required');
-            return res.redirect('/signup');
-        }
+        // ✅ Extract Domain and Check MX Record
+        const domain = email.split('@')[1];
 
-        const emailPattern =  /^[a-z0-9]{4,}@[a-z]+.[a-z]{2,3}$/
-        if (!emailPattern.test(email)) {
-            req.flash('error', 'Please enter a valid email address!');
-            return res.redirect('/signup');
+        const checkMXRecords = async (domain) => {
+            return new Promise((resolve, reject) => {
+                dns.resolveMx(domain, (err, addresses) => {
+                    if (err || addresses.length === 0) {
+                        reject('Invalid email domain. Please use a valid email.');
+                    } else {
+                        resolve(true);
+                    }
+                });
+            });
+        };
+
+        try {
+            await checkMXRecords(domain);
+        } catch (error) {
+            console.error("DNS Lookup Error:", error);
+            return res.status(400).json({ success: false, error: error });
         }
 
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {
-            req.flash('error', 'User already exists');
-            return res.redirect('/signup');
+            return res.status(400).json({ success: false, error: "User already exists" });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -46,11 +170,12 @@ const registerUser = async (req, res) => {
 
             const existingOtp = await OtpModel.findOne({ email });
 
-            if (existingOtp && new Date() - existingOtp.createdAt < 5 * 60 * 1000) {
+            if (existingOtp && new Date() - existingOtp.createdAt < 2 * 60 * 1000) {
                 throw new Error('OTP already sent. Please check your email.');
             }
 
-            const otp = Math.floor(1000 + Math.random() * 9000);
+            // const otp = Math.floor(1000 + Math.random() * 9000);
+            const otp = crypto.randomInt(1000, 9999).toString(); // Secure 6-digit OTP
             const createdAt = new Date();
 
 
@@ -63,14 +188,19 @@ const registerUser = async (req, res) => {
             return otp;
         };
 
-        const otp = await generateOtp(email);
+        let otp;
+        try {
+            otp = await generateOtp(email);
+        } catch (error) {
+            return res.status(400).json({ success: false, error: error.message });
+        }
 
 
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
             subject: 'Registration OTP',
-            text: `Your OTP for registration is: ${otp}. It is valid for 5 minutes.`,
+            text: `Your OTP for registration is: ${otp}. It is valid for 2 minutes.`,
         };
 
         const sendEmail = (mailOptions) => {
@@ -88,17 +218,18 @@ const registerUser = async (req, res) => {
         try {
             await sendEmail(mailOptions);
             req.session.tempEmail = email;
-            res.redirect('/otp');
+            return res.json({ success: true, message: "Signup successful! Check your email for OTP." });
         } catch (error) {
             console.error('Error sending email:', error);
-            return res.render('user/signup', { message: error });
+            return res.status(500).json({ success: false, error: "Failed to send OTP. Please try again later." });
         }
 
     } catch (error) {
         console.error(error);
-        res.render('user/signup', { message: 'Something went wrong. Please try again later.' });
+        return res.status(500).json({ success: false, error: "Something went wrong. Please try again later." });
     }
 };
+
 
 
 const verifyOTP = async (req, res) => {
@@ -106,38 +237,31 @@ const verifyOTP = async (req, res) => {
     const email = req.session.tempEmail;
 
     if (!email) {
-        return res.redirect('/signup');
+        return res.status(400).json({ success: false, message: 'Session expired. Please sign up again.' });
     }
 
     try {
+        // // Clean up unverified users
+        // await userModel.deleteMany({ 
+        //     status: "blocked", 
+        //     createdAt: { $lt: new Date(Date.now() - 30 * 60 * 1000) } 
+        // });
+        // Cleanup expired OTPs
+        await OtpModel.deleteMany({ createdAt: { $lt: new Date(Date.now() - 2 * 60 * 1000) } });
         
         const otpEntry = await OtpModel.findOne({ email });
         if (!otpEntry) {
-            return res.render('user/otp', { message: 'Invalid OTP request.' });
+            return res.status(400).json({ success: false, message: 'Invalid OTP request.' });
         }
-
-        const cleanupUnverifiedUsers = async () => {
-            const cleanupTime = 30 * 60 * 1000; 
-        
-            
-            const unverifiedUsers = await userModel.find({ status: "blocked", createdAt: { $lt: new Date(Date.now() - cleanupTime) } });
-        
-            
-            await userModel.deleteMany({ _id: { $in: unverifiedUsers.map(user => user._id) } });
-        };
-
-        cleanupUnverifiedUsers();
-
-        
-        const otpExpiryTime = 5 * 60 * 1000; 
-        if (Date.now() - otpEntry.createdAt > otpExpiryTime) {
-            return res.render('user/otp', { message: 'OTP has expired. Please request a new OTP.' });
+ 
+        const otpExpiryTime = 2 * 60 * 1000; 
+        if (Date.now() - otpEntry.createdAt.getTime() > otpExpiryTime) {
+            return res.status(400).json({ success: false, message: 'OTP has expired. Please request a new OTP.' });
         }
-
         
         if (otpEntry.otp === otp) {
             await userModel.updateOne({ email }, { $set: { status: "active" } });
-            await OtpModel.deleteOne({ email }); 
+            await OtpModel.findOneAndDelete({ email }); 
             req.session.tempEmail = null; 
             return res.status(200).json({ success: true, message: 'OTP verified successfully!' });
         } else {
@@ -145,7 +269,7 @@ const verifyOTP = async (req, res) => {
         }
     } catch (error) {
         console.error(error);
-        res.status(500).render('user/otp', { message: 'Something went wrong. Please try again later.' });
+        return res.status(500).json({ success: false, message: 'Something went wrong. Please try again later.' });
     }
 };
 
@@ -156,18 +280,22 @@ const resendOTP = async (req, res) => {
     }
 
     try {
-        const otp = Math.floor(1000 + Math.random() * 9000);
+        const otp = crypto.randomInt(1000, 9999).toString();
         const createdAt = new Date(); 
 
        
-        await OtpModel.updateOne({ email }, { otp, createdAt });
+        await OtpModel.updateOne(
+            { email }, 
+            { otp, createdAt }, 
+            { upsert: true }
+        );
 
         
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
             subject: 'Registration OTP',
-            text: `Your new OTP for registration is: ${otp}. It is valid for 5 minutes.`,
+            text: `Your new OTP for registration is: ${otp}. It is valid for 2 minutes.`,
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
@@ -182,7 +310,7 @@ const resendOTP = async (req, res) => {
             });
         });
     } catch (error) {
-        console.error(error);
+        console.error('Error in resending OTP:', error);
         return res.status(500).json({ success: false, message: 'Failed to resend OTP. Please try again later.' });
     }
 };
@@ -201,31 +329,26 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body
         if (!email || !password) {
-            req.flash('error', 'All fields are required');
-            return res.redirect('/login');
+            return res.status(400).json({ success: false, message: "All fields are required." });
         }
         const user = await userModel.findOne({ email })
         if (!user) {
-            req.flash('error', 'User does not exist');
-            return res.redirect('/login')
+            return res.status(404).json({ success: false, message: "User does not exist." });
         }
-        if (user.status == "blocked") {
-            req.flash('error', 'User is Blocked');
-            return res.redirect('/login')
+        if (user.status === "blocked") {
+            return res.status(403).json({ success: false, message: "User is blocked." });
         }
         const isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch) {
-            req.flash('error', 'Incorrect password');
-            return res.redirect('/login')
+            return res.status(401).json({ success: false, message: "Incorrect password." });
         }
         req.session.user = { email, id: user._id  }
-        req.flash('success', 'Login successful');
-        res.redirect('/')
+        return res.status(200).json({ success: true, message: "Login successful.", user: req.session.user });
 
     } catch (error) {
         console.error('Error during login:', error);
         req.flash('error', 'Something went wrong');
-        res.redirect('/login')
+        return res.status(500).json({ success: false, message: "Something went wrong. Please try again." });
     }
 }
 

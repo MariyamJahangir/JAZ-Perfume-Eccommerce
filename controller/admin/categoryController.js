@@ -1,5 +1,6 @@
 
 const categoryModel = require('../../model/categoryModel')
+const productModel = require('../../model/productModel')
 const moment = require('moment');
 
 // Get Categories
@@ -63,6 +64,7 @@ const loadEditCategory = async (req, res) => {
         const category = await categoryModel.findById(req.params.id).lean();
         
         category.imageUrl = `/uploads/${category.image}`; 
+        
         res.render('admin/edit-category', { category });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -85,9 +87,12 @@ const editCategory = async (req, res) => {
             updatedData.image = req.file.filename; 
         }
         const category = await categoryModel.findById(id);
+
+
         if (!category) {
             return res.status(404).json({ message: 'Category not found.' });
         }
+        
 
         
         await categoryModel.findByIdAndUpdate(id, updatedData, { new: true });

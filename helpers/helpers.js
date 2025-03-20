@@ -3,6 +3,10 @@ const moment = require('moment');
 
 const isEqual = (a, b) => a === b
 
+const isObjectIdEqual = (a, b) => {
+  return a.toString() === b.toString();
+};
+
 const or = (a, b) => a || b
 
 const not = (a) => !a
@@ -35,7 +39,7 @@ const formatDate = (date) => {
 }
 
 const dateFormat = (date, format) => {
-    return moment(date).format(format);
+    return moment(date, "DD MMM YYYY").format(format);
 }
 
 
@@ -73,8 +77,14 @@ const range = (start, end) => {
 }
 
 
+const starRating = (rating) => { 
+  const repeat = (char, times) => Array(times).fill(char).join("");
+  return repeat("&#9733;", rating) + repeat("&#9734;", 5 - rating);
+};
+
 module.exports = {
   isEqual,
+  isObjectIdEqual,
   or,
   and,
   not,
@@ -89,5 +99,6 @@ module.exports = {
   isReturnEligible,
   multiply,
   formatAddress,
-  range
+  range,
+  starRating
 }

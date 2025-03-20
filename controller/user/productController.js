@@ -1,13 +1,25 @@
 const productModel = require("../../model/productModel")
 const cartModel = require("../../model/cartModel")
 const categoryModel = require('../../model/categoryModel')
+const reviewModel = require('../../model/reviewModel')
 
 // get single product detail
 const productDetails = async (req,res)=>{
     const productId = req.params.id;
     const product = await productModel.findById(productId).lean();
     const allproducts = await productModel.find({}).lean().sort({updatedAt : -1}).limit(6)
-    res.render('user/product-details', { product, allproducts })
+    const reviews = await reviewModel.find({ productId }).sort({ updatedAt: -1 }).populate("userId").lean();
+    // Calculate total reviews
+    const totalReviews = reviews.length;
+
+    // Calculate average rating
+    const averageRating =
+    totalReviews > 0
+        ? (reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews).toFixed(1)
+        : "0.0";
+
+    console.log('reviews:', reviews)
+    res.render('user/product-details', { product, allproducts, reviews, totalReviews, averageRating })
 }
 
 

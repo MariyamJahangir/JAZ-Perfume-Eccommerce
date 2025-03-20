@@ -156,11 +156,14 @@ const loadEditProducts = async (req, res) => {
         const product = await productModel.findById(productId).lean();
 
 
-        const categories = await categoryModel.find().lean();
+        const categories = await categoryModel.find({deleted:"false"}).lean();
 
         if (!product) {
             return res.status(404).send("Product not found");
         }
+        console.log("categories:", categories)
+        console.log("product:", product)
+        
         res.render("admin/edit-products", {
             product,
             categories,

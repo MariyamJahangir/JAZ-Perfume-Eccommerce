@@ -20,13 +20,7 @@
       <span class="mx-2 text-muted">OR</span>
       <hr class="flex-grow-1 border-secondary">
     </div>
-    <form method="POST" action="/login">
-      {{#if successMessage}}
-      <input type="text" id="message" value="{{{successMessage}}}" name="message" hidden>
-      {{/if}}
-      {{#if errorMessage}}
-      <input type="text" id="message" value="{{{errorMessage}}}" name="message" hidden>
-      {{/if}}
+    <form id="login">
       <div class="mb-3">
         <label for="email" class="form-label">Email</label>
         <input type="email" id="email" name="email" class="form-control">
@@ -54,16 +48,51 @@
 
 
 
-
 <script>
+  document.getElementById("login").addEventListener("submit", async function (event) {
+    event.preventDefault(); // Prevent form from submitting normally
 
-const message = document.getElementById('message').value
-  if (message) {
-    Swal.fire({
-        icon: 'error',
-        title: 'Oops!',
-        text: message
-    });
-  }
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    // Validate Empty Fields
+    if (!email) {
+        return Swal.fire({ icon: "error", title: "Validation Error", text: "Email is required." });
+    }
+
+    if (!password) {
+        return Swal.fire({ icon: "error", title: "Validation Error", text: "Password is required." });
+    }
+
+    try {
+        // Send Login Request
+        const response = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            Swal.fire({
+                icon: "success",
+                title: "Login Successful",
+                text: "Redirecting...",
+                timer: 2000,
+                showConfirmButton: false,
+            });
+
+            setTimeout(() => {
+                window.location.href = "/"; // Redirect after success
+            }, 2000);
+        } else {
+            Swal.fire({ icon: "error", title: "Login Failed", text: result.message });
+        }
+    } catch (error) {
+        console.error("Login Error:", error);
+        Swal.fire({ icon: "error", title: "Error", text: "Something went wrong. Please try again later." });
+    }
+});
 
 </script>

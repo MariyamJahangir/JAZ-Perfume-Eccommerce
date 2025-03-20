@@ -19,7 +19,7 @@
             <span class="mx-2 text-muted">OR</span>
             <hr class="flex-grow-1 border-secondary">
         </div>
-        <form action="/signup" method="post">
+        <form action="/signup" method="post" id="signupForm">
             {{#if succesMessage}}
             <input type="text" id="message" value="{{{successMessage}}}" name="message" hidden>
             {{/if}}
@@ -29,30 +29,38 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="fname" class="form-label">First Name</label>
-                    <input type="text" id="fname" name="firstname" class="form-control">
+                    <input type="text" id="firstname" name="firstname" class="form-control">
+
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="lname" class="form-label">Last Name</label>
-                    <input type="text" id="lname" name="lastname" class="form-control">
+                    <input type="text" id="lastname" name="lastname" class="form-control">
+
                 </div>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" id="email" name="email" class="form-control">
+
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <input type="password" id="password" name="password" class="form-control">
+
             </div>
             <div class="mb-3">
                 <label for="confirmpassword" class="form-label">Confirm Password</label>
                 <input type="password" id="confirmpassword" name="confirmpassword" class="form-control">
+
             </div>
             <div class="form-footer text-start mb-4">
                 By Creating An Account You Agree With Our <a href="#" class="link-secondary">Terms Of Service</a>, <a
                     href="#" class="link-secondary">Privacy Policy</a>.
             </div>
+            
             <button type="submit" class="btn btn-primary w-100">Create Account</button>
+            <p class="form-control border-0 text-center text-danger" id="signup"></p>
+            
         </form>
         <p class="text-center mt-4">
             Already have an account? <a href="/login"
@@ -67,13 +75,104 @@
 
 <script>
 
-    const message = document.getElementById('message').value
-    if (message) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops!',
-            text: message
-        });
-    }
+    document.getElementById("signupForm").addEventListener("submit", async function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Get form values
+        const firstname = document.getElementById("firstname").value.trim();
+        const lastname = document.getElementById("lastname").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const confirmpassword = document.getElementById("confirmpassword").value.trim();
+        document.getElementById("signup")
+
+        // Validate fields one by one, showing an alert for each error
+        if (!firstname) {
+            return Swal.fire({ icon: "error", title: "Validation Error", text: "First name is required." });
+        }
+
+        if (!lastname) {
+            return Swal.fire({ icon: "error", title: "Validation Error", text: "Last name is required." });
+        }
+
+        if (!email) {
+            return Swal.fire({ icon: "error", title: "Validation Error", text: "Email is required." });
+        }
+
+        const emailPattern = /^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/;
+        if (!emailPattern.test(email)) {
+            return Swal.fire({ icon: "error", title: "Validation Error", text: "Invalid email format." });
+        }
+
+        if (!password) {
+            return Swal.fire({ icon: "error", title: "Validation Error", text: "Password is required." });
+        }
+
+        
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
+
+        if (!passwordRegex.test(password)) {
+            return Swal.fire({ 
+                icon: "error", 
+                title: "Weak Password", 
+                text: "Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, and one number." 
+            });
+        }
+
+        if (!confirmpassword) {
+            return Swal.fire({ icon: "error", title: "Validation Error", text: "Confirm Password is required." });
+        }
+
+        if (password !== confirmpassword) {
+            return Swal.fire({ icon: "error", title: "Validation Error", text: "Passwords do not match." });
+        }
+
+        
+
+        // Proceed with form submission if all validations pass
+        /*Swal.fire({
+            icon: "success",
+            title: "Registration Successful",
+            text: "You will receive an OTP for verification.",
+        }); */
+
+        // Send form data using Fetch API
+        const formData = { firstname, lastname, email, password, confirmpassword };
+
+        try {
+            document.getElementById("signup").innerHTML = "Please wait.."
+
+            const response = await fetch("/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Signup failed.");
+            }
+
+            await Swal.fire({
+                icon: "success",
+                title: "Signup Successful!",
+                text: "Check your email for OTP.",
+                timer: 2000, // Auto-close alert after 2 seconds
+                showConfirmButton: false // Hide "OK" button
+            })
+            document.getElementById("signupForm").reset();
+            window.location.href = "/otp"; // Redirect to OTP verification page
+            
+
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: error.message || "Something went wrong."
+            });
+        }
+    });
+
 
 </script>

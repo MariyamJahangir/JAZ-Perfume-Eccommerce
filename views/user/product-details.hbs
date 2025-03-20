@@ -189,9 +189,12 @@
                     <div class="container ">
                         <div class="d-flex justify-content-between align-items-center">
                             <h4>Reviews</h4>
-                            <div class="text-muted">4.2 — 54 Reviews</div>
+                            <div class="text-muted">{{averageRating}} <span class="text-warning fs-5">&#9733;</span> — {{totalReviews}} Reviews</div>
                         </div>
-                        <button class="btn btn-outline-primary my-3">Write a review</button>
+                        <!-- Write Review Button -->
+                        <button class="btn btn-outline-primary my-3 write-review-btn" data-product-id="{{product._id}}">
+                            Write a review
+                        </button>
                         <div class="d-flex justify-content-end">
                             <button class="btn btn-light dropdown-toggle" type="button" id="sortMenu"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -204,44 +207,23 @@
                             </ul>
                         </div>
                         <div class="list-group">
+                            {{#each reviews}}
                             <div class="list-group-item">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <h6>Emily Davis</h6>
-                                        <small class="text-muted">1 week ago</small>
+                                        <h6>{{userId.firstname}} {{userId.lastname}}</h6>
+                                        <small class="text-muted timeAgo" data-time="{{this.updatedAt}}"></small>
                                     </div>
                                     <div>
-                                        <span class="text-warning">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                                        <span class="text-warning">
+                                            {{{starRating this.rating}}}
+                                        </span>
                                     </div>
                                 </div>
-                                <p class="mt-2 mb-0">This company always goes above and beyond to satisfy their
-                                    customers.
-                                </p>
+                                <p class="mt-2 mb-0">{{this.comment}}</p>
                             </div>
-                            <div class="list-group-item">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <h6>Daniel Smith</h6>
-                                        <small class="text-muted">2 months ago</small>
-                                    </div>
-                                    <div>
-                                        <span class="text-warning">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
-                                    </div>
-                                </div>
-                                <p class="mt-2 mb-0">I can't believe how affordable and high-quality this item is!</p>
-                            </div>
-                            <div class="list-group-item">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <h6>Benjamin Clark</h6>
-                                        <small class="text-muted">23 April</small>
-                                    </div>
-                                    <div>
-                                        <span class="text-warning">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
-                                    </div>
-                                </div>
-                                <p class="mt-2 mb-0">These guys know their stuff, and it shows in their products.</p>
-                            </div>
+                            {{/each}}
+                            
                         </div>
                         <div class="text-center">
                             <button class="btn btn-outline-secondary px-5 mt-4">Load more reviews</button>
@@ -258,7 +240,6 @@
 
 
 </section>
-
 
 
 
@@ -300,10 +281,196 @@
 
 </section>
 
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewModalLabel">Write a Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reviewForm" data-product-id="{{product._id}}">
+                    <!-- Star Rating -->
+                    <div class="mb-3">
+                        <label class="form-label">Rating:</label>
+                        <div id="starRating">
+                            <span class="star" data-value="1">&#9733;</span>
+                            <span class="star" data-value="2">&#9733;</span>
+                            <span class="star" data-value="3">&#9733;</span>
+                            <span class="star" data-value="4">&#9733;</span>
+                            <span class="star" data-value="5">&#9733;</span>
+                        </div>
+                        <input type="hidden" id="ratingValue" name="rating" value="0">
+                    </div>
+
+                    <!-- Review Text -->
+                    <div class="mb-3">
+                        <label for="reviewText" class="form-label">Your Review:</label>
+                        <textarea class="form-control" id="reviewText" rows="3" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
 {{>footer}}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const timeElements = document.querySelectorAll(".timeAgo");
+
+    timeElements.forEach(element => {
+        const timestamp = element.getAttribute("data-time");
+        if (timestamp) {
+            element.innerText = moment(timestamp).fromNow();
+        }
+    });
+});
+</script>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+    const reviewButton = document.querySelectorAll(".write-review-btn");
+    const reviewModalElement = document.getElementById('reviewModal'); 
+    const reviewModal = bootstrap.Modal.getInstance(reviewModalElement) || new bootstrap.Modal(reviewModalElement);
+    const stars = document.querySelectorAll("#starRating .star");
+    const ratingInput = document.getElementById("ratingValue");
+    const reviewForm = document.getElementById("reviewForm");
+    const reviewText = document.getElementById("reviewText");
+
+    // Handle Review Button Click
+    reviewButton.forEach(button => {
+        button.addEventListener("click", async function () {
+            const productId = this.getAttribute("data-product-id");
+
+            try {
+                const response = await fetch(`/order/check-purchase?productId=${productId}`);
+
+                // Check if response is redirected (authentication failed)
+                if (response.redirected) {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Authentication Required",
+                        text: "Please log in to verify your purchase.",
+                        confirmButtonText: "Go to Login"
+                    }).then(() => {
+                        window.location.href = response.url; // Redirect after confirmation
+                    });
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (response.ok && data.canReview) {
+                    reviewModal.show(); // Open modal if user can review
+                } else {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Purchase Required",
+                        text: data.message || "You can only review products that you have purchased and received.",
+                    });
+                }
+            } catch (error) {
+                console.error("Error checking purchase:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Server Error",
+                    text: error.message || "Unable to verify purchase. Please try again later.",
+                });
+            }
+        });
+    });
+
+    // Handle Star Rating Click
+    stars.forEach(star => {
+        star.addEventListener("click", function () {
+            const value = this.getAttribute("data-value");
+            ratingInput.value = value;
+
+            stars.forEach(s => s.style.color = "black");
+            for (let i = 0; i < value; i++) {
+                stars[i].style.color = "gold";
+            }
+        });
+    });
+
+    // Submit Review
+    reviewForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const rating = ratingInput.value;
+        const comment = reviewText.value.trim();
+        const productId = this.getAttribute("data-product-id");
+
+        if (rating === "0") {
+            Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: "Please select a rating!",
+            });
+            return;
+        }
+
+        try {
+            const response = await fetch("/review/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ productId, rating, comment })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Review Submitted!",
+                    text: "Your review has been successfully submitted.",
+                });
+
+                // Reset form
+                reviewForm.reset();
+                stars.forEach(s => s.style.color = "black");
+                ratingInput.value = "0";
+
+                // Close modal properly
+                reviewModal.hide();
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Submission Failed",
+                    text: data.message || "Something went wrong, please try again.",
+                });
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Server Error",
+                text: "Failed to submit review. Please try again later.",
+            });
+        }
+    });
+});
+
+</script>
+
+
+
+
+
+
+
 
 
 {{!-- zoom --}}
@@ -450,10 +617,11 @@
                 quantityCount++;
                 updatePrice();
             } else {
+                let message = stockQuantity > 5 ? "You can't buy more than 5 items." : `Only ${stockQuantity} items are in stock.`;
                 Swal.fire({
                     icon: 'warning',
                     title: 'Limit Reached',
-                    text: `Only ${maxAllowed} items are in stock.`,
+                    text: message,
                     confirmButtonColor: '#d33'
                 });
             }

@@ -211,8 +211,8 @@
                                         <th scope="col">Sl.No</th>
                                         <th scope="col" class="col-3">Products</th>
                                         <th scope="col">Variant</th>
-                                        <th scope="col">Quantity</th>
                                         <th scope="col">Price</th>
+                                        <th scope="col">Quantity</th>
                                         <th scope="col">Final Price</th>
                                         <th scope="col" class="col-3">Product Status</th>
 
@@ -224,9 +224,9 @@
                                         <td scope="col">{{inc @index}}.</td>
                                         <td><a href="/product-details/{{productId._id}}/{{variantId._id}}" class="link-dark link-underline-opacity-0">{{this.productId.name}}</a></td>
                                         <td>{{this.variantId.quantityML}} ML</td>
+                                        <td>Rs. {{this.variantId.price}}</td>
                                         <td class="text-center">{{this.quantityCount}}</td>
                                         <td>Rs. {{this.price}}</td>
-                                        <td>Rs. {{multiply this.quantityCount this.price}}</td>
                                         <td>
                                             {{#if (isEqual this.status "Returned")}}
                                                 <div class="d-flex pb-2">
