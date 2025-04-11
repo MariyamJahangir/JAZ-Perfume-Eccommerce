@@ -1,0 +1,342 @@
+<link rel="stylesheet" href="/styles/admin.css">
+
+
+<section class="m-0 bgcolor ">
+    <div class="row d-flex justify-content-between">
+
+        {{!-- Sidebar --}}
+        <div class="aside col-md-2 ">
+            <div class="d-flex justify-content-evenly align-items-center">
+                <div>
+                    <img src="/images/JAZPERFUME.png" alt="" class="logo_image">
+                    <p class="fs-6">PERFUMES</p>
+                </div>
+                <p class="fs-3 fw-2">ADMIN</p>
+            </div>
+
+            <div class="nav flex-column px-3">
+                <a href="/admin/dashboard" class="nav-link" aria-current="page">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f82b0047e6557aa901c15537d58a7ab6971e1d1d635e2a205c02ec234f11ad61?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Dashboard" loading="lazy">
+                    </span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+
+                <a href="/admin/products" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/126b232c82239fc3740982b7c8240f84671d1b6e2a4d00141995b3c82d24c4a5?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Products" loading="lazy">
+                    </span>
+                    <span class="nav-text">Products</span>
+                </a>
+
+                <a href="/admin/category" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/c46200642d44aab62899b16a25fc8bfe94e9df6fede3e3512b370b3d4f514356?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Categories" loading="lazy">
+                    </span>
+                    <span class="nav-text">Categories</span>
+                </a>
+
+                <a href="/admin/orders" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/395e632ba7027a03ce2c35c1aa8bcc4534da249d8c136cdcc01b5043a72ddc87?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Orders" loading="lazy">
+                    </span>
+                    <span class="nav-text">Orders</span>
+                </a>
+
+                <a href="/admin/customers" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f933064a6bab49b74f8d5722595a056cbddbca1247d9b1a20a7e0fc8d56413a0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Customers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Customers</span>
+                </a>
+
+                <a href="/admin/offers" class="nav-link active">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/ba76937fe489134f0c577be82a18baeadddda8f77194bbcb94734c6db29400c0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Offers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Offers</span>
+                </a>
+
+                <a href="/admin/coupons" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/cabe95d2f5fab42e35aad96d91245b122dd4d50ddfe8d1d2bceee5ea219442d8?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Coupons" loading="lazy">
+                    </span>
+                    <span class="nav-text">Coupons</span>
+                </a>
+
+                <a href="/admin/reviews" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/2897cc0ce7ace4dd1f7e6d2c1b779540e7fa6d14150e07ac6bd13caecdf99b1a?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Reviews" loading="lazy">
+                    </span>
+                    <span class="nav-text">Reviews</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/5b4c30ca0a115c712594c2dce59791803bec209977f960ad8b2c1a3d2ecaac23?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Settings" loading="lazy">
+                    </span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </div>
+        </div>
+
+
+        {{!-- Content Section --}}
+        <div class="col-md-10">
+
+            {{!-- Breadcrumps --}}
+            <div class="row px-2 pt-2">
+                <div class="col-8">
+                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#" class="link-dark link-underline-opacity-0">Admin</a>
+                            </li>
+                            <li class="breadcrumb-item"><a href="offers"
+                                    class="link-dark link-underline-opacity-0">Coupons</a></li>
+                            <li class="breadcrumb-item active text-dark" aria-current="page">Add-Offers</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-4 d-flex justify-content-end pe-5">
+                    <button type="submit" class="btn btn-outline-dark btn-sm"
+                        onclick="window.location.href='/admin/logout'">Logout<i
+                            class="bi bi-box-arrow-right ps-2"></i></button>
+                </div>
+            </div>
+
+            {{!-- content box --}}
+            <div class="row m-0">
+                <div class="containerboxcat mt-4 p-4">
+                    <h2 class="mb-4 ps-2">Add New Offer</h2>
+
+                    <div class="row">
+                        <div class="col-6 p-3">
+
+                            <form id="offerForm">
+                                <!-- Offer Name -->
+                                <div class="mb-3">
+                                    <label class="form-label">Offer Name</label>
+                                    <input type="text" class="form-control" name="name">
+                                </div>
+
+                                <!-- Description -->
+                                <div class="mb-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" name="description"></textarea>
+                                </div>
+
+                                <!-- Offer Type -->
+                                <div class="mb-3">
+                                    <label class="form-label">Offer Type</label>
+                                    <select class="form-control" name="offerType">
+                                        <option value="product">Product</option>
+                                        <option value="category">Category</option>
+                                        <option value="referral">Referral</option>
+                                    </select>
+                                </div>
+
+                                <!-- Is Active -->
+                                <div class="mb-3">
+                                    <label class="form-label">Active Status</label>
+                                    <select class="form-control" name="isActive">
+                                        <option value="true" selected>Active</option>
+                                        <option value="false">Inactive</option>
+                                    </select>
+                                </div>
+                        </div>
+                        <div class="col-6 p-3">
+
+                                <!-- Discount Type -->
+                                <div class="mb-3 pt-2">
+                                    <label class="form-label pe-3">Discount Type: </label>
+                                    <input type="radio" name="discountType" value="fixed" checked> Fixed
+                                    <input type="radio" name="discountType" value="percentage"> Percentage
+                                </div>
+
+                                <!-- Discount Amount -->
+                                <div class="mb-3">
+                                    <label class="form-label">Discount Value</label>
+                                    <input type="number" class="form-control" name="discount">
+                                </div>
+
+                                <!-- Max Discount (only for percentage type) -->
+                                <div class="mb-3" id="maxDiscountField" style="display: none;">
+                                    <label class="form-label">Max Discount Amount</label>
+                                    <input type="number" class="form-control" name="maxDiscount">
+                                </div>
+
+                                <!-- Start Date -->
+                                <div class="mb-3">
+                                    <label class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" name="start">
+                                </div>
+
+                                <!-- Expiry Date -->
+                                <div class="mb-3">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="date" class="form-control" name="expiry">
+                                </div>
+
+
+                                <!-- Submit Button -->
+                                <button type="submit" class="btn btn-dark">Add Offer</button>
+                            </form>
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+
+
+</section>
+
+
+<script>
+    /*
+    function toggleMaxDiscount() {
+        let discountType = document.querySelector('input[name="discountType"]:checked').value;
+        let maxDiscountField = document.getElementById("maxDiscountField");
+
+        if (discountType === "percentage") {
+            maxDiscountField.style.display = "block";
+        } else {
+            maxDiscountField.style.display = "none";
+        }
+    }
+    */
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("offerForm");
+    const discountTypeRadios = document.querySelectorAll("input[name='discountType']");
+    const maxDiscountField = document.getElementById("maxDiscountField");
+
+    // Toggle max discount field for percentage type
+    function toggleMaxDiscount() {
+        const selectedType = document.querySelector("input[name='discountType']:checked").value;
+        maxDiscountField.style.display = selectedType === "percentage" ? "block" : "none";
+    }
+
+    discountTypeRadios.forEach(radio => {
+        radio.addEventListener("change", toggleMaxDiscount);
+    });
+
+    // Form submission handler
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Collect form data
+        const formData = {
+            name: document.querySelector("input[name='name']").value.trim(),
+            description: document.querySelector("textarea[name='description']").value.trim(),
+            offerType: document.querySelector("select[name='offerType']").value,
+            start: document.querySelector("input[name='start']").value,
+            expiry: document.querySelector("input[name='expiry']").value,
+            isActive: document.querySelector("select[name='isActive']").value,
+            discountType: document.querySelector("input[name='discountType']:checked").value,
+            discount: document.querySelector("input[name='discount']").value,
+            maxDiscount: document.querySelector("input[name='maxDiscount']").value,
+        };
+
+        // Validation
+        if (!formData.name) {
+            Swal.fire({ icon: "error", title: "Validation Error", text: "Offer name is required." });
+            return;
+        }
+
+        if (!formData.description) {
+            Swal.fire({ icon: "error", title: "Validation Error", text: "Description is required." });
+            return;
+        }
+
+        if (!formData.start) {
+            Swal.fire({ icon: "error", title: "Validation Error", text: "Start date is required." });
+            return;
+        }
+
+        if (!formData.expiry) {
+            Swal.fire({ icon: "error", title: "Validation Error", text: "Expiry date is required." });
+            return;
+        }
+
+        if (!formData.discount) {
+            Swal.fire({ icon: "error", title: "Validation Error", text: "Discount value is required." });
+            return;
+        }
+
+        if (new Date(formData.start) >= new Date(formData.expiry)) {
+            Swal.fire({ icon: "error", title: "Invalid Date Range", text: "Expiry date must be after the start date." });
+            return;
+        }
+
+        if (parseFloat(formData.discount) <= 0) {
+            Swal.fire({ icon: "error", title: "Invalid Discount", text: "Discount value must be greater than zero." });
+            return;
+        }
+
+        // Ensure max discount is required when percentage is selected
+        if (formData.discountType === "percentage" && !formData.maxDiscount) {
+            Swal.fire({
+                icon: "error",
+                title: "Validation Error",
+                text: "Please provide a max discount amount for percentage-based discounts.",
+            });
+            return;
+        }
+
+        // Send data to backend
+        try {
+            const response = await fetch("/admin/add-offers", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Offer Added",
+                    text: "The offer has been successfully added!",
+                }).then(() => {
+                    window.location.href = "/admin/offers"; // Redirect to offers page
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: result.message || "Failed to add offer. Try again!",
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Server Error",
+                text: "An unexpected error occurred. Try again later.",
+            });
+        }
+    });
+});
+
+</script>

@@ -15,7 +15,7 @@
             </div>
 
             <div class="nav flex-column px-3">
-                <a href="#" class="nav-link ">
+                <a href="/admin/dashboard" class="nav-link ">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f82b0047e6557aa901c15537d58a7ab6971e1d1d635e2a205c02ec234f11ad61?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Dashboard" loading="lazy">
@@ -55,7 +55,7 @@
                     <span class="nav-text">Customers</span>
                 </a>
 
-                <a href="#" class="nav-link">
+                <a href="/admin/offers" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/ba76937fe489134f0c577be82a18baeadddda8f77194bbcb94734c6db29400c0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Offers" loading="lazy">
@@ -63,7 +63,7 @@
                     <span class="nav-text">Offers</span>
                 </a>
 
-                <a href="#" class="nav-link">
+                <a href="/admin/coupons" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/cabe95d2f5fab42e35aad96d91245b122dd4d50ddfe8d1d2bceee5ea219442d8?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Coupons" loading="lazy">
@@ -71,7 +71,7 @@
                     <span class="nav-text">Coupons</span>
                 </a>
 
-                <a href="#" class="nav-link">
+                <a href="/admin/reviews" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/2897cc0ce7ace4dd1f7e6d2c1b779540e7fa6d14150e07ac6bd13caecdf99b1a?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Reviews" loading="lazy">
@@ -148,15 +148,19 @@
                                 <p>Order Date :</p>
                                 <p>Payment Method :</p>
                                 <p>Total Amount :</p>
-                                
+                                <p>Coupon Discount :</p>
+                                <p>Final Amount :</p>
+
 
                             </div>
                             <div class="col-6">
                                 <p>{{order.orderId}}</p>
                                 <p>{{formatDate order.orderDate}}</p>
-                                <p>{{order.paymentMethod}}</p>
-                                <p>Rs. {{order.totalAmount}}</p>
-                                
+                                <p>{{order.payment.method}}</p>
+                                <p>Rs.{{order.totalAmount}}</p>
+                                <p>Rs.{{order.couponDiscount}}</p>
+                                <p>Rs.{{order.finalAmount}}</p>
+
 
                             </div>
 
@@ -172,11 +176,11 @@
                                 <!-- Indicators -->
                                 <div class="carousel-indicators">
                                     {{#each order.items}}
-                                    
+
                                     <button type="button" data-bs-target="#carouselExampleIndicators"
                                         data-bs-slide-to="{{@index}}" class="{{#if @first}}active{{/if}}"
                                         aria-current="true" aria-label="Slide {{inc @index}}"></button>
-                                    
+
                                     {{/each}}
                                 </div>
 
@@ -185,7 +189,8 @@
                                     {{#each order.items}}
                                     {{#if this.productId.images.length}} <!-- Ensure there are images -->
                                     <div class="carousel-item {{#if @first}}active{{/if}}">
-                                        <img src="/uploads/{{this.productId.images.[0]}}" class="d-block w-100" alt="Product Image">
+                                        <img src="/uploads/{{this.productId.images.[0]}}" class="d-block w-100"
+                                            alt="Product Image">
                                     </div>
                                     {{/if}}
                                     {{/each}}
@@ -209,11 +214,13 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">Sl.No</th>
-                                        <th scope="col" class="col-3">Products</th>
+                                        <th scope="col" class="col-2">Products</th>
                                         <th scope="col">Variant</th>
                                         <th scope="col">Price</th>
                                         <th scope="col">Quantity</th>
-                                        <th scope="col">Final Price</th>
+                                        <th scope="col">Offer Discount</th>
+                                        <th scope="col">Discounted Price</th>
+
                                         <th scope="col" class="col-3">Product Status</th>
 
                                     </tr>
@@ -222,74 +229,99 @@
                                     {{#each order.items}}
                                     <tr>
                                         <td scope="col">{{inc @index}}.</td>
-                                        <td><a href="/product-details/{{productId._id}}/{{variantId._id}}" class="link-dark link-underline-opacity-0">{{this.productId.name}}</a></td>
+                                        <td><a href="/product-details/{{productId._id}}/{{variantId._id}}"
+                                                class="link-dark link-underline-opacity-0">
+                                                {{this.productId.name}}</a>
+                                        </td>
                                         <td>{{this.variantId.quantityML}} ML</td>
-                                        <td>Rs. {{this.variantId.price}}</td>
+                                        <td>Rs.{{this.basePrice}}</td>
                                         <td class="text-center">{{this.quantityCount}}</td>
-                                        <td>Rs. {{this.price}}</td>
+                                        <td>Rs.{{this.offerDiscount}}</td>
+                                        <td>Rs.{{this.discountPrice}}</td>
+
                                         <td>
                                             {{#if (isEqual this.status "Returned")}}
-                                                <div class="d-flex pb-2">
-                                                    <!-- Approve Return -->
-                                                    <form action="/admin/update-order-status/{{../order._id}}/{{this.productId._id}}" method="POST">
-                                                        <input type="hidden" name="status" value="Return Approved">
-                                                        <button type="submit" class="btn btn-success me-2">Approve</button>
-                                                    </form>
+                                            <div class="d-flex pb-2">
+                                                <!-- Approve Return -->
+                                                {{!-- <form
+                                                    action="/admin/update-order-status/{{../order._id}}/{{this.productId._id}}"
+                                                    method="POST">
+                                                    <input type="hidden" name="status" value="Return Approved">
+                                                    <button type="submit" class="btn btn-success me-2">Approve</button>
+                                                </form>
 
-                                                    <!-- Reject Return -->
-                                                    <form action="/admin/update-order-status/{{../order._id}}/{{this.productId._id}}" method="POST">
-                                                        <input type="hidden" name="status" value="Delivered">
-                                                        <button type="submit" class="btn btn-danger">Reject</button>
-                                                    </form>
-                                                </div>
-                                                <p><span class="fw-bold">Return Reason:</span><br>
-                                                    {{this.returnReason}}</p>
+                                                <!-- Reject Return -->
+                                                <form
+                                                    action="/admin/update-order-status/{{../order._id}}/{{this.productId._id}}"
+                                                    method="POST">
+                                                    <input type="hidden" name="status" value="Delivered">
+                                                    <button type="submit" class="btn btn-danger">Reject</button>
+                                                </form> --}}
+                                                <!-- Approve Return -->
+                                                <form class="order-status-form " data-status="Return Approved">
+                                                    <input type="hidden" name="status" value="Return Approved">
+                                                    <button type="submit" class="btn btn-success me-2 setstatus-btn"
+                                                    data-order-id="{{../order._id}}"
+                                                    data-product-id="{{this.productId._id}}"
+                                                    >Approve</button>
+                                                </form>
+
+                                                <!-- Reject Return -->
+                                                <form class="order-status-form " data-status="Delivered">
+                                                    <input type="hidden" name="status" value="Delivered">
+                                                    <button type="submit" class="btn btn-danger setstatus-btn"
+                                                    data-order-id="{{../order._id}}"
+                                                    data-product-id="{{this.productId._id}}"
+                                                    >Reject</button>
+                                                </form>
+
+                                            </div>
+                                            <p><span class="fw-bold">Return Reason:</span><br> {{this.returnReason}}</p>
 
                                             {{else}}
 
-                                                <div class="d-flex pb-3">
-                                                    
-                                                    {{#if this.statusOptions.length}}
-                                                    <div class="col-7 me-1">
-                                                        <form id="setstatus"
-                                                            action="/admin/update-order-status/{{../order._id}}/{{this.productId._id}}"
-                                                            method="POST">
-                                                            <!-- Display the current status as plain text -->
-
-                                                            <select class="form-select" id="status" name="status">
-                                                                <!-- Show the current status as a disabled, selected option -->
-                                                                <option value="{{this.status}}" selected >
-                                                                    {{this.status}}</option>
-
-                                                                <!-- Show only the next available statuses -->
-                                                                {{#each this.statusOptions}}                                                                                                                      
-                                                                <option value="{{this}}">{{this}}</option>                                                                                                                            
-                                                                {{/each}}
-                                                            </select>
-
+                                            <div class="d-flex pb-3">
+                                                {{#if this.statusOptions.length}}
+                                                <div class="col-7 me-1">
+                                                    <!-- ✅ Remove `id="status"` to avoid conflicts, use class -->
+                                                    <select class="form-select status-select" name="status">
+                                                        <option value="{{this.status}}" selected>{{this.status}}
+                                                        </option>
+                                                        {{#each this.statusOptions}}
+                                                        <option value="{{this}}">{{this}}</option>
+                                                        {{/each}}
+                                                    </select>
+                                                </div>
+                                                <div class="col-6">
+                                                    <!-- ✅ Remove `id="setstatus"`, use class & unique `data-*` attributes -->
+                                                    <button type="button" class="btn btn-dark px-2 setstatus-btn"
+                                                        data-order-id="{{../order._id}}"
+                                                        data-product-id="{{this.productId._id}}">
+                                                        Set Status
+                                                    </button>
+                                                </div>
+                                                {{else}}
+                                                <div class="col">
+                                                    <div class="mb-2"><strong>Current Status:</strong> {{this.status}}
                                                     </div>
-                                                    <div class="col-6">
-                                                        <button type="submit" class="btn btn-dark px-2">Set Status</button>
-                                                    </div>
-                                                        </form>
+                                                    {{#if (isEqual this.status "Return Approved")}}
+                                                    <p><span class="fw-bold">Reason:</span> {{this.returnReason}}</p>
                                                     {{else}}
-                                                    <div class="col">
-                                                        <div class="mb-2"><strong>Current Status:</strong> {{this.status}} </div>
-                                                        {{#if (isEqual this.status "Return Approved")}} <p><span class="fw-bold">Reason:</span>
-                                                    {{this.returnReason}}</p> {{/if}}
-                                                        <span class="text-muted">No further status changes allowed</span>
-                                                    </div>
+                                                    <span class="text-muted">No further status changes allowed</span>
                                                     {{/if}}
                                                 </div>
+                                                {{/if}}
+                                            </div>
                                             {{/if}}
                                         </td>
+
                                     </tr>
                                     {{/each}}
-
                                 </tbody>
+
                             </table>
 
-                            
+
 
                         </div>
                     </div>
@@ -307,59 +339,71 @@
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const statusForm = document.getElementById("setstatus");
 
-        if (statusForm) {
-            statusForm.addEventListener("submit", async function (event) {
-                event.preventDefault(); // Prevent default form submission
 
-                const formData = new FormData(statusForm);
-                const statusValue = formData.get("status");
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".setstatus-btn").forEach(button => {
+        button.addEventListener("click", async function (event) {
+            event.preventDefault();
 
-                // Extract the action URL dynamically from the form
-                const actionUrl = statusForm.getAttribute("action");
+            const orderId = this.dataset.orderId;
+            const productId = this.dataset.productId;
+            let statusValue;
 
-                try {
-                    //const response = await fetch(/admin/update - order - status / ${ order._id } / ${ orderedItem.productId._id }, {
-                    const response = await fetch(/admin/update - order - status / ${ order._id } / ${ orderedItem.productId._id }, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ status: statusValue }),
-                    });
+            // ✅ If there's a status select dropdown, get its value; otherwise, use the button's data-status
+            const statusSelect = this.closest(".d-flex").querySelector(".status-select");
+            if (statusSelect) {
+                statusValue = statusSelect.value;
+            } else {
+                statusValue = this.closest("form").dataset.status; 
+            }
 
-                    const result = await response.json();
+            if (!statusValue) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Action',
+                    text: 'No status selected!',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
 
-                    if (response.ok) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: 'Status updated successfully!',
-                            confirmButtonText: 'OK'
-                        });
-                        location.reload(); // Refresh to reflect the new status
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Update Failed',
-                            text: result.error || 'Failed to update status.',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                } catch (error) {
-                    console.error("Error updating status:", error);
+            try {
+                const response = await fetch(`/admin/update-order-status/${orderId}/${productId}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ status: statusValue }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: result.message || 'Status updated successfully!',
+                        confirmButtonText: 'OK'
+                    }).then(() => location.reload());
+                } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'An error occurred',
-                        text: 'Please try again.',
+                        title: 'Update Failed',
+                        text: result.error || 'Failed to update status.',
                         confirmButtonText: 'OK'
                     });
                 }
-            });
-        }
+            } catch (error) {
+                console.error("Error updating status:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'An error occurred',
+                    text: 'Please try again.',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
     });
+});
 
 
 </script>

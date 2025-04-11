@@ -12,7 +12,7 @@
         /* Fixed light blue background for active */
     }
 
-    .bg-theme{
+    .bg-theme {
         background-color: #DFF2FA;
     }
 </style>
@@ -73,7 +73,7 @@
                                     {{getVariantQuantity this.productId.variant this.variantId}} ML</p>
 
                                 <p>Quantity: {{this.quantityCount}}</p>
-                                <p>Price: Rs. {{this.price}}</p>
+                                <p>Price: Rs. {{this.discountPrice}}</p>
                                 {{#if (or (isEqual this.status "Delivered") (isEqual this.status "Returned"))}}
                                 <p>Delivered on: {{formatDate this.deliveredDate}}</p>{{/if}}
                             </div>
@@ -99,31 +99,28 @@
                                 {{/if}}
                             </div>
 
-                            <div class="p-2">
+                            <div class="p-2" id="order-actions">
                                 {{#if (isEqual this.status "Delivered")}}
-                                <!-- Return Button with Confirmation -->
-                                <form id="returnForm-{{../order._id}}-{{this.productId._id}}"
-                                    action="/order/return/{{../order._id}}/{{this.productId._id}}" method="POST">
-                                    <button type="button" class="btn btn-outline-primary px-3"
-                                        onclick="confirmAction('return', '{{../order._id}}', '{{this.productId._id}}', '{{this.status}}')"
-                                        {{#if (isReturnEligible this.deliveredDate)}}disabled{{/if}}>
-                                        Return
-                                    </button>
-                                </form>
+                                <!-- Return Button -->
+                                <button type="button" class="btn btn-outline-primary px-3 return-btn"
+                                    data-action="return" data-order-id="{{../order._id}}" 
+                                    data-product-id="{{this.productId._id}}" data-status="{{this.status}}" {{#if
+                                    (isReturnEligible this.deliveredDate)}}disabled{{/if}}>
+                                    Return
+                                </button>
                                 {{else}}
-                                <!-- Cancel Button with Confirmation -->
-                                <form id="cancelForm-{{../order._id}}-{{this.productId._id}}"
-                                    action="/order/cancel/{{../order._id}}/{{this.productId._id}}/{{this.variantId}}"
-                                    method="POST">
-                                    <button type="button" class="btn btn-outline-danger px-3"
-                                        onclick="confirmAction('cancel', '{{../order._id}}', '{{this.productId._id}}', '{{this.status}}')"
-                                        {{#if (or (or (isEqual this.status "Cancelled" ) (isEqual this.status "Returned" )) (isEqual this.status "Return Approved" ))}}hidden{{/if}}>
-                                        Cancel
-                                    </button>
-
-                                </form>
+                                <!-- Cancel Button -->
+                                <button type="button" class="btn btn-outline-danger px-3 cancel-btn"
+                                    data-action="cancel" data-order-id="{{../order._id}}"
+                                    data-product-id="{{this.productId._id}}" data-variant-id="{{this.variantId}}" 
+                                    data-status="{{this.status}}" {{#if (or (or (isEqual this.status "Cancelled" )
+                                    (isEqual this.status "Returned" )) (isEqual this.status "Return Approved"
+                                    ))}}hidden{{/if}}>
+                                    Cancel
+                                </button>
                                 {{/if}}
                             </div>
+
 
                             <div class="p-2">
                                 {{#if (isReturnEligible this.deliveredDate)}}
@@ -137,8 +134,8 @@
                     {{/each}}
 
                     <!-- Delivery Address -->
-                    <div class="grid gap-1 d-flex justify-content-between p-3 border border-2">
-                        <div class="col-7 ps-3">
+                    <div class="grid gap-1 d-flex justify-content-between ">
+                        <div class="col-7 p-3 border border-2">
 
                             <p class="fw-bold">Shipping Address</p>
                             <p><span>{{order.shippingAddress.firstname}} {{order.shippingAddress.lastname}}</span>
@@ -148,10 +145,11 @@
                                 {{order.shippingAddress.district}}, {{order.shippingAddress.state}} -
                                 {{order.shippingAddress.pincode}}</span>
                         </div>
-                        <div class="col-5 ps-3">
+                        <div class="col-5 p-3 border border-2">
                             <p>Total Amount: {{order.totalAmount}}</p>
                             <p>Order ID: {{order.orderId}}</p>
-                            <span>Ordered On: {{formatDate order.orderDate}}</span>
+                            <p>Ordered On: {{formatDate order.orderDate}}</p>
+                            <p>Payment: {{order.payment.method}} - {{order.payment.status}}</p>
                         </div>
 
                     </div>
@@ -176,15 +174,18 @@
                     <input type="hidden" id="returnProductId">
 
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="returnReason" value="Defective product" id="reason1">
+                        <input class="form-check-input" type="radio" name="returnReason" value="Defective product"
+                            id="reason1">
                         <label class="form-check-label" for="reason1">Defective product</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="returnReason" value="Received wrong item" id="reason2">
+                        <input class="form-check-input" type="radio" name="returnReason" value="Received wrong item"
+                            id="reason2">
                         <label class="form-check-label" for="reason2">Received wrong item</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="returnReason" value="Not as described" id="reason3">
+                        <input class="form-check-input" type="radio" name="returnReason" value="Not as described"
+                            id="reason3">
                         <label class="form-check-label" for="reason3">Not as described</label>
                     </div>
 
@@ -211,6 +212,8 @@
                 <form id="cancelForm" method="POST">
                     <input type="hidden" name="orderId" id="orderId">
                     <input type="hidden" name="productId" id="productId">
+                    <input type="hidden" name="variantId" id="variantId">
+                    
                     <div>
                         <label><input type="radio" name="cancelReason" value="Order by mistake"> Order by mistake
                         </label><br>
@@ -237,101 +240,109 @@
 
 <!-- JavaScript for Confirmation -->
 <script>
-    function confirmAction(action, orderId, productId, status) {
-        const formId = action === 'return' ? `returnForm-${orderId}-${productId}` : `cancelForm-${orderId}-${productId}`;
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.addEventListener("click", async function (event) {
+        const target = event.target;
 
-        let text = "";
+        console.log("Clicked element:", target); // Debugging log
 
-        if (action === 'return') {
-            text = "Do you really want to return this product?";
-        } else {
-            if (status === "Returned") {
-                text = "Do you really want to cancel this return?";
+        if (target.classList.contains("return-btn") || target.classList.contains("cancel-btn")) {
+            const action = target.getAttribute("data-action");
+            const orderId = target.getAttribute("data-order-id");
+            const productId = target.getAttribute("data-product-id");
+            const variantId = target.getAttribute("data-variant-id");  // Capture the variant-id for cancel
+
+            console.log("Action:", action);
+            console.log("Order ID:", orderId);
+            console.log("Product ID:", productId);
+            console.log("Variant ID:", variantId);
+
+            if (action === "return") {
+                document.getElementById("returnOrderId").value = orderId;
+                document.getElementById("returnProductId").value = productId;
+                const returnModal = new bootstrap.Modal(document.getElementById("returnModal"));
+                returnModal.show();
+            } else if (action === "cancel") {
+                document.getElementById("orderId").value = orderId;
+                document.getElementById("productId").value = productId;
+                document.getElementById("variantId").value = variantId;  // Set variant-id for cancel
+
+                console.log("Opening Cancel Modal..."); // Debugging log
+
+                const cancelModal = new bootstrap.Modal(document.getElementById("cancelModal"));
+                cancelModal.show();
+            }
+        }
+    });
+
+    // Handle Return Submission
+    document.getElementById("returnForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const returnModal = bootstrap.Modal.getInstance(document.getElementById("returnModal"));
+        returnModal.hide(); // Close the modal first
+
+        setTimeout(async () => {
+            const orderId = document.getElementById("returnOrderId").value;
+            const productId = document.getElementById("returnProductId").value;
+            const reason = document.querySelector('input[name="returnReason"]:checked');
+            if (!reason) {
+                await Swal.fire("Error", "Please select a return reason!", "error");
+                return;
+            }
+
+            await submitAction({ action: "return", orderId, productId, returnReason: reason.value });
+        }, 300); // Small delay to ensure smooth UI transition
+    });
+
+    // Handle Cancel Submission
+    document.getElementById("cancelForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const cancelModal = bootstrap.Modal.getInstance(document.getElementById("cancelModal"));
+        cancelModal.hide(); // Close the modal first
+
+        setTimeout(async () => {
+            const orderId = document.getElementById("orderId").value;
+            const productId = document.getElementById("productId").value;
+            const variantId = document.getElementById("variantId").value;  // Get the variant-id from hidden input
+            const reason = document.querySelector('input[name="cancelReason"]:checked');
+
+            if (!reason) {
+                await Swal.fire("Error", "Please select a cancellation reason!", "error");
+                return;
+            }
+
+            await submitAction({ action: "cancel", orderId, productId, variantId, cancelReason: reason.value });
+        }, 300); // Small delay for smooth transition
+    });
+
+    async function submitAction(payload) {
+        const endpoint = payload.action === "return"
+            ? `/order/return/${payload.orderId}/${payload.productId}`
+            : `/order/cancel/${payload.orderId}/${payload.productId}/${payload.variantId}`;  // Include variantId for cancel
+
+        try {
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                await Swal.fire("Success", data.message, "success");
+                location.reload(); // Refresh the page to update UI
             } else {
-                text = "Do you really want to cancel this order?";
+                await Swal.fire("Error", data.message, "error");
             }
+        } catch (error) {
+            console.error("Error:", error);
+            await Swal.fire("Error", "An unexpected error occurred.", "error");
         }
-
-        Swal.fire({
-            title: "Are you sure?",
-            text: text,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Yes, proceed!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                if (action === 'cancel') {
-                    // Open the cancel reason modal only if "Yes, proceed!" is clicked
-                    document.getElementById("orderId").value = orderId;
-                    document.getElementById("productId").value = productId;
-                    var cancelModal = new bootstrap.Modal(document.getElementById('cancelModal'));
-                    cancelModal.show();
-                } else if (action === 'return') {
-                    // Open the return reason modal
-                    document.getElementById("returnOrderId").value = orderId;
-                    document.getElementById("returnProductId").value = productId;
-                    var returnModal = new bootstrap.Modal(document.getElementById('returnModal'));
-                    returnModal.show();
-                }
-            }
-        });
     }
-
-    // Ensure the return form submission happens only after selecting a reason
-    document.getElementById("returnForm").addEventListener("submit", function (e) {
-        e.preventDefault(); // Prevent default submission until reason is confirmed
-
-        const selectedReason = document.querySelector('input[name="returnReason"]:checked');
-        if (!selectedReason) {
-            Swal.fire("Error", "Please select a reason for returning the product.", "error");
-            return;
-        }
-
-        // Append the selected reason to the form
-        const orderId = document.getElementById("returnOrderId").value;
-        const productId = document.getElementById("returnProductId").value;
-        const formId = `returnForm-${orderId}-${productId}`;
-        const returnForm = document.getElementById(formId);
-
-        const reasonInput = document.createElement("input");
-        reasonInput.type = "hidden";
-        reasonInput.name = "returnReason";
-        reasonInput.value = selectedReason.value;
-        returnForm.appendChild(reasonInput);
-
-        // Submit the form
-        returnForm.submit();
-    });
-
-
-    // Ensure the cancel form submission happens only after selecting a reason
-    document.getElementById("cancelForm").addEventListener("submit", function (e) {
-        e.preventDefault(); // Prevent default submission until we confirm the reason
-
-        const selectedReason = document.querySelector('input[name="cancelReason"]:checked');
-        if (!selectedReason) {
-            Swal.fire("Error", "Please select a reason for cancellation.", "error");
-            return;
-        }
-
-        // Append the selected reason to the form
-        const orderId = document.getElementById("orderId").value;
-        const productId = document.getElementById("productId").value;
-        const formId = `cancelForm-${orderId}-${productId}`;
-        const cancelForm = document.getElementById(formId);
-
-        const reasonInput = document.createElement("input");
-        reasonInput.type = "hidden";
-        reasonInput.name = "cancelReason";
-        reasonInput.value = selectedReason.value;
-        cancelForm.appendChild(reasonInput);
-
-        // Submit the form after confirmation
-        cancelForm.submit();
-    });
-
+});
 
 
 </script>

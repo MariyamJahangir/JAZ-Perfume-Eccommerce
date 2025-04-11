@@ -16,11 +16,16 @@ const cartSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             required: true
         },
-        totalPrice:{
+        totalBasePrice:{
             type: Number,
             required: true
         },
-        discount: {
+        totalDiscountPrice:{
+            type: Number,
+            required: true,
+            default: 0
+        },
+        totalDiscount: {
             type: Number,
             required: false,
             default: 0

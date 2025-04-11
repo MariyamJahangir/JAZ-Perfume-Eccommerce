@@ -1,0 +1,270 @@
+{{>header}}
+<style>
+  .nav-item:hover {
+    background-color: #DFF2FA;
+    /* Light blue background on hover */
+    cursor: pointer;
+    /* Add a pointer cursor for better UX */
+  }
+
+  .nav-item.active {
+    background-color: #DFF2FA;
+    /* Fixed light blue background for active */
+  }
+</style>
+
+<style>
+  .wallet-container {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 30px;
+    background-color: #d6eef5;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-custom {
+    background: linear-gradient(to right, #833ab4, #5851db);
+    border-radius: 20px;
+    color: white;
+    padding: 30px;
+    position: relative;
+    min-width: 300px;
+  }
+
+  .mastercard-logo {
+    width: 50px;
+    position: absolute;
+    top: 30px;
+    right: 30px;
+  }
+
+  .wallet-title {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #000;
+    display: inline-block;
+  }
+
+
+
+  .btn-add {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .btn-withdraw {
+    background-color: red;
+    color: white;
+  }
+</style>
+
+<section style="background-color: #DFF2FA;">
+  <div class="container">
+    <div class="row p-5">
+      <h2>Welcome {{user.firstname}}</h2>
+    </div>
+
+  </div>
+</section>
+<section>
+  <div class="container">
+    <div class="row">
+      <div class="col-2 mt-5">
+        <nav class="d-flex flex-column p-3">
+          <a href="profile" class="link-dark link-underline-opacity-0 nav-item rounded active px-3 py-2 mb-2"
+            aria-current="page"><i class="bi bi-person-circle p-2"></i>Profile</a>
+          <a href="address" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+              class="bi bi-cart4 p-2"></i>Address</a>
+          <a href="wishlist" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+              class="bi bi-heart p-2"></i>Wishlist</a>
+          <a href="orders" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+              class="bi bi-truck p-2"></i>Orders</a>
+          <a href="change-password" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+              class="bi bi-key p-2"></i>Password</a>
+          <a href="wallet" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+              class="bi bi-wallet2 p-2"></i>Wallet</a>
+          <a href="logout" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+              class="bi bi-box-arrow-right p-2"></i>Logout</a>
+        </nav>
+      </div>
+      <div class="col-10">
+        <div class="container m-4 p-4 border rounded" style="background-color: #DFF2FA;">
+
+          <div class="wallet-container text-center m-3">
+            <h2>WALLET</h2>
+            <div class="d-flex justify-content-around gap-5 align-items-center mt-4 flex-wrap px-3">
+              <div class="col-5 card-custom me-4 mb-4">
+                <div class="text-light mb-2">Current Balance</div>
+                <div class="fs-3 fw-bold">Rs.{{wallet.balance}}</div>
+                <div class="mt-4 d-flex justify-content-center align-items-center">
+                  <div>{{user.firstname}} {{user.lastname}}</div>
+
+                </div>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png"
+                  class="mastercard-logo" alt="Mastercard">
+              </div>
+              <div class="col-3 d-flex flex-column gap-3">
+                <button type="button" class="btn btn-primary rounded-pill py-2" data-bs-toggle="modal"
+                  data-bs-target="#addMoneyModal"> Add Money </button>
+
+
+              </div>
+            </div>
+          </div>
+
+          <div class="container my-5">
+            <div class="bg-light p-4 rounded-4 shadow-sm" style="background-color: #d9f0f7;">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold">Recent Transactions</h4>
+                {{!-- <button class="btn btn-outline-dark rounded-pill px-4">View All</button> --}}
+              </div>
+
+              <!-- Transaction Item 1 -->
+              {{#if wallet.transactions.length}}
+              {{#each wallet.transactions}}
+              <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
+                <div>
+                  <h6 class="fw-bold mb-1">{{type}}</h6>
+                  <small class="text-muted">{{description}}</small>
+                </div>
+                <div class="text-end">
+                  {{#if (isEqual this.type 'Credit')}}
+                  <p class="text-success fw-bold mb-1">+{{toFixed this.amount 2}}</p>
+                  {{else}}
+                  <p class="text-success fw-bold mb-1">-{{toFixed this.amount 2}}</p>
+                  {{/if}}
+                  <small class="text-dark">{{dateFormat createdAt 'DD/MM/YYYY'}}</small>
+                </div>
+              </div>
+              {{/each}}
+              <!-- Pagination -->
+              <div class="d-flex justify-content-center mt-4">
+                <ul class="pagination">
+                  {{#if (gt currentPage 1)}}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{sub currentPage 1}}">Previous</a>
+                  </li>
+                  {{/if}}
+
+                  {{#each (range 1 totalPages)}}
+                  <li class="page-item {{#if (isEqual this ../currentPage)}}active{{/if}}">
+                    <a class="page-link" href="?page={{this}}">{{this}}</a>
+                  </li>
+                  {{/each}}
+
+                  {{#if (lt currentPage totalPages)}}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{add currentPage 1}}">Next</a>
+                  </li>
+                  {{/if}}
+                </ul>
+              </div>
+              {{else}}
+              <div class="text-center text-muted py-4">
+                <p>No transactions found.</p>
+              </div>
+              {{/if}}
+
+
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+</section>
+
+
+
+<!-- Add Money Modal -->
+<div class="modal fade" id="addMoneyModal" tabindex="-1" aria-labelledby="addMoneyModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Add Money to Wallet</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <input type="number" id="walletAmount" class="form-control" placeholder="Enter amount" min="1" required>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button id="payWalletBtn" class="btn btn-primary">Add</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+{{>footer}}
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+<script>
+  document.getElementById("payWalletBtn").addEventListener("click", async () => {
+    const amount = document.getElementById("walletAmount").value;
+
+    if (!amount || amount <= 0) {
+      alert("Please enter a valid amount");
+      return;
+    }
+
+    // Step 1: Create Razorpay order
+    const response = await fetch("/wallet/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount })
+    });
+
+    const data = await response.json();
+
+    if (!data.success) {
+      alert("Failed to initiate payment");
+      return;
+    }
+
+    // Step 2: Open Razorpay checkout
+    const options = {
+      key: data.key,
+      amount: data.order.amount,
+      currency: "INR",
+      name: "My Wallet",
+      description: "Add money to wallet",
+      order_id: data.order.id,
+      handler: async function (response) {
+        // Step 3: Send payment details to verify
+        const verifyRes = await fetch("/wallet/verify-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ response, amount })
+        });
+
+        const verifyData = await verifyRes.json();
+
+        if (verifyData.success) {
+          alert("Wallet credited successfully!");
+          location.reload(); // reload to show updated wallet
+        } else {
+          alert("Payment failed or not verified");
+        }
+      },
+      theme: {
+        color: "#0d6efd"
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+  });
+</script>

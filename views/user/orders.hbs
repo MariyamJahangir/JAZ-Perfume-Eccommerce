@@ -42,7 +42,7 @@
                             class="bi bi-heart p-2"></i>Wishlist</a>
                     <a href="orders" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2 active"
                         aria-current="page"><i class="bi bi-truck p-2"></i>Orders</a>
-                    <a href="password" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+                    <a href="change-password" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
                             class="bi bi-key p-2"></i>Password</a>
                     <a href="wallet" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
                             class="bi bi-wallet2 p-2"></i>Wallet</a>
@@ -53,8 +53,9 @@
             <div class="col-10">
                 <div class="container m-4 p-4">
                     <h1 class="text-center pb-4">ALL ORDERS</h1>
+                    {{#if orders}}
                     {{#each orders}}
-                    
+                   
                     <div class="grid gap-1 d-flex justify-content-between align-items-center border bg-theme p-3 m-2">
                         <!-- Product Image -->
                         <div class="col-1 text-center">
@@ -75,23 +76,7 @@
 
                         </div>
 
-                        {{!-- <!-- Order Status -->
-                        <div class="col-2 d-flex align-items-center">
-                            {{#if (isEqual status "Delivered")}}
-                            <button type="button" class="btn btn-success rounded-circle p-1 m-2"></button>
-                            {{else if (isEqual status "Cancelled")}}
-                            <button type="button" class="btn btn-danger rounded-circle p-1 m-2"></button>
-                            {{else if (isEqual status "Returned")}}
-                            <button type="button" class="btn btn-warning rounded-circle p-1 m-2"></button>
-                            {{else if (isEqual status "Pending")}}
-                            <button type="button" class="btn btn-secondary rounded-circle p-1 m-2"></button>
-                            {{else if (isEqual status "Processing")}}
-                            <button type="button" class="btn btn-primary rounded-circle p-1 m-2"></button>
-                            {{else}}
-                            <button type="button" class="btn btn-dark rounded-circle p-1 m-2"></button>
-                            {{/if}}
-                            <span>{{status}}</span>
-                        </div> --}}
+                      
 
                         <!-- Action Buttons -->
                         <div class="col-2 d-flex align-items-center">
@@ -105,7 +90,43 @@
                     
                     {{/each}}
 
+{{#if totalPages}}
+<div class="d-flex justify-content-center mt-4">
+    <nav>
+        <ul class="pagination">
+            {{#if (gt currentPage 1)}}
+            <li class="page-item">
+                <a class="page-link" href="?page={{sub currentPage 1}}">Previous</a>
+            </li>
+            {{/if}}
 
+            {{#each (range 1 totalPages)}}
+            <li class="page-item {{#if (isEqual this ../currentPage)}}active{{/if}}">
+                <a class="page-link" href="?page={{this}}">{{this}}</a>
+            </li>
+            {{/each}}
+
+            {{#if (lt currentPage totalPages)}}
+            <li class="page-item">
+                <a class="page-link" href="?page={{add currentPage 1}}">Next</a>
+            </li>
+            {{/if}}
+        </ul>
+    </nav>
+</div>
+{{/if}}
+
+
+
+
+
+
+                    {{else}}
+                        <div class="text-center flex-column">
+                            <p> You have not ordered any products yet!</p>
+                            <a href="/all-products" class="btn btn-secondary">Shop Now</a>
+                        </div>                       
+                    {{/if}}
 
                 </div>
             </div>

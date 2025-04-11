@@ -9,6 +9,10 @@ const orderController = require('../controller/user/orderController')
 const reviewController = require('../controller/user/reviewController')
 const auth = require('../middleware/auth')
 const passport = require('passport')
+const couponController = require('../controller/user/couponController')
+const paymentController = require('../controller/user/paymentController')
+const wishlistController = require('../controller/user/wishlistController')
+const walletController = require('../controller/user/walletController')
 
 
 //Users sign up & login with validation. // Sign up using OTP with OTP timer and Resend Otp
@@ -28,6 +32,7 @@ router.post('/forget-verify-otp', homeController.forgetVerifyOtp)
 router.get('/reset-password', homeController.resetPassword)
 router.post('/reset-password', homeController.resetPass)
 
+
 // Login or signup with single sign on Google
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get('/auth/google/callback', 
@@ -40,14 +45,16 @@ router.get('/auth/google/callback',
 
 
 // Users homepage
-router.get('/', homeController.loadHome)  //auth.isLogin,
+router.get('/', homeController.loadHome)  
 
 
+//products
 router.get('/all-products', productController.allProducts);
-
-router.get('/product-details/:id/:variantId',  productController.productDetails)  //auth.isLogin,
+router.get('/product-details/:productId/:variantId',  productController.productDetails)  
 router.post('/cart/add', auth.isLogin, productController.AddToCart)
 
+
+//reviews
 router.get('/order/check-purchase', auth.isLogin, reviewController.checkPurchase)
 router.post('/review/add', auth.isLogin, reviewController.addReview)
 
@@ -84,10 +91,20 @@ router.delete("/cart/remove/:cartItemId", cartController.removeProduct)
 router.post("/cart/update-quantity", cartController.updateCartQuantity);
 
 router.get('/checkout',auth.isLogin, cartController.LoadCheckout)
-router.post("/order/place",auth.isLogin, cartController.PlaceOrder)
-router.get('/order-placed', cartController.OrderPlaced)
 
 
+
+
+//coupons
+router.post("/apply-coupon", auth.isLogin, couponController.ApplyCoupon)
+
+
+//payment
+router.post("/order/place",auth.isLogin, orderController.PlaceOrder)
+router.post('/create-payment',auth.isLogin, paymentController.createRazorpayOrder)
+router.post('/verify-payment',auth.isLogin, paymentController.verifyPayment)
+router.get('/order-placed', orderController.OrderPlaced)
+router.get('/order-failed', orderController.OrderFailed)
 
 
 //orders
@@ -98,8 +115,27 @@ router.post('/order/cancel/:orderId/:productId/:variantId',auth.isLogin, orderCo
 
 
 
+
+
 //password
 router.get('/change-password',auth.isLogin, profileController.LoadPassword)
 router.post('/change-password',auth.isLogin, profileController.ChangePassword)
+
+
+
+//wishlist
+router.get('/wishlist',auth.isLogin, wishlistController.LoadWishlist)
+router.get('/wishlist/check/:productId/:variantId', auth.isLogin, wishlistController.CheckWishlist)
+router.post('/wishlist/add', auth.isLogin, wishlistController.AddWishlist)
+router.post('/wishlist/remove', auth.isLogin, wishlistController.RemoveWishlist)
+
+
+//wallet
+router.get('/wallet',auth.isLogin, walletController.LoadWallet)
+router.post('/wallet/create-order', auth.isLogin, walletController.createOrder);
+router.post('/wallet/verify-payment', auth.isLogin, walletController.verifyPayment);
+
+
+
 
 module.exports = router;

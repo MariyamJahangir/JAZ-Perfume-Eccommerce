@@ -20,6 +20,30 @@
     .dropdown-item {
         cursor: pointer;
     }
+
+.wishlist-btn {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.product-card:hover .wishlist-btn {
+  opacity: 1;
+}
+
+.offer-badge {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.product-card:hover .offer-badge {
+  opacity: 1;
+}
+
+.bg-theme{
+    background-color: #20871d;
+}
+
+
 </style>
 
 {{>header}}
@@ -121,8 +145,13 @@
                             </div>
 
                         </div>
+
                     </div>
                     <hr>
+                    <div class="filter">
+
+                    </div>
+                    <div id="product-count"></div>
                 </div>
 
                 <div class="container py-5">
@@ -149,6 +178,10 @@
 
 <script id="products-data" type="application/json">
   {{{json products}}}
+</script>
+
+<script id="wishlist-data" type="application/json">
+    {{{json wishlist}}}
 </script>
 
 <script>
@@ -235,6 +268,10 @@
         const productsDataElement = document.getElementById('products-data');
         const products = JSON.parse(productsDataElement.textContent);
 
+        const wishlistDataElement = document.getElementById('wishlist-data');
+        const wishlist = JSON.parse(wishlistDataElement.textContent);
+
+
         let currentSort = '';
         let currentPage = 1;
         const productsPerPage = 10;
@@ -251,27 +288,65 @@
             const start = (page - 1) * productsPerPage;
             const end = start + productsPerPage;
             const paginatedProducts = filteredProducts.slice(start, end);
+            
+           // console.log("Wishlist in Frontend:", wishlist);
+
 
             paginatedProducts.forEach(product => {
                 productsContainer.innerHTML += `
-            <div class="col-md-2 m-3 product-card" data-price="${product.price}">
-                <div class="card text-center">
-                    <a href="/product-details/${product.productId}/${product._id}">
-                        <img src="/uploads/${product.images[0]}" class="card-img-top" alt="Product Image"
-                            style="width: 100%; height: 240px; object-fit: cover;">
-                    </a>
-                    <button type="button" class="btn-hover btncartbtm addtocart" data-productid="${product.productId}" data-variantid="${product._id}" data-stockstatus="${product.stockStatus}" data-stockquantity="${product.stockQuantity}" data-price="${product.price}" >Add to Cart</button>
-                </div>
-                <div class="card-body px-0">
-                    <h6 class="card-title pt-2">${product.productName} - ${product.quantityML} ML</h6>
-                    <div class="d-flex justify-content-between align-items-center pe-4">
-                        <button type="button" class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill">${product.stockStatus}</button>
-                        <p class="card-text text-muted">Rs. ${product.price}</p>
-                    </div>
-                    <p class="card-text text-muted">${product.category.name}</p>
-                </div>
-            </div>`;
-            });
+                    <div class="col-md-2 m-2 p-1 product-card" data-price="${product.price}">
+                        <div class="card text-center position-relative">
+                            <a href="/product-details/${product.productId}/${product._id}">
+                                <img src="/uploads/${product.images[0]}" class="card-img-top" alt="Product Image"
+                                    style="width: 100%; height: 210px; object-fit: cover;">
+                            </a>
+
+                            <!-- Offer Badge -->
+                            ${product.discountAmount > 0 ? `
+                                <div class="offer-badge position-absolute top-0 start-0 m-2 bg-theme text-white px-2 py-1 rounded fw-bold" 
+                                    style="font-size: 12px; z-index: 1;">
+                                    ${product.discountText}
+                                </div>
+                            ` : ""}
+                            
+                            <!-- Wishlist button -->
+                            <button class="wishlist-btn position-absolute top-0 end-0 m-2 border-0 bg-transparent" 
+                                data-productid="${product.productId}" 
+                                data-variantid="${product._id}"> 
+                                ${(wishlist || []).some(w => w.productId === product.productId && w.variantId === product._id) ? `❤️` : `🤍`}
+                            </button>
+                            
+                            <button type="button" class="btn-hover btncartbtm addtocart" 
+                                data-productid="${product.productId}" data-variantid="${product._id}" 
+                                data-stockstatus="${product.stockStatus}" data-stockquantity="${product.stockQuantity}" 
+                                data-price="${product.price}" data-discountedprice="${product.discountedPrice}" 
+                                data-discountamount="${product.discountAmount}">
+                                Add to Cart
+                            </button>
+                        </div>
+                        
+                        <div class="card-body flex-column px-0">
+                            <h6 class="card-title pt-2">${product.productName} - ${product.quantityML} ML</h6>
+                            <button type="button" class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill">
+                                ${product.stockStatus}
+                            </button>
+                            
+                            <div class="d-flex justify-content-center align-items-center flex-wrap">
+                                <p class="card-text text-success mb-0 fw-bold">Rs.${product.discountedPrice}</p>
+                                ${product.discountAmount > 0 ? `
+                                    <p class="card-text text-muted px-2 mb-0"><s style="font-size: 14px">Rs.${product.price}</s></p>
+                                ` : ""}
+                            </div>
+
+                        
+                        </div>
+                    </div>`;
+                });
+
+
+
+
+            //document.getElementById("product-count").innerHTML = `Total Products: <strong>${filteredProducts.length}</strong>`;
 
             setupPagination(filteredProducts);
         }
@@ -380,111 +455,285 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("products-container").addEventListener("click", async function (event) {
-            
-                const button = event.target.closest(".addtocart");
-                if (!button) return; // Ignore clicks outside the button
 
-                const productId = button.dataset.productid;
-                const variantId = button.dataset.variantid;
+            const button = event.target.closest(".addtocart");
+            if (!button) return; // Ignore clicks outside the button
 
-                const stockStatus = button.dataset.stockstatus;
-                const stockQuantity = button.dataset.stockquantity;
+            const productId = button.dataset.productid;
+            const variantId = button.dataset.variantid;
 
-                const basePrice = button.dataset.price;
-                const quantityCount = 1;
+            const stockStatus = button.dataset.stockstatus;
+            const stockQuantity = button.dataset.stockquantity;
 
-                if (!variantId) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Variant Required',
-                        text: 'Please select a variant before adding to cart.',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#f39c12'
-                    });
-                    return;
-                }
+            const totalBasePrice = button.dataset.price;
+            const totalDiscountPrice = button.dataset.discountedprice;
+            const totalDiscount = button.dataset.discountamount;
+            const quantityCount = 1;
 
-                // ✅ Prevent adding if "Out of Stock"
-                if (stockStatus.toLowerCase() === "out of stock" || stockQuantity <= 0) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Out of Stock',
-                        text: 'This product is currently out of stock and cannot be added to the cart.',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#d33'
-                    });
-                    return;
-                }
+            if (!variantId) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Variant Required',
+                    text: 'Please select a variant before adding to cart.',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#f39c12'
+                });
+                return;
+            }
 
-
-
-                try {
-                    const response = await fetch("/cart/add", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            productId,
-                            variantId,
-                            quantityCount,
-                            totalPrice: (basePrice * quantityCount)
-                        }),
-                    });
+            // ✅ Prevent adding if "Out of Stock"
+            if (stockStatus.toLowerCase() === "out of stock" || stockQuantity <= 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Out of Stock',
+                    text: 'This product is currently out of stock and cannot be added to the cart.',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#d33'
+                });
+                return;
+            }
 
 
-                    const contentType = response.headers.get("content-type");
-                    if (contentType && contentType.includes("application/json")) {
 
-                        const data = await response.json();
-
-                        if (data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success!',
-                                text: data.message,
-                                confirmButtonText: 'Great!',
-                                confirmButtonColor: '#28a745'
-                            });
-                            //window.location.href = "/cart"; // Redirect to cart page
-                        } else if (response.status === 401) {
-                            Swal.fire({
-                                icon: 'warning',
-                                title: 'You need to log in!',
-                                text: data.message,
-                                confirmButtonColor: '#d33'
-                            });
-                            window.location.href = "/login";
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops!',
-                                text: data.message || 'Failed to add product to cart.',
-                                confirmButtonColor: '#d33'
-                            });
-                        }
+            try {
+                const response = await fetch("/cart/add", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        productId,
+                        variantId,
+                        quantityCount,
+                        //totalPrice: (basePrice * quantityCount)
+                        totalBasePrice,
+                        totalDiscountPrice,
+                        totalDiscount
+                    }),
+                });
 
 
-                    } else {
-                        // Handle HTML response (unauthenticated)
-                        await Swal.fire({
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: data.message,
+                            confirmButtonText: 'Great!',
+                            confirmButtonColor: '#28a745'
+                        });
+                        //window.location.href = "/cart"; // Redirect to cart page
+                    } else if (response.status === 401) {
+                        Swal.fire({
                             icon: 'warning',
-                            title: 'Authentication Required',
-                            text: 'You need to log in to add products to the cart.',
+                            title: 'You need to log in!',
+                            text: data.message,
                             confirmButtonColor: '#d33'
                         });
                         window.location.href = "/login";
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: data.message || 'Failed to add product to cart.',
+                            confirmButtonColor: '#d33'
+                        });
                     }
 
-                } catch (error) {
-                    console.error("Error:", error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Server Error',
-                        text: error.message || 'Something went wrong. Please try again later.',
+
+                } else {
+                    // Handle HTML response (unauthenticated)
+                    await Swal.fire({
+                        icon: 'warning',
+                        title: 'Authentication Required',
+                        text: 'You need to log in to add products to the cart.',
                         confirmButtonColor: '#d33'
                     });
+                    window.location.href = "/login";
                 }
-            
+
+            } catch (error) {
+                console.error("Error:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Server Error',
+                    text: error.message || 'Something went wrong. Please try again later.',
+                    confirmButtonColor: '#d33'
+                });
+            }
+
         });
     });
+
+</script>
+
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const filterDiv = document.querySelector(".filter");
+        const searchInput = document.getElementById("search-input");
+        const categoryCheckboxes = document.querySelectorAll(".category-checkbox");
+        const sortButtons = document.querySelectorAll("#sort-options button");
+
+        const minPriceInput = document.getElementById("min-price");
+        const maxPriceInput = document.getElementById("max-price");
+        const rangeMin = document.querySelector(".range-min");
+        const rangeMax = document.querySelector(".range-max");
+
+        function updateFilterDisplay() {
+            let filters = [];
+
+            // Get Search Term
+            const searchTerm = searchInput.value.trim();
+            if (searchTerm) {
+                filters.push(`Results for <strong>"${searchTerm}"</strong>`);
+            }
+
+            // Get Selected Categories
+            const selectedCategories = [];
+            categoryCheckboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    selectedCategories.push(checkbox.value);
+                }
+            });
+            if (selectedCategories.length > 0) {
+                filters.push(`Category: <strong>${selectedCategories.join(", ")}</strong>`);
+            }
+
+            // Get Price Range (from both input boxes and range sliders)
+            const minPrice = minPriceInput.value;
+            const maxPrice = maxPriceInput.value;
+            if (minPrice > 0 || maxPrice < 10000) {
+                filters.push(`Price Range: <strong>₹${minPrice} - ₹${maxPrice}</strong>`);
+            }
+
+            // Get Selected Sorting
+            const selectedSort = document.getElementById("selected-sort").textContent;
+            if (selectedSort !== "Select") {
+                filters.push(`Sort by: <strong>${selectedSort}</strong>`);
+            }
+
+            // Update the filter display
+            filterDiv.innerHTML = filters.length > 0 ? filters.join(" | ") : "No filters applied";
+        }
+
+        // Event Listeners
+        searchInput.addEventListener("input", updateFilterDisplay);
+        categoryCheckboxes.forEach((checkbox) => checkbox.addEventListener("change", updateFilterDisplay));
+
+        // Update price values in real-time as user moves the sliders
+        rangeMin.addEventListener("input", function () {
+            minPriceInput.value = rangeMin.value;
+            updateFilterDisplay();
+        });
+
+        rangeMax.addEventListener("input", function () {
+            maxPriceInput.value = rangeMax.value;
+            updateFilterDisplay();
+        });
+
+        // Update price values when manually typing in the input boxes
+        minPriceInput.addEventListener("input", function () {
+            rangeMin.value = minPriceInput.value;
+            updateFilterDisplay();
+        });
+
+        maxPriceInput.addEventListener("input", function () {
+            rangeMax.value = maxPriceInput.value;
+            updateFilterDisplay();
+        });
+
+        // Sort by dropdown
+        sortButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+                document.getElementById("selected-sort").textContent = this.textContent;
+                updateFilterDisplay();
+            });
+        });
+    });
+
+</script>
+
+
+<script>
+    // Handle wishlist button toggle (Add/Remove) using async/await
+document.addEventListener("click", async function (event) {
+    if (event.target.classList.contains("wishlist-btn")) {
+        const productId = event.target.getAttribute("data-productid");
+        const variantId = event.target.getAttribute("data-variantid");
+
+        try {
+            const response = await fetch(`/wishlist/check/${productId}/${variantId}`);
+            const contentType = response.headers.get("content-type");
+
+            if (!contentType || !contentType.includes("application/json")) {
+                // If response is not JSON, assume user is not logged in and redirect
+                console.warn("User not logged in. Redirecting to login page...");
+                window.location.href = "/login";
+                return;
+            }
+
+            const data = await response.json(); // Parse JSON safely
+            console.log("Wishlist Status:", data);
+
+            if (data.inWishlist) {
+                // Remove from wishlist
+                const removeResponse = await fetch("/wishlist/remove", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ productId, variantId }),
+                });
+
+                if (removeResponse.ok) {
+                    event.target.innerHTML = "🤍"; // Gray heart (Removed)
+                    Swal.fire({
+                        icon: "success",
+                        title: "Removed!",
+                        text: "Product removed from wishlist.",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }else{
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops!",
+                        text: "Failed to remove product from wishlist.",
+                    });
+                }
+            } else {
+                // Add to wishlist
+                const addResponse = await fetch("/wishlist/add", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ productId, variantId }),
+                });
+
+                if (addResponse.ok) {
+                    event.target.innerHTML = "❤️"; // Red heart (Added)
+                    Swal.fire({
+                        icon: "success",
+                        title: "Added!",
+                        text: "Product added to wishlist.",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }else{
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops!",
+                        text: "Failed to add product to wishlist.",
+                    });
+                }
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+});
+
 
 </script>

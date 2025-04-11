@@ -14,6 +14,10 @@ const categorySchema = new mongoose.Schema({
     image: {
         type: String   // Store image filename
     },
+    offer: { 
+        type: String, 
+        default: null 
+    },
     deleted: {
         type: Boolean,
         default: false

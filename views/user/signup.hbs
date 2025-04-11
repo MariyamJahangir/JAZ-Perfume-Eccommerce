@@ -86,8 +86,31 @@
         const confirmpassword = document.getElementById("confirmpassword").value.trim();
         document.getElementById("signup")
 
+        const requiredFields = ['firstname', 'lastname', 'email', 'password', 'confirmpassword']
+        let isValid = true;
+        // Validate required fields
+        requiredFields.forEach(field => {
+            const input = document.getElementById(field);
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add('is-invalid'); // Adds red border for invalid fields
+            } else {
+                input.classList.remove('is-invalid'); // Removes red border if valid
+            }
+        });
+
+        if (!isValid) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Fields',
+                text: 'Please fill in all required fields.',
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
         // Validate fields one by one, showing an alert for each error
-        if (!firstname) {
+        /*if (!firstname) {
             return Swal.fire({ icon: "error", title: "Validation Error", text: "First name is required." });
         }
 
@@ -97,16 +120,16 @@
 
         if (!email) {
             return Swal.fire({ icon: "error", title: "Validation Error", text: "Email is required." });
-        }
+        }*/
 
         const emailPattern = /^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/;
         if (!emailPattern.test(email)) {
             return Swal.fire({ icon: "error", title: "Validation Error", text: "Invalid email format." });
         }
 
-        if (!password) {
+        /*if (!password) {
             return Swal.fire({ icon: "error", title: "Validation Error", text: "Password is required." });
-        }
+        }*/
 
         
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
@@ -119,9 +142,9 @@
             });
         }
 
-        if (!confirmpassword) {
+        /*if (!confirmpassword) {
             return Swal.fire({ icon: "error", title: "Validation Error", text: "Confirm Password is required." });
-        }
+        }*/
 
         if (password !== confirmpassword) {
             return Swal.fire({ icon: "error", title: "Validation Error", text: "Passwords do not match." });

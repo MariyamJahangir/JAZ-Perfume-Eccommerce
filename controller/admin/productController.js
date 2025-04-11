@@ -1,5 +1,6 @@
 const productModel = require('../../model/productModel')
 const categoryModel = require('../../model/categoryModel')
+const offerModel = require('../../model/offerModel')
 const moment = require('moment');
 const fs = require('fs')
 
@@ -12,7 +13,7 @@ const products = async (req, res) => {
         let limit = 12; // Number of products per page
         let skip = (page - 1) * limit; // Calculate offset
 
-        const products = await productModel.find({ deleted: false }).skip(skip).limit(limit).lean(); // Fetch products from MongoDB 
+        const products = await productModel.find({ deleted: false }).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(); // Fetch products from MongoDB 
         const totalProducts = await productModel.countDocuments(); // Get total count
 
         // Format the timestamps
@@ -59,7 +60,8 @@ const searchProduct = async (req, res) => {
 // Get Add Products Page
 const loadAddProducts = async (req, res) => {
     const categories = await categoryModel.find({}).lean();
-    res.render('admin/add-products', { categories })
+    const offers = await offerModel.find({offerType: 'product', isActive: true, expiry: { $gte: new Date() }}).lean();
+    res.render('admin/add-products', { categories, offers })
 }
 
 
@@ -68,7 +70,7 @@ const addProducts = async (req, res) => {
     try {
         const { name, category, offer, description, trending, variant, images } = req.body;
 
-        console.log("images:", images)
+        console.log("add category:", category)
 
         // Validate required fields
         if (!name || !category || !description || !variant) {
@@ -117,6 +119,8 @@ const addProducts = async (req, res) => {
             }
             return image;
         });
+        
+
 
         // Create new product
         const newProduct = new productModel({
@@ -129,7 +133,7 @@ const addProducts = async (req, res) => {
             images: finalImages,
         });
 
-        console.log("add-product:", newProduct)
+        
 
         await newProduct.save();
 
@@ -158,15 +162,19 @@ const loadEditProducts = async (req, res) => {
 
         const categories = await categoryModel.find({deleted:"false"}).lean();
 
+        const currentDate = new Date();
+        const offers = await offerModel.find({ expiry: { $gte: currentDate }, offerType:'product', isActive: true }).lean();
+        console.log('offers:',offers)
+
         if (!product) {
             return res.status(404).send("Product not found");
         }
-        console.log("categories:", categories)
-        console.log("product:", product)
+       
         
         res.render("admin/edit-products", {
             product,
             categories,
+            offers
         });
     } catch (err) {
         console.error(err);
@@ -216,8 +224,9 @@ const editProducts = async (req, res) => {
         }
 
         const { name, category, offer, description, variant, trending, images } = req.body;
+        
 
-        console.log('Ed-images:',images)
+        console.log('edit category:',category)
         
         if (!variant || !Array.isArray(variant) || variant.length === 0) {
             return res.status(400).json({ message: "At least one valid variant is required." });
@@ -285,6 +294,7 @@ const editProducts = async (req, res) => {
 
         if (name) product.name = name;
         if (category) product.category = category;
+        console.log("edit category:",category)
         if (offer) product.offer = offer;
         if (description) product.description = description;
         if (trending) product.trending = trending;

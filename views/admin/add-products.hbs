@@ -20,7 +20,7 @@
             </div>
 
             <div class="nav flex-column px-3">
-                <a href="#" class="nav-link">
+                <a href="/admin/dashboard" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f82b0047e6557aa901c15537d58a7ab6971e1d1d635e2a205c02ec234f11ad61?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Dashboard" loading="lazy">
@@ -28,7 +28,7 @@
                     <span class="nav-text">Dashboard</span>
                 </a>
 
-                <a href="products" class="nav-link active" aria-current="page">
+                <a href="/admin/products" class="nav-link active" aria-current="page">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/126b232c82239fc3740982b7c8240f84671d1b6e2a4d00141995b3c82d24c4a5?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Products" loading="lazy">
@@ -36,7 +36,7 @@
                     <span class="nav-text">Products</span>
                 </a>
 
-                <a href="category" class="nav-link">
+                <a href="/admin/category" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/c46200642d44aab62899b16a25fc8bfe94e9df6fede3e3512b370b3d4f514356?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Categories" loading="lazy">
@@ -44,7 +44,7 @@
                     <span class="nav-text">Categories</span>
                 </a>
 
-                <a href="orders" class="nav-link">
+                <a href="/admin/orders" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/395e632ba7027a03ce2c35c1aa8bcc4534da249d8c136cdcc01b5043a72ddc87?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Orders" loading="lazy">
@@ -52,7 +52,7 @@
                     <span class="nav-text">Orders</span>
                 </a>
 
-                <a href="customers" class="nav-link">
+                <a href="/admin/customers" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f933064a6bab49b74f8d5722595a056cbddbca1247d9b1a20a7e0fc8d56413a0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Customers" loading="lazy">
@@ -60,7 +60,7 @@
                     <span class="nav-text">Customers</span>
                 </a>
 
-                <a href="#" class="nav-link">
+                <a href="/admin/offers" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/ba76937fe489134f0c577be82a18baeadddda8f77194bbcb94734c6db29400c0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Offers" loading="lazy">
@@ -68,7 +68,7 @@
                     <span class="nav-text">Offers</span>
                 </a>
 
-                <a href="#" class="nav-link">
+                <a href="/admin/coupons" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/cabe95d2f5fab42e35aad96d91245b122dd4d50ddfe8d1d2bceee5ea219442d8?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Coupons" loading="lazy">
@@ -76,7 +76,7 @@
                     <span class="nav-text">Coupons</span>
                 </a>
 
-                <a href="#" class="nav-link">
+                <a href="/admin/reviews" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/2897cc0ce7ace4dd1f7e6d2c1b779540e7fa6d14150e07ac6bd13caecdf99b1a?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Reviews" loading="lazy">
@@ -144,6 +144,7 @@
                                         <option value="{{_id}}">{{name}}</option>
                                         {{/if}}
                                         {{/each}}
+                                        
                                     </select>
                                 </div>
 
@@ -151,7 +152,10 @@
                                     <label for="offer" class="form-label">Offer</label>
                                     <select id="offer" name="offer" class="form-select">
                                         <option value="" disabled selected>Select an Offer</option>
-                                        <option value="sales2024">Sales2024</option>
+                                        {{#each offers}}
+                                        <option value="{{name}}">{{name}}</option>
+                                        {{/each}}
+                                        
                                     </select>
                                 </div>
 

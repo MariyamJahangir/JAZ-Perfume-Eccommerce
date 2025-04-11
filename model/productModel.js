@@ -37,10 +37,6 @@ const productSchema = new mongoose.Schema(
             ref: 'Category',
             required: true
         },
-        offer: {
-            type: String,
-
-        },
         trending: {
             type: Boolean,
             default: false
@@ -60,6 +56,10 @@ const productSchema = new mongoose.Schema(
                 validator: (v) => v && v.length > 0,
                 message: "Images array must contain at least one image",
             },
+        },
+        offer: {
+            type: String,
+            default: null
         },
         deleted: {
             type: Boolean,

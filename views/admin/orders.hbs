@@ -15,7 +15,7 @@
             </div>
 
             <div class="nav flex-column px-3">
-                <a href="#" class="nav-link ">
+                <a href="dashboard" class="nav-link ">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f82b0047e6557aa901c15537d58a7ab6971e1d1d635e2a205c02ec234f11ad61?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Dashboard" loading="lazy">
@@ -55,7 +55,7 @@
                     <span class="nav-text">Customers</span>
                 </a>
 
-                <a href="#" class="nav-link">
+                <a href="offers" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/ba76937fe489134f0c577be82a18baeadddda8f77194bbcb94734c6db29400c0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Offers" loading="lazy">
@@ -63,7 +63,7 @@
                     <span class="nav-text">Offers</span>
                 </a>
 
-                <a href="#" class="nav-link">
+                <a href="coupons" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/cabe95d2f5fab42e35aad96d91245b122dd4d50ddfe8d1d2bceee5ea219442d8?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Coupons" loading="lazy">
@@ -71,7 +71,7 @@
                     <span class="nav-text">Coupons</span>
                 </a>
 
-                <a href="#" class="nav-link">
+                <a href="reviews" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/2897cc0ce7ace4dd1f7e6d2c1b779540e7fa6d14150e07ac6bd13caecdf99b1a?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Reviews" loading="lazy">
@@ -244,13 +244,15 @@
                     </div>
                     {{/each}} --}}
 
-                    <table id="orderTable" class="table table-striped table-bordered">
+                    <table id="orderTable" class="table table-striped table-bordered text-center">
                         <thead class="table-dark">
                             <tr>
                                 <th>Order ID</th>
                                 <th>Customer</th>
                                 <th>Date</th>
                                 <th>Total Amount</th>
+                                <th>Payment Method</th>
+                                <th>Payment Status</th>
                                 <th>Order Status</th>
                                 <th>Action</th>
                             </tr>
@@ -261,11 +263,18 @@
                             <tr>
                                 <td>{{orderId}}</td>
                                 <td>{{userId.firstname}} {{userId.lastname}}</td>
-                                <td data-order="{{dateFormat orderDate "DD-MM-YYYY HH:mm:ss"}}">{{formatDate orderDate}}</td>
+                                <td data-order="{{dateFormat orderDate "DD-MM-YYYY HH:mm:ss"}}">{{dateFormat orderDate "DD/MM/YYYY"}}</td>
                                 <td data-order="{{totalAmount}}">Rs. {{totalAmount}}</td>
+                                <td>{{payment.method}}</td>
                                 <td>
                                     <span
-                                        class="badge {{#if (isEqual orderStatus 'Completed')}}text-bg-success{{else}}text-bg-warning{{/if}}">
+                                        class="badge {{#if (isEqual payment.status 'Paid')}}text-bg-success{{else}}{{#if (isEqual payment.status 'Failed')}}text-bg-danger{{else}}text-bg-warning{{/if}}{{/if}}">
+                                        {{payment.status}}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span
+                                        class="badge {{#if (isEqual orderStatus 'Completed')}}text-bg-success{{else}}{{#if (isEqual orderStatus 'Processing')}}text-bg-info{{else}}text-bg-secondary{{/if}}{{/if}}">
                                         {{orderStatus}}
                                     </span>
                                 </td>
@@ -278,35 +287,6 @@
                         </tbody>
                     </table>
 
-
-
-
-                    {{!--
-                    <!-- Pagination -->
-                    <div class="d-flex justify-content-center align-items-center mt-4">
-                        <nav>
-                            <ul class="pagination">
-                                {{#if (gt currentPage 1)}}
-                                <li class="page-item"><a class="page-link"
-                                        href="?page={{dec currentPage 1}}&limit={{limit}}&search={{search}}">&laquo;</a>
-                                </li>
-                                {{/if}}
-
-                                {{#each (range 1 totalPages)}}
-                                <li class="page-item {{#if (isEqual this ../currentPage)}}active{{/if}}">
-                                    <a class="page-link"
-                                        href="?page={{this}}&limit={{../limit}}&search={{../search}}">{{this}}</a>
-                                </li>
-                                {{/each}}
-
-                                {{#if (lt currentPage totalPages)}}
-                                <li class="page-item"><a class="page-link"
-                                        href="?page={{inc currentPage 1}}&limit={{limit}}&search={{search}}">&raquo;</a>
-                                </li>
-                                {{/if}}
-                            </ul>
-                        </nav>
-                    </div> --}}
                 </div>
             </div>
 

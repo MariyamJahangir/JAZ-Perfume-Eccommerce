@@ -1,0 +1,316 @@
+<link rel="stylesheet" href="/styles/admin.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.js"
+    integrity="sha512-7DgGWBKHddtgZ9Cgu8aGfJXvgcVv4SWSESomRtghob4k4orCBUTSRQ4s5SaC2Rz+OptMqNk0aHHsaUBk6fzIXw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<section class="m-0 bgcolor ">
+    <div class="row d-flex justify-content-between">
+
+        {{!-- Sidebar --}}
+        <div class="aside col-md-2 ">
+            <div class="d-flex justify-content-evenly align-items-center">
+                <div>
+                    <img src="/images/JAZPERFUME.png" alt="" class="logo_image">
+                    <p class="fs-6">PERFUMES</p>
+                </div>
+                <p class="fs-3 fw-2">ADMIN</p>
+            </div>
+
+            <div class="nav flex-column px-3">
+                <a href="/admin/dashboard" class="nav-link" aria-current="page">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f82b0047e6557aa901c15537d58a7ab6971e1d1d635e2a205c02ec234f11ad61?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Dashboard" loading="lazy">
+                    </span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+
+                <a href="/admin/products" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/126b232c82239fc3740982b7c8240f84671d1b6e2a4d00141995b3c82d24c4a5?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Products" loading="lazy">
+                    </span>
+                    <span class="nav-text">Products</span>
+                </a>
+
+                <a href="/admin/category" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/c46200642d44aab62899b16a25fc8bfe94e9df6fede3e3512b370b3d4f514356?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Categories" loading="lazy">
+                    </span>
+                    <span class="nav-text">Categories</span>
+                </a>
+
+                <a href="/admin/orders" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/395e632ba7027a03ce2c35c1aa8bcc4534da249d8c136cdcc01b5043a72ddc87?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Orders" loading="lazy">
+                    </span>
+                    <span class="nav-text">Orders</span>
+                </a>
+
+                <a href="/admin/customers" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f933064a6bab49b74f8d5722595a056cbddbca1247d9b1a20a7e0fc8d56413a0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Customers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Customers</span>
+                </a>
+
+                <a href="/admin/offers" class="nav-link active">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/ba76937fe489134f0c577be82a18baeadddda8f77194bbcb94734c6db29400c0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Offers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Offers</span>
+                </a>
+
+                <a href="/admin/coupons" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/cabe95d2f5fab42e35aad96d91245b122dd4d50ddfe8d1d2bceee5ea219442d8?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Coupons" loading="lazy">
+                    </span>
+                    <span class="nav-text">Coupons</span>
+                </a>
+
+                <a href="/admin/reviews" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/2897cc0ce7ace4dd1f7e6d2c1b779540e7fa6d14150e07ac6bd13caecdf99b1a?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Reviews" loading="lazy">
+                    </span>
+                    <span class="nav-text">Reviews</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/5b4c30ca0a115c712594c2dce59791803bec209977f960ad8b2c1a3d2ecaac23?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Settings" loading="lazy">
+                    </span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </div>
+        </div>
+
+
+        {{!-- Content Section --}}
+        <div class="col-md-10">
+
+            {{!-- Breadcrumps --}}
+            <div class="row px-2 pt-2">
+                <div class="col-8">
+                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#" class="link-dark link-underline-opacity-0">Admin</a>
+                            </li>
+                            <li class="breadcrumb-item"><a href="/admin/offers"
+                                    class="link-dark link-underline-opacity-0">Offers</a></li>
+                            <li class="breadcrumb-item active text-dark" aria-current="page">Edit-Offer</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-4 d-flex justify-content-end pe-5">
+                    <button type="submit" class="btn btn-outline-dark btn-sm"
+                        onclick="window.location.href='/admin/logout'">Logout<i
+                            class="bi bi-box-arrow-right ps-2"></i></button>
+                </div>
+            </div>
+
+            {{!-- content box --}}
+            <div class="row m-0">
+                <div class="containerboxcat mt-4 p-4">
+                    <h2 class="mb-4 ps-2">Edit Offer</h2>
+
+                    <div class="row">
+                        <div class="col-6 p-3">
+
+                            <form id="offerForm" data-offer-id="{{offer._id}}">
+                                <!-- Offer Name -->
+                                <div class="mb-3">
+                                    <label class="form-label">Offer Name</label>
+                                    <input type="text" class="form-control" name="name" value="{{offer.name}}">
+                                </div>
+
+                                <!-- Description -->
+                                <div class="mb-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" name="description">{{offer.description}}</textarea>
+                                </div>
+
+                                <!-- Offer Type -->
+                                <div class="mb-3">
+                                    <label class="form-label">Offer Type</label>
+                                    <select class="form-control" name="type">
+                                        <option value="" {{#unless offer.offerType}}selected{{/unless}} disabled>Select Offer Type</option>
+                                        
+                                        <option value="product" {{#if (isEqual offer.offerType "product")}}selected{{/if}}>Product</option>
+                                        <option value="category" {{#if (isEqual offer.offerType "category")}}selected{{/if}}>Category</option>
+                                        <option value="referral" {{#if (isEqual offer.offerType "referral")}}selected{{/if}}>Referral</option>
+                                        
+                                    </select>
+                                </div>
+
+                                <!-- Is Active -->
+                                <div class="mb-3">
+                                    <label class="form-label">Active Status</label>
+                                    <select class="form-control" name="isActive">
+                                        <option value="true" {{#if offer.isActive}}selected{{/if}}>Active</option>
+                                        <option value="false" {{#unless offer.isActive}}selected{{/unless}}>Inactive</option>
+                                    </select>
+                                </div>
+
+
+                        </div>
+                        <div class="col-6 p-3">
+                                <!-- Discount Type -->
+                                <div class="mb-3 pt-2">
+                                    <label class="form-label pe-3">Discount Type: </label>
+                                    <input type="radio" name="discountType" value="fixed" {{#if (isEqual offer.discountType "fixed")}}checked{{/if}}> Fixed
+                                    <input type="radio" name="discountType" value="percentage" {{#if (isEqual offer.discountType "percentage")}}checked{{/if}}> Percentage
+                                </div>
+
+                                <!-- Discount Amount -->
+                                <div class="mb-3">
+                                    <label class="form-label">Discount Value</label>
+                                    <input type="number" class="form-control" name="discount" value="{{offer.discount}}" >
+                                </div>
+
+                                <!-- Max Discount (only for percentage type) -->
+                                <div class="mb-3" id="maxDiscountField" style="{{#if (and (isEqual offer.discountType 'percentage') (or (isEqual offer.offerType 'product') (isEqual offer.offerType 'category')))}}display: block;{{else}}display: none;{{/if}}">
+                                    <label class="form-label">Max Discount Amount</label>
+                                    <input type="number" class="form-control" name="maxDiscount" value="{{offer.maxDiscount}}">
+                                </div>
+
+                                <!-- Start Date -->
+                                <div class="mb-3">
+                                    <label class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" name="start" value="{{offer.start}}" >
+                                </div>
+
+                                <!-- Expiry Date -->
+                                <div class="mb-3">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="date" class="form-control" name="expiry" value="{{offer.expiry}}" >
+                                </div>
+
+
+                                <!-- Submit Button -->
+                                <button type="submit" class="btn btn-dark">Edit Offer</button>
+                            </form>
+                        </div>
+
+                    </div>
+
+
+
+
+
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+
+
+</section>
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("offerForm");
+    const offerId = form.dataset.offerId;
+    const discountTypeRadios = document.querySelectorAll("input[name='discountType']");
+    const maxDiscountField = document.getElementById("maxDiscountField");
+
+    // Function to toggle max discount field
+    function toggleMaxDiscount() {
+        const selectedType = document.querySelector("input[name='discountType']:checked").value;
+        maxDiscountField.style.display = selectedType === "percentage" ? "block" : "none";
+    }
+
+    // Add event listeners to discount type radios
+    discountTypeRadios.forEach(radio => {
+        radio.addEventListener("change", toggleMaxDiscount);
+    });
+
+    // Form submission handler
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Collect form data
+        const formData = {
+            name: document.querySelector("input[name='name']").value.trim(),
+            description: document.querySelector("textarea[name='description']").value.trim(),
+            offerType: document.querySelector("select[name='type']").value,
+            start: document.querySelector("input[name='start']").value,
+            expiry: document.querySelector("input[name='expiry']").value,
+            isActive: document.querySelector("select[name='isActive']").value === "true",
+            discountType: document.querySelector("input[name='discountType']:checked").value,
+            discount: parseFloat(document.querySelector("input[name='discount']").value),
+            maxDiscount: parseFloat(document.querySelector("input[name='maxDiscount']").value) || null,
+        };
+
+        // Validation
+        if (!formData.name) {
+            Swal.fire({ icon: "error", title: "Validation Error", text: "Offer name is required." });
+            return;
+        }
+        if (!formData.start) {
+            Swal.fire({ icon: "error", title: "Validation Error", text: "Start date is required." });
+            return;
+        }
+        if (!formData.expiry) {
+            Swal.fire({ icon: "error", title: "Validation Error", text: "Expiry date is required." });
+            return;
+        }
+        if (new Date(formData.start) >= new Date(formData.expiry)) {
+            Swal.fire({ icon: "error", title: "Invalid Date Range", text: "Expiry date must be after start date." });
+            return;
+        }
+        if (formData.discount <= 0) {
+            Swal.fire({ icon: "error", title: "Invalid Discount", text: "Discount value must be greater than zero." });
+            return;
+        }
+        if (formData.discountType === "percentage" && !formData.maxDiscount) {
+            Swal.fire({ icon: "error", title: "Validation Error", text: "Max discount is required for percentage-based discounts." });
+            return;
+        }
+
+        // Ensure offerId is available
+        if (!offerId) {
+            Swal.fire({ icon: "error", title: "Error", text: "Offer ID is missing." });
+            return;
+        }
+
+        // Update offer via API request
+        try {
+            const response = await fetch(`/admin/edit-offer/${offerId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Offer Updated",
+                    text: "The offer has been successfully updated!",
+                }).then(() => {
+                    window.location.href = "/admin/offers"; // Redirect to offers page
+                });
+            } else {
+                Swal.fire({ icon: "error", title: "Error", text: result.message || "Operation failed. Try again!" });
+            }
+        } catch (error) {
+            Swal.fire({ icon: "error", title: "Server Error", text: "An unexpected error occurred. Try again later." });
+        }
+    });
+});
+
+</script>

@@ -23,9 +23,20 @@ const dec = (value) => {
 const gt = (a, b) => a > b
 const lt = (a, b) => a < b
 
+const add = (a, b) => a + b
+const sub = (a, b) => a - b
 const multiply = (a, b) => a * b
+const divide = (a, b) => a / b
 
-
+const toFixed = (number, decimals) => {
+  if (typeof number !== 'number') {
+    number = parseFloat(number);
+  }
+  if (isNaN(number)) {
+    return '';
+  }
+  return number.toFixed(decimals);
+}
 
 const json = (context) => {
   return JSON.stringify(context, null, 2); // Pretty-print JSON for readability
@@ -39,7 +50,7 @@ const formatDate = (date) => {
 }
 
 const dateFormat = (date, format) => {
-    return moment(date, "DD MMM YYYY").format(format);
+  return moment(date, "DD MMM YYYY").format(format);
 }
 
 
@@ -52,14 +63,14 @@ const getVariantQuantity = (variants, variantId) => {
 const isReturnEligible = (deliveryDate) => {
   if (!deliveryDate) return false; // If no delivery date, return false
 
-    const deliveredDate = new Date(deliveryDate);
-    const currentDate = new Date();
-    
-    // Calculate the difference in days
-    const diffTime = currentDate - deliveredDate;
-    const diffDays = diffTime / (1000 * 60 * 60 * 24); // Convert milliseconds to days
+  const deliveredDate = new Date(deliveryDate);
+  const currentDate = new Date();
 
-    return diffDays >= 10; // Enable return button only if 10 or more days have passed
+  // Calculate the difference in days
+  const diffTime = currentDate - deliveredDate;
+  const diffDays = diffTime / (1000 * 60 * 60 * 24); // Convert milliseconds to days
+
+  return diffDays >= 10; // Enable return button only if 10 or more days have passed
 }
 
 const formatAddress = (address, locality, district, state, pincode) => {
@@ -71,13 +82,13 @@ const formatAddress = (address, locality, district, state, pincode) => {
 const range = (start, end) => {
   let arr = [];
   for (let i = start; i <= end; i++) {
-      arr.push(i);
+    arr.push(i);
   }
   return arr;
 }
 
 
-const starRating = (rating) => { 
+const starRating = (rating) => {
   const repeat = (char, times) => Array(times).fill(char).join("");
   return repeat("&#9733;", rating) + repeat("&#9734;", 5 - rating);
 };
@@ -97,7 +108,11 @@ module.exports = {
   dateFormat,
   getVariantQuantity,
   isReturnEligible,
+  add,
+  sub,
   multiply,
+  divide,
+  toFixed,
   formatAddress,
   range,
   starRating

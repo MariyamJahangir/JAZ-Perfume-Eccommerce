@@ -1,0 +1,296 @@
+<link rel="stylesheet" href="/styles/admin.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<section class=" m-0 bgcolor ">
+
+    <div class="row d-flex justify-content-between">
+
+        {{!-- Sidebar --}}
+        <div class="aside col-md-2 ">
+            <div class="d-flex justify-content-evenly align-items-center">
+                <div>
+                    <img src="/images/JAZPERFUME.png" alt="" class="logo_image">
+                    <p class="fs-6">PERFUMES</p>
+                </div>
+                <p class="fs-3 fw-2">ADMIN</p>
+            </div>
+
+            <div class="nav flex-column px-3">
+                <a href="dashboard" class="nav-link ">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f82b0047e6557aa901c15537d58a7ab6971e1d1d635e2a205c02ec234f11ad61?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Dashboard" loading="lazy">
+                    </span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+
+                <a href="products" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/126b232c82239fc3740982b7c8240f84671d1b6e2a4d00141995b3c82d24c4a5?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Products" loading="lazy">
+                    </span>
+                    <span class="nav-text">Products</span>
+                </a>
+
+                <a href="category" class="nav-link" aria-current="page">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/c46200642d44aab62899b16a25fc8bfe94e9df6fede3e3512b370b3d4f514356?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Categories" loading="lazy">
+                    </span>
+                    <span class="nav-text">Categories</span>
+                </a>
+
+                <a href="orders" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/395e632ba7027a03ce2c35c1aa8bcc4534da249d8c136cdcc01b5043a72ddc87?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Orders" loading="lazy">
+                    </span>
+                    <span class="nav-text">Orders</span>
+                </a>
+
+                <a href="customers" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f933064a6bab49b74f8d5722595a056cbddbca1247d9b1a20a7e0fc8d56413a0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Customers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Customers</span>
+                </a>
+
+                <a href="#" class="nav-link active">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/ba76937fe489134f0c577be82a18baeadddda8f77194bbcb94734c6db29400c0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Offers" loading="lazy">
+                    </span>
+                    <span class="nav-text">Offers</span>
+                </a>
+
+                <a href="coupons" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/cabe95d2f5fab42e35aad96d91245b122dd4d50ddfe8d1d2bceee5ea219442d8?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Coupons" loading="lazy">
+                    </span>
+                    <span class="nav-text">Coupons</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/2897cc0ce7ace4dd1f7e6d2c1b779540e7fa6d14150e07ac6bd13caecdf99b1a?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Reviews" loading="lazy">
+                    </span>
+                    <span class="nav-text">Reviews</span>
+                </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">
+                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/5b4c30ca0a115c712594c2dce59791803bec209977f960ad8b2c1a3d2ecaac23?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
+                            alt="Settings" loading="lazy">
+                    </span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </div>
+        </div>
+
+
+        {{!-- Content Section --}}
+        <div class="col-md-10">
+
+            {{!-- Breadcrumps --}}
+            <div class="row px-2 pt-2">
+                <div class="col-8">
+                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#" class="link-dark link-underline-opacity-0">Admin</a>
+                            </li>
+                            <li class="breadcrumb-item active text-dark" aria-current="page">Offers</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-4 d-flex justify-content-end pe-5">
+                    <button type="submit" class="btn btn-outline-dark btn-sm"
+                        onclick="window.location.href='/admin/logout'">Logout<i
+                            class="bi bi-box-arrow-right ps-2"></i></button>
+                </div>
+            </div>
+
+
+
+            <div class="row m-0 ">
+                <div class="container bg-white mt-4 py-2 rounded-3">
+                    <div class="pb-3 d-flex justify-content-between">
+                        <div>
+                            <h3 class="fw-bold">Offers</h3>
+                        </div>
+                        <div class="col-md-3 d-flex justify-content-end">
+                            <a class="btn btn-dark" href="add-offers" role="button">+ Add Offers</a>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+                    <table id="offerTable" class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Offer Name</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                                <th>Discount</th>
+                                <th>Starts at</th>
+                                <th>Expires at</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each offers}}
+                            <tr>
+                                <td>{{this.name}}</td>
+                                <td>{{this.description}}</td>
+                                <td>{{this.offerType}}</td>
+                                <td>
+                                    {{#if (isEqual this.discountType "percentage")}}
+                                    {{this.discount}}%
+                                    {{else}}
+                                    ₹{{this.discount}}
+                                    {{/if}}
+                                </td>
+                                <td>{{dateFormat this.start "DD/MM/YYYY"}}</td>
+                                <td>{{dateFormat this.expiry "DD/MM/YYYY"}}</td>
+                                <td>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input toggle-status" type="checkbox" role="switch"
+                                                data-id="{{this._id}}" {{#if this.isActive}}checked{{/if}}>
+                                        </div>
+                                        <span
+                                            class="badge {{#if this.isActive}}bg-success{{else}}bg-danger{{/if}} me-2 status-label">
+                                            {{#if this.isActive}}Active{{else}}Inactive{{/if}}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex">
+                                        <a href="/admin/edit-offer/{{this._id}}" class="btn btn-warning btn-sm me-1">
+                                            <i class="bi bi-pencil-square"></i> <!-- Edit Icon -->
+                                        </a>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteOffer('{{this._id}}')">
+                                            <i class="bi bi-trash"></i> <!-- Delete Icon -->
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+
+
+
+
+
+
+
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+
+
+</section>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('#offerTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            autoWidth: false,
+            responsive: true,
+            order: [[2, 'desc']],
+        });
+    });
+</script>
+
+<script>
+    function deleteOffer(offerId) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/admin/offers/delete/${offerId}`, { method: "DELETE" })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire("Deleted!", "Offer has been deleted.", "success")
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire("Error!", "Something went wrong.", "error");
+                        }
+                    });
+            }
+        });
+    }
+</script>
+
+<script>
+    document.querySelectorAll('.toggle-status').forEach(toggle => {
+        toggle.addEventListener('change', function () {
+            const offerId = this.dataset.id;
+            const newStatus = this.checked; // true if checked, false if unchecked
+            const statusBadge = this.closest('td').querySelector('.status-label'); // Get the badge
+
+            fetch(`/admin/offers/update-status/${offerId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ isActive: newStatus })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update badge text and color
+                        statusBadge.textContent = newStatus ? "Active" : "Inactive";
+                        statusBadge.className = `badge ${newStatus ? "bg-success" : "bg-danger"} me-2 status-label`;
+
+                        Swal.fire({
+                            icon: "success",
+                            title: "Status Updated",
+                            text: `Offer status changed to ${newStatus ? "Active" : "Inactive"}.`
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Update Failed",
+                            text: "Could not update offer status."
+                        });
+                        this.checked = !newStatus; // Revert toggle if update fails
+                    }
+                })
+                .catch(() => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Something went wrong!"
+                    });
+                    this.checked = !newStatus;
+                });
+        });
+    });
+</script>

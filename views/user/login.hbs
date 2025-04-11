@@ -55,14 +55,38 @@
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
 
+
+    const requiredFields = ['email', 'password']
+        let isValid = true;
+        // Validate required fields
+        requiredFields.forEach(field => {
+            const input = document.getElementById(field);
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add('is-invalid'); // Adds red border for invalid fields
+            } else {
+                input.classList.remove('is-invalid'); // Removes red border if valid
+            }
+        });
+
+        if (!isValid) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Fields',
+                text: 'Please fill in all required fields.',
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
     // Validate Empty Fields
-    if (!email) {
+    /*if (!email) {
         return Swal.fire({ icon: "error", title: "Validation Error", text: "Email is required." });
     }
 
     if (!password) {
         return Swal.fire({ icon: "error", title: "Validation Error", text: "Password is required." });
-    }
+    } */
 
     try {
         // Send Login Request

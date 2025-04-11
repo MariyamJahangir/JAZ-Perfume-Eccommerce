@@ -3,42 +3,203 @@ const addressModel = require('../../model/addressModel')
 const productModel = require('../../model/productModel')
 const cartModel = require('../../model/cartModel')
 const orderModel = require('../../model/orderModel')
+const walletModel = require('../../model/walletModel')
+const couponModel = require('../../model/couponModel')
+
+const mongoose = require('mongoose');
+
+
+
+const PlaceOrder = async (req, res) => {
+    try {
+        const { shippingAddress, payment, items, totalAmount, finalAmount, coupon, couponDiscount } = req.body;
+        console.log(req.body)
+
+        // Iterate over each item in the order
+        for (const item of items) {
+            const product = await productModel.findById(item.productId);
+
+            if (!product) {
+                return res.status(404).json({ message: `Product not found: ${item.productId}` });
+            }
+
+            // Find the correct variant
+            const variant = product.variant.id(item.variantId);
+            if (!variant) {
+                return res.status(404).json({ message: `Variant not found: ${item.variantId}` });
+            }
+
+            // Check if there's enough stock
+            if (variant.stockQuantity < item.quantityCount) {
+                return res.status(400).json({ message: `Not enough stock for product: ${product.name}` });
+            }
+
+            // Subtract the ordered quantity from stock
+            variant.stockQuantity -= item.quantityCount;
+
+            await product.save();
+        }
+
+        const generateOrderId = () => Math.random().toString(36).substring(2, 12).toUpperCase();
+        let orderId = generateOrderId();
+
+        while (await orderModel.findOne({ orderId })) {
+            orderId = generateOrderId();
+        }
+
+        const newOrder = new orderModel({
+            userId: req.session.user.id, // Assuming you're using Passport.js for authentication
+            orderId,
+            items,
+            totalAmount,
+            coupon,
+            couponDiscount,
+            finalAmount,
+            shippingAddress,
+            payment: {
+                method: payment.method,
+                status: payment.status,
+                orderId: payment.orderId || null,
+                paymentId: payment.paymentId || null,
+                signature: payment.signature || null,
+            },
+        });
+
+        console.log('newOrder:', newOrder)
+
+        await newOrder.save();
+
+        // If a coupon was applied, update coupon usage
+        if (coupon) {
+            const couponDoc = await couponModel.findOne({ code: coupon });
+
+            if (couponDoc) {
+                // Increment total usage count
+                couponDoc.usedCount += 1;
+
+                const userId = req.session.user.id;
+                const userUsage = couponDoc.usedBy.find(entry => entry.userId.toString() === userId.toString());
+                
+
+                if (userUsage) {
+                    userUsage.usedTimes += 1;
+                } else {
+                    couponDoc.usedBy.push({ userId, usedTimes: 1 });
+                }
+
+                await couponDoc.save();
+            }
+        }
+
+        await cartModel.deleteMany({ user: req.session.user.id });
+
+        res.status(201).json({ success: true, message: 'Order placed successfully!', orderId });
+    } catch (error) {
+        console.error('Error placing order:', error);
+        res.status(500).json({ success: false, message: 'Failed to place order.' });
+    }
+
+}
+
+
+
+const OrderPlaced = (req, res) => {
+    res.render('user/order-placed')
+}
+
+const OrderFailed = (req, res) => {
+    res.render('user/order-failed')
+}
+
+
 
 
 // get Orders
+// const LoadOrders = async (req, res) => {
+//     try {
+//         const userId = req.session.user.id;
+
+//         // Step 1: Populate product details
+//         const orders = await orderModel.find({ userId })
+//             .populate({
+//                 path: 'items.productId',
+//                 select: 'name images variant'  // Include variants in the populated data
+//             })
+//             .sort({ orderDate: -1 })
+//             .lean();
+
+//         // Step 2: Match variants manually
+//         const populatedOrders = orders.map(order => {
+//             order.items = order.items.map(item => {
+//                 const product = item.productId;
+//                 // Find the variant matching variantId
+//                 const variant = product.variant.find(v => v._id.toString() === item.variantId.toString());
+
+//                 return {
+//                     ...item,
+//                     productDetails: {
+//                         name: product.name,
+//                         images: product.images,
+//                         variant: variant  // Add the matched variant details
+//                     }
+//                 };
+//             });
+//             return order;
+//         });
+
+//         res.render('user/orders', { orders: populatedOrders });
+
+//     } catch (error) {
+//         console.error("Error loading orders:", error);
+//         res.status(500).send('Server Error');
+//     }
+// };
+
+
 const LoadOrders = async (req, res) => {
     try {
         const userId = req.session.user.id;
+        const page = parseInt(req.query.page) || 1;
+        const perPage = 5;
 
-        // Step 1: Populate product details
+        // Count total orders for pagination
+        const totalOrders = await orderModel.countDocuments({ userId });
+        const totalPages = Math.ceil(totalOrders / perPage);
+
+        // Fetch paginated orders with product details
         const orders = await orderModel.find({ userId })
             .populate({
                 path: 'items.productId',
-                select: 'name images variant'  // Include variants in the populated data
+                select: 'name images variant'
             })
             .sort({ orderDate: -1 })
+            .skip((page - 1) * perPage)
+            .limit(perPage)
             .lean();
 
-        // Step 2: Match variants manually
+        // Match variants manually and build enriched orders
         const populatedOrders = orders.map(order => {
             order.items = order.items.map(item => {
                 const product = item.productId;
-                // Find the variant matching variantId
                 const variant = product.variant.find(v => v._id.toString() === item.variantId.toString());
-                
+
                 return {
                     ...item,
                     productDetails: {
                         name: product.name,
                         images: product.images,
-                        variant: variant  // Add the matched variant details
+                        variant: variant
                     }
                 };
             });
             return order;
         });
 
-        res.render('user/orders', { orders: populatedOrders });
+        res.render('user/orders', {
+            orders: populatedOrders,
+            currentPage: page,
+            totalPages
+        });
 
     } catch (error) {
         console.error("Error loading orders:", error);
@@ -49,11 +210,6 @@ const LoadOrders = async (req, res) => {
 
 
 
-// const OrderDetail = (req, res) => {
-//     res.render('user/order-detail')
-// }
-
-
 const OrderDetail = async (req, res) => {
     try {
         const { orderId } = req.params;
@@ -61,12 +217,12 @@ const OrderDetail = async (req, res) => {
 
         // Fetch the order based on orderId and userId
         const order = await orderModel.findOne({ _id: orderId, userId }).populate('items.productId').lean();
-        
+
         if (!order) {
             return res.status(404).send('Order not found');
         }
 
-        
+
         // Render the order detail page with specific item data
         res.render('user/order-detail', {
             order,
@@ -79,99 +235,138 @@ const OrderDetail = async (req, res) => {
 };
 
 
+
 const ReturnOrder = async (req, res) => {
     try {
         const { orderId, productId } = req.params;
-        const { returnReason } = req.body; 
+        const { returnReason } = req.body;
+
+
         // Find the order
+        //let order = await orderModel.findOne({ orderId });
+
         let order = await orderModel.findById(orderId);
+
         if (!order) {
-            return res.status(404).send('Order not found');
+            return res.status(404).json({ success: false, message: "Order not found" });
         }
 
         // Find the ordered item
         let orderedItem = order.items.find(item => item.productId.toString() === productId);
         if (!orderedItem) {
-            return res.status(404).send('Product not found in order');
+            return res.status(404).json({ success: false, message: "Product not found in order" });
         }
-
 
         // Only allow return if the item is delivered
         if (orderedItem.status !== "Delivered") {
-            return res.status(400).send('Only delivered items can be returned');
+            return res.status(400).json({ success: false, message: "Only delivered items can be returned" });
         }
 
         // Update status to "Returned"
         orderedItem.status = "Returned";
-        orderedItem.returnReason = returnReason; // ✅ Save return reason
-        order.orderStatus = 'Not completed'
+        orderedItem.returnReason = returnReason;
+        order.orderStatus = "Processing"; // Keeping it consistent with order workflow
+
 
         await order.save();
 
-        res.redirect(`/order-detail/${orderId}`); 
+        res.status(200).json({
+            success: true,
+            message: "Order return request submitted successfully",
+            order,
+        });
     } catch (error) {
         console.error(error);
-        res.status(500).send('Internal Server Error');
+        res.status(500).json({ success: false, message: "Internal Server Error" });
     }
-}
+};
+
+
+
 
 
 const CancelOrder = async (req, res) => {
     try {
         const { orderId, productId, variantId } = req.params;
-        const { cancelReason } = req.body; // ✅ Get cancellation reason from request body
+        const { cancelReason } = req.body;
 
         let product = await productModel.findById(productId);
-        let variant = product.variant.find(v=>v._id.toString() === variantId)
+        let variant = product.variant.find(v => v._id.toString() === variantId);
 
-
-        // Find the order
         let order = await orderModel.findById(orderId);
         if (!order) {
-            return res.status(404).send('Order not found');
+            return res.status(404).json({ success: false, message: "Order not found" });
         }
 
-        // Find the ordered item
-        let orderedItem = order.items.find(item => item.productId.toString() === productId);
-        
+        let orderedItem = order.items.find(item => item.productId.toString() === productId && item.variantId.toString() === variantId);
         if (!orderedItem) {
-            return res.status(404).send('Product not found in order');
+            return res.status(404).json({ success: false, message: "Product not found in order" });
         }
 
-        
-
-        // Otherwise, cancel the order normally (if it's not yet delivered)
         if (orderedItem.status !== "Delivered") {
             orderedItem.status = "Cancelled";
-            orderedItem.cancelReason = cancelReason; // ✅ Save cancellation reason
-            variant.stockQuantity += orderedItem.quantityCount
-        } 
-        else {
-            return res.status(400).send('Delivered items cannot be cancelled');
+            orderedItem.cancelReason = cancelReason;
+            variant.stockQuantity += orderedItem.quantityCount;
+
+            // ✅ Wallet refund logic
+            if (["RAZORPAY", "WALLET"].includes(order.payment.method) && order.payment.status === "Paid") {
+                const refundAmount = orderedItem.discountPrice * orderedItem.quantityCount;
+
+                let wallet = await walletModel.findOne({ userId: order.userId });
+
+                const transaction = {
+                    amount: refundAmount,
+                    type: "Credit",
+                    description: `Refund for cancelled item in Order ${order.orderId}`
+                };
+
+                if (!wallet) {
+                    wallet = new walletModel({
+                        userId: order.userId,
+                        balance: refundAmount,
+                        transactions: [transaction]
+                    });
+                } else {
+                    wallet.balance += refundAmount;
+                    wallet.transactions.push(transaction);
+                }
+
+                await wallet.save();
+            }
+
+        } else {
+            return res.status(400).json({ success: false, message: "Delivered items cannot be cancelled" });
         }
 
-
-        if ( order.items.every(item => item.status === "Delivered" || item.status === "Cancelled")) {
-            await orderModel.updateOne({ _id: orderId }, { $set: { orderStatus: "Completed" } });
-        }else await orderModel.updateOne({ _id: orderId }, { $set: { orderStatus: "Not completed" } });
+        // Update order status
+        if (order.items.every(item => item.status === "Delivered" || item.status === "Cancelled")) {
+            order.orderStatus = "Completed";
+        } else {
+            order.orderStatus = "Processing";
+        }
 
         await order.save();
         await product.save();
 
-        
-        res.redirect(`/order-detail/${orderId}`); 
-       
+        res.json({
+            success: true,
+            message: "Order cancelled successfully and amount refunded to wallet",
+            orderId,
+            updatedStatus: order.orderStatus
+        });
+
     } catch (error) {
         console.error(error);
-        res.status(500).send('Internal Server Error');
+        res.status(500).json({ success: false, message: "Internal Server Error" });
     }
-}
-
-
+};
 
 
 
 module.exports = {
+    PlaceOrder,
+    OrderPlaced,
+    OrderFailed,
     LoadOrders,
     OrderDetail,
     ReturnOrder,

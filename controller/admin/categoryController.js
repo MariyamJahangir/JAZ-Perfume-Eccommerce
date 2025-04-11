@@ -1,6 +1,7 @@
 
 const categoryModel = require('../../model/categoryModel')
 const productModel = require('../../model/productModel')
+const offerModel = require('../../model/offerModel')
 const moment = require('moment');
 
 // Get Categories
@@ -25,8 +26,9 @@ const category = async (req, res) => {
 }
 
 // Get Add Category Page
-const loadAddCategory = (req, res) => {
-    res.render('admin/add-category')
+const loadAddCategory = async (req, res) => {
+    const offer = await offerModel.find({offerType: 'category', isActive: true, expiry: { $gte: new Date() }}).lean()
+    res.render('admin/add-category', {offer})
 }
 
 // Post Add Category
@@ -62,10 +64,11 @@ const addCategory = async (req, res) => {
 const loadEditCategory = async (req, res) => {
     try {
         const category = await categoryModel.findById(req.params.id).lean();
+        const offers = await offerModel.find({offerType: 'category', expiry: { $gte: new Date() }, isActive: true,  }).lean();
         
         category.imageUrl = `/uploads/${category.image}`; 
         
-        res.render('admin/edit-category', { category });
+        res.render('admin/edit-category', { category, offers });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -75,13 +78,13 @@ const loadEditCategory = async (req, res) => {
 const editCategory = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description } = req.body;
+        const { name, description, offer } = req.body;
         
         
         if (!name || !description) {
             return res.json({ message: 'Name and description are required.' });
         }
-        const updatedData = { name, description };
+        const updatedData = { name, description, offer };
         
         if (req.file) {
             updatedData.image = req.file.filename; 

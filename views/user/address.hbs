@@ -52,7 +52,7 @@
                     <div class="row flex-column align-items-center">
                         <div class="col-11 mt-2 ">
 
-
+                            {{#if user.address}}
                             {{#each user.address}}
                             {{#if (isEqual deleted false)}}
                             <div class="row d-flex justify-content-between border rounded bg-color mb-2">
@@ -89,6 +89,9 @@
                             </div>
                             {{/if}}
                             {{/each}}
+                            {{else}}
+                                <div class="d-flex justify-content-center"><p>You have not added any address yet!</p></div>
+                            {{/if}}
 
 
                             <!-- Modal for Edit Address-->

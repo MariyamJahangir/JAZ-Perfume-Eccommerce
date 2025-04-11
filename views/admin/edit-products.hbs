@@ -17,7 +17,7 @@
             </div>
 
             <div class="nav flex-column px-3">
-                <a href="#" class="nav-link">
+                <a href="/admin/dashboard" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/f82b0047e6557aa901c15537d58a7ab6971e1d1d635e2a205c02ec234f11ad61?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Dashboard" loading="lazy">
@@ -57,7 +57,7 @@
                     <span class="nav-text">Customers</span>
                 </a>
 
-                <a href="#" class="nav-link">
+                <a href="/admin/offers" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/ba76937fe489134f0c577be82a18baeadddda8f77194bbcb94734c6db29400c0?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Offers" loading="lazy">
@@ -65,7 +65,7 @@
                     <span class="nav-text">Offers</span>
                 </a>
 
-                <a href="#" class="nav-link">
+                <a href="coupons" class="nav-link">
                     <span class="nav-icon">
                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/cabe95d2f5fab42e35aad96d91245b122dd4d50ddfe8d1d2bceee5ea219442d8?placeholderIfAbsent=true&apiKey=a98241ab2d584afe817596fb423a2646"
                             alt="Coupons" loading="lazy">
@@ -131,19 +131,20 @@
                                 <div class="mb-3">
                                     <label for="category" class="form-label">Category</label>
                                     <select id="category" name="category" class="form-select">
-                                        <option value="" disabled>Select a category</option>
+                                        <option value="" disabled {{#unless product.offer}}selected{{/unless}}>Select a category</option>
                                         {{#each categories}}
-                                        <option value="{{_id}} " {{#if (isObjectIdEqual ../product.category _id)}}selected{{/if}}>{{name}}</option>
+                                        <option value="{{_id}}" {{#if (isObjectIdEqual ../product.category _id)}}selected{{/if}}>{{name}}</option>
                                         {{/each}}
+
                                     </select>
                                 </div>
                                 <div class="mb-3">
                                     <label for="offer" class="form-label">Offer</label>
                                     <select id="offer" name="offer" class="form-select">
-                                        <option value="" disabled {{#unless product.offer}}selected{{/unless}}>Select
-                                            an offer</option>
-                                        <option value="sales2024" {{#if (isEqual product.offer 'sales2024'
-                                            )}}selected{{/if}}>Sales2024</option>
+                                        <option value="" disabled >Select an offer</option>
+                                        {{#each offers}}
+                                        <option value="{{name}}" {{#if (isEqual ../product.offer name)}}selected{{/if}}>{{name}}</option>
+                                        {{/each}}
                                     </select>
                                 </div>
 

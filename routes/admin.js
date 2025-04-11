@@ -8,7 +8,8 @@ const userController = require('../controller/admin/userController');
 const categoryController = require('../controller/admin/categoryController');
 const productController = require('../controller/admin/productController');
 const orderController = require('../controller/admin/orderController');
-
+const couponController = require('../controller/admin/couponController');
+const offerController = require('../controller/admin/offerController');
 
 // Admin Login, Logout, Homepage
 
@@ -16,6 +17,14 @@ router.get('/login',  homeController.loadLogin) //adminAuth.isLogin,
 router.post('/login', homeController.login)
 router.get('/logout', adminAuth.checkSession, homeController.logout)
 router.get('/dashboard', adminAuth.checkSession, homeController.loadDashboard)
+
+router.get('/sales-report', adminAuth.checkSession, homeController.loadSalesReport)
+router.get('/sales-report-download',adminAuth.checkSession, homeController.downloadSalesReport)
+router.get('/sales-report-data',adminAuth.checkSession, homeController.getSalesReport)
+
+
+
+
 
 
 // User Management (List user, block/unblock, )
@@ -49,12 +58,30 @@ router.patch('/delete-product', adminAuth.checkSession, productController.delete
 
 
 
-
+// Order Management
 router.get('/orders',adminAuth.checkSession, orderController.LoadOrders);
 router.get('/order-detail/:id',adminAuth.checkSession, orderController.LoadOrderDetail);
 router.post("/update-order-status/:orderId/:productId",adminAuth.checkSession, orderController.updateOrderStatus)
 
 
 
+// coupons
+router.get('/coupons',adminAuth.checkSession, couponController.LoadCoupons);
+router.patch('/coupons/update-status/:id', couponController.CouponStatus);
+router.delete('/coupons/delete/:couponId', couponController.DeleteCoupon);
+router.get('/add-coupons',adminAuth.checkSession, couponController.LoadAddCoupons);
+router.post('/add-coupons',adminAuth.checkSession, couponController.AddCoupons);
+router.get('/edit-coupons/:id',adminAuth.checkSession, couponController.LoadEditCoupons);
+router.put('/edit-coupons/:id',adminAuth.checkSession, couponController.EditCoupons);
+
+
+//Offers
+router.get('/offers',adminAuth.checkSession, offerController.LoadOffers);
+router.patch('/offers/update-status/:id', offerController.OfferStatus);
+router.delete('/offers/delete/:offerId', offerController.DeleteOffer);
+router.get('/add-offers',adminAuth.checkSession, offerController.LoadAddOffers);
+router.post('/add-offers',adminAuth.checkSession, offerController.AddOffers);
+router.get('/edit-offer/:id',adminAuth.checkSession, offerController.LoadEditOffers);
+router.put('/edit-offer/:id',adminAuth.checkSession, offerController.EditOffers);
 
 module.exports = router;
