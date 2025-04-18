@@ -1,30 +1,8 @@
-const userModel = require('../../model/userModel')
-const walletModel = require('../../model/walletModel')
+const userModel = require('../model/userModel')
+const walletModel = require('../model/walletModel')
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 
-// const LoadWallet = async (req, res) => {
-
-//     try {
-//         const userId = req.session.user.id;
-//         const user = await userModel.findById({ _id: userId }).lean();
-//         let wallet = await walletModel.findOne({ userId: userId }).lean();
-
-//         if (!wallet) {
-//             wallet = new walletModel({ userId: userId, balance: 0, transactions: [] });
-//             await wallet.save();
-//         }
-
-        
-//         wallet.transactions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-//         console.log(wallet, user)
-    
-//         res.status(200).render('user/wallet', { user, wallet });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).send('Server Error');
-//     }
-// }
 
 
 const LoadWallet = async (req, res) => {

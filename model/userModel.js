@@ -26,10 +26,10 @@ const userSchema = new mongoose.Schema({
         unique: true,
         sparse: true
     },
-    phone:{
+    phone: {
         type: String,
     },
-    gender:{
+    gender: {
         type: String,
         enum: ['male', 'female'],
     },
@@ -41,6 +41,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['active', 'blocked'],
         default: 'active'
+    },
+    isReferred: {
+        type: Boolean,
+        default: false,
     },
     isAdmin: {
         type: Boolean,

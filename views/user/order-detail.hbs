@@ -20,7 +20,7 @@
 <section style="background-color: #DFF2FA;">
     <div class="container">
         <div class="row p-5">
-            <h2>Welcome Mariyam Jahangir</h2>
+            <h2>Welcome {{user.firstname}} {{user.lastname}}</h2>
         </div>
 
     </div>
@@ -51,110 +51,121 @@
 
 
             <div class="col-10">
-                <div class="container m-4 p-4 border bg-theme">
-                    <h1 class="text-center pb-4">ORDER DETAILS</h1>
+                <div class="container my-4 p-4 rounded shadow border bg-theme">
+                    <h2 class="text-center pb-4 fw-bold">Order Details</h2>
+                    <div class="px-3 d-flex justify-content-between">
+                        <p><strong>Order ID:</strong> {{order.orderId}}</p>
+                        <p><strong>Ordered On:</strong> {{formatDate order.orderDate}}</p>
+                    </div>
 
 
+                    <!-- Delivery & Payment Info -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-7">
+                            <div class="p-4 border rounded-3 h-100 bg-light">
+                                <h5 class="fw-bold mb-3">Shipping Address</h5>
+                                <p class="mb-1 fw-semibold">{{order.shippingAddress.firstname}}
+                                    {{order.shippingAddress.lastname}}</p>
+                                <p class="mb-1">Phone: {{order.shippingAddress.phone}}</p>
+                                <p class="mb-0">
+                                    {{order.shippingAddress.address}}, {{order.shippingAddress.locality}},<br>
+                                    {{order.shippingAddress.district}}, {{order.shippingAddress.state}} -
+                                    {{order.shippingAddress.pincode}}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-5">
+                            <div class="p-4 border rounded-3 h-100 bg-light">
+                                
+                                <p><strong>Final Amount:</strong> Rs. {{order.finalAmount}}</p>
+                                <p><strong>Total Discount:</strong> Rs. {{totalDiscount}}</p>
+
+                                <p><strong>Payment:</strong> {{order.payment.method}} - {{order.payment.status}}</p>
+                            </div>
+                        </div>
+                    </div>
 
                     {{#each order.items}}
-                    <div class="grid gap-1 d-flex justify-content-between p-3">
-                        <!-- Product Image -->
-                        <div class="col-3 text-center p-2">
-                            <a href="/product-details/{{this.productId._id}}/{{this.variantId}}"><img
-                                    src="/uploads/{{this.productId.images.[0]}}" alt="{{this.productId.name}}"
-                                    style="width: 60%"></a>
-                        </div>
-
-                        <!-- Product Details -->
-                        <div class="col-5 d-flex align-items-center">
-                            <div>
-                                <p><a href="/product-details/{{this.productId._id}}/{{this.variantId}}"
-                                        class="text-decoration-none link-dark">{{this.productId.name}}</a> -
-                                    {{getVariantQuantity this.productId.variant this.variantId}} ML</p>
-
-                                <p>Quantity: {{this.quantityCount}}</p>
-                                <p>Price: Rs. {{this.discountPrice}}</p>
-                                {{#if (or (isEqual this.status "Delivered") (isEqual this.status "Returned"))}}
-                                <p>Delivered on: {{formatDate this.deliveredDate}}</p>{{/if}}
-                            </div>
-                        </div>
-
-                        <!-- Actions -->
-                        <div class="ps-4 col-4 d-flex flex-column justify-content-center">
-
-
-                            <div class="p-2">
-                                {{#if (isEqual this.status "Pending")}}
-                                <span class="badge text-bg-primary">Pending</span>
-                                {{else if (isEqual this.status "Delivered")}}
-                                <span class="badge text-bg-success">Delivered</span>
-                                {{else if (isEqual this.status "Returned")}}
-                                <span class="badge text-bg-secondary">Returned</span>
-                                {{else if (isEqual this.status "Shipped")}}
-                                <span class="badge text-bg-info">Shipped</span>
-                                {{else if (isEqual this.status "Cancelled")}}
-                                <span class="badge text-bg-danger">Cancelled</span>
-                                {{else}}
-                                <span class="badge text-bg-warning">{{this.status}}</span>
-                                {{/if}}
+                    <div class="card mb-4 shadow-sm border-0">
+                        <div class="row g-0 align-items-center">
+                            <!-- Product Image -->
+                            <div class="col-md-3 text-center py-3">
+                                <a href="/product-details/{{this.productId._id}}/{{this.variantId}}">
+                                    <img src="/uploads/{{this.productId.images.[0]}}" alt="{{this.productId.name}}"
+                                        class="img-fluid rounded" style="max-width: 70%;">
+                                </a>
                             </div>
 
-                            <div class="p-2" id="order-actions">
-                                {{#if (isEqual this.status "Delivered")}}
-                                <!-- Return Button -->
-                                <button type="button" class="btn btn-outline-primary px-3 return-btn"
-                                    data-action="return" data-order-id="{{../order._id}}" 
-                                    data-product-id="{{this.productId._id}}" data-status="{{this.status}}" {{#if
-                                    (isReturnEligible this.deliveredDate)}}disabled{{/if}}>
-                                    Return
-                                </button>
-                                {{else}}
-                                <!-- Cancel Button -->
-                                <button type="button" class="btn btn-outline-danger px-3 cancel-btn"
-                                    data-action="cancel" data-order-id="{{../order._id}}"
-                                    data-product-id="{{this.productId._id}}" data-variant-id="{{this.variantId}}" 
-                                    data-status="{{this.status}}" {{#if (or (or (isEqual this.status "Cancelled" )
-                                    (isEqual this.status "Returned" )) (isEqual this.status "Return Approved"
-                                    ))}}hidden{{/if}}>
-                                    Cancel
-                                </button>
-                                {{/if}}
+                            <!-- Product Details -->
+                            <div class="col-md-6 py-3">
+                                <div>
+                                    <h5 class="fw-semibold mb-2">
+                                        <a href="/product-details/{{this.productId._id}}/{{this.variantId}}"
+                                            class="text-decoration-none text-dark">
+                                            {{this.productId.name}}
+                                        </a> - {{getVariantQuantity this.productId.variant this.variantId}} ML
+                                    </h5>
+                                    <p class="mb-1">Quantity: <strong>{{this.quantityCount}}</strong></p>
+                                    <p class="mb-1">Price: <strong>Rs. {{this.discountPrice}}</strong></p>
+                                    {{#if (or (isEqual this.status "Delivered") (isEqual this.status "Returned"))}}
+                                    <p class="mb-0 text-muted">Delivered on: {{formatDate this.deliveredDate}}</p>
+                                    <p class="mb-0 text-info"><small>Return valid only before 10 days of delivery</small></p>
+                                    {{/if}}
+                                </div>
                             </div>
 
+                            <!-- Status & Actions -->
+                            <div class="col-md-2 py-3 text-center">
+                                <div class="mb-2">
+                                    {{#if (isEqual this.status "Pending")}}
+                                    <span class="badge bg-primary px-3 py-2">Pending</span>
+                                    {{else if (isEqual this.status "Delivered")}}
+                                    <span class="badge bg-success px-3 py-2">Delivered</span>
+                                    {{else if (isEqual this.status "Returned")}}
+                                    <span class="badge bg-secondary px-3 py-2">Returned</span>
+                                    {{else if (isEqual this.status "Shipped")}}
+                                    <span class="badge bg-info text-dark px-3 py-2">Shipped</span>
+                                    {{else if (isEqual this.status "Cancelled")}}
+                                    <span class="badge bg-danger px-3 py-2">Cancelled</span>
+                                    {{else}}
+                                    <span class="badge bg-warning text-dark px-3 py-2">{{this.status}}</span>
+                                    {{/if}}
+                                </div>
 
-                            <div class="p-2">
-                                {{#if (isReturnEligible this.deliveredDate)}}
-                                <button type="button" class="btn btn-outline-primary">Rate this Product</button>
-                                {{/if}}
+                                <div class="d-grid gap-2">
+                                    {{#if (isEqual this.status "Delivered")}}
+                                    <!-- Return Button -->
+                                    <button type="button" class="btn btn-outline-primary return-btn"
+                                        data-action="return" data-order-id="{{../order._id}}"
+                                        data-product-id="{{this.productId._id}}" data-status="{{this.status}}" {{#if
+                                        (isReturnEligible this.deliveredDate)}}disabled{{/if}}>
+                                        Return
+                                    </button>
+                                    {{else}}
+                                    <!-- Cancel Button -->
+                                    <button type="button" class="btn btn-outline-danger cancel-btn" data-action="cancel"
+                                        data-order-id="{{../order._id}}" data-product-id="{{this.productId._id}}"
+                                        data-variant-id="{{this.variantId}}" data-status="{{this.status}}" {{#if (or (or
+                                        (isEqual this.status "Cancelled" ) (isEqual this.status "Returned" )) (isEqual
+                                        this.status "Return Approved" ))}}hidden{{/if}}>
+                                        Cancel
+                                    </button>
+                                    {{/if}}
+
+                                    {{#if (isReturnEligible this.deliveredDate)}}
+                                    <button type="button" class="btn btn-outline-secondary">Rate this Product</button>
+                                    {{/if}}
+                                </div>
                             </div>
-
                         </div>
                     </div>
-                    <hr>
                     {{/each}}
 
-                    <!-- Delivery Address -->
-                    <div class="grid gap-1 d-flex justify-content-between ">
-                        <div class="col-7 p-3 border border-2">
 
-                            <p class="fw-bold">Shipping Address</p>
-                            <p><span>{{order.shippingAddress.firstname}} {{order.shippingAddress.lastname}}</span>
-                                <span>{{order.shippingAddress.phone}}</span>
-                            </p>
-                            <span>{{order.shippingAddress.address}}, {{order.shippingAddress.locality}},
-                                {{order.shippingAddress.district}}, {{order.shippingAddress.state}} -
-                                {{order.shippingAddress.pincode}}</span>
-                        </div>
-                        <div class="col-5 p-3 border border-2">
-                            <p>Total Amount: {{order.totalAmount}}</p>
-                            <p>Order ID: {{order.orderId}}</p>
-                            <p>Ordered On: {{formatDate order.orderDate}}</p>
-                            <p>Payment: {{order.payment.method}} - {{order.payment.status}}</p>
-                        </div>
-
-                    </div>
                 </div>
             </div>
+
 
         </div>
     </div>
@@ -213,7 +224,7 @@
                     <input type="hidden" name="orderId" id="orderId">
                     <input type="hidden" name="productId" id="productId">
                     <input type="hidden" name="variantId" id="variantId">
-                    
+
                     <div>
                         <label><input type="radio" name="cancelReason" value="Order by mistake"> Order by mistake
                         </label><br>
@@ -240,109 +251,109 @@
 
 <!-- JavaScript for Confirmation -->
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    document.body.addEventListener("click", async function (event) {
-        const target = event.target;
+    document.addEventListener("DOMContentLoaded", () => {
+        document.body.addEventListener("click", async function (event) {
+            const target = event.target;
 
-        console.log("Clicked element:", target); // Debugging log
+            console.log("Clicked element:", target); // Debugging log
 
-        if (target.classList.contains("return-btn") || target.classList.contains("cancel-btn")) {
-            const action = target.getAttribute("data-action");
-            const orderId = target.getAttribute("data-order-id");
-            const productId = target.getAttribute("data-product-id");
-            const variantId = target.getAttribute("data-variant-id");  // Capture the variant-id for cancel
+            if (target.classList.contains("return-btn") || target.classList.contains("cancel-btn")) {
+                const action = target.getAttribute("data-action");
+                const orderId = target.getAttribute("data-order-id");
+                const productId = target.getAttribute("data-product-id");
+                const variantId = target.getAttribute("data-variant-id");  // Capture the variant-id for cancel
 
-            console.log("Action:", action);
-            console.log("Order ID:", orderId);
-            console.log("Product ID:", productId);
-            console.log("Variant ID:", variantId);
+                console.log("Action:", action);
+                console.log("Order ID:", orderId);
+                console.log("Product ID:", productId);
+                console.log("Variant ID:", variantId);
 
-            if (action === "return") {
-                document.getElementById("returnOrderId").value = orderId;
-                document.getElementById("returnProductId").value = productId;
-                const returnModal = new bootstrap.Modal(document.getElementById("returnModal"));
-                returnModal.show();
-            } else if (action === "cancel") {
-                document.getElementById("orderId").value = orderId;
-                document.getElementById("productId").value = productId;
-                document.getElementById("variantId").value = variantId;  // Set variant-id for cancel
+                if (action === "return") {
+                    document.getElementById("returnOrderId").value = orderId;
+                    document.getElementById("returnProductId").value = productId;
+                    const returnModal = new bootstrap.Modal(document.getElementById("returnModal"));
+                    returnModal.show();
+                } else if (action === "cancel") {
+                    document.getElementById("orderId").value = orderId;
+                    document.getElementById("productId").value = productId;
+                    document.getElementById("variantId").value = variantId;  // Set variant-id for cancel
 
-                console.log("Opening Cancel Modal..."); // Debugging log
+                    console.log("Opening Cancel Modal..."); // Debugging log
 
-                const cancelModal = new bootstrap.Modal(document.getElementById("cancelModal"));
-                cancelModal.show();
+                    const cancelModal = new bootstrap.Modal(document.getElementById("cancelModal"));
+                    cancelModal.show();
+                }
+            }
+        });
+
+        // Handle Return Submission
+        document.getElementById("returnForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const returnModal = bootstrap.Modal.getInstance(document.getElementById("returnModal"));
+            returnModal.hide(); // Close the modal first
+
+            setTimeout(async () => {
+                const orderId = document.getElementById("returnOrderId").value;
+                const productId = document.getElementById("returnProductId").value;
+                const reason = document.querySelector('input[name="returnReason"]:checked');
+                if (!reason) {
+                    await Swal.fire("Error", "Please select a return reason!", "error");
+                    return;
+                }
+
+                await submitAction({ action: "return", orderId, productId, returnReason: reason.value });
+            }, 300); // Small delay to ensure smooth UI transition
+        });
+
+        // Handle Cancel Submission
+        document.getElementById("cancelForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const cancelModal = bootstrap.Modal.getInstance(document.getElementById("cancelModal"));
+            cancelModal.hide(); // Close the modal first
+
+            setTimeout(async () => {
+                const orderId = document.getElementById("orderId").value;
+                const productId = document.getElementById("productId").value;
+                const variantId = document.getElementById("variantId").value;  // Get the variant-id from hidden input
+                const reason = document.querySelector('input[name="cancelReason"]:checked');
+
+                if (!reason) {
+                    await Swal.fire("Error", "Please select a cancellation reason!", "error");
+                    return;
+                }
+
+                await submitAction({ action: "cancel", orderId, productId, variantId, cancelReason: reason.value });
+            }, 300); // Small delay for smooth transition
+        });
+
+        async function submitAction(payload) {
+            const endpoint = payload.action === "return"
+                ? `/order/return/${payload.orderId}/${payload.productId}`
+                : `/order/cancel/${payload.orderId}/${payload.productId}/${payload.variantId}`;  // Include variantId for cancel
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    await Swal.fire("Success", data.message, "success");
+                    location.reload(); // Refresh the page to update UI
+                } else {
+                    await Swal.fire("Error", data.message, "error");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                await Swal.fire("Error", "An unexpected error occurred.", "error");
             }
         }
     });
-
-    // Handle Return Submission
-    document.getElementById("returnForm").addEventListener("submit", async function (event) {
-        event.preventDefault();
-
-        const returnModal = bootstrap.Modal.getInstance(document.getElementById("returnModal"));
-        returnModal.hide(); // Close the modal first
-
-        setTimeout(async () => {
-            const orderId = document.getElementById("returnOrderId").value;
-            const productId = document.getElementById("returnProductId").value;
-            const reason = document.querySelector('input[name="returnReason"]:checked');
-            if (!reason) {
-                await Swal.fire("Error", "Please select a return reason!", "error");
-                return;
-            }
-
-            await submitAction({ action: "return", orderId, productId, returnReason: reason.value });
-        }, 300); // Small delay to ensure smooth UI transition
-    });
-
-    // Handle Cancel Submission
-    document.getElementById("cancelForm").addEventListener("submit", async function (event) {
-        event.preventDefault();
-
-        const cancelModal = bootstrap.Modal.getInstance(document.getElementById("cancelModal"));
-        cancelModal.hide(); // Close the modal first
-
-        setTimeout(async () => {
-            const orderId = document.getElementById("orderId").value;
-            const productId = document.getElementById("productId").value;
-            const variantId = document.getElementById("variantId").value;  // Get the variant-id from hidden input
-            const reason = document.querySelector('input[name="cancelReason"]:checked');
-
-            if (!reason) {
-                await Swal.fire("Error", "Please select a cancellation reason!", "error");
-                return;
-            }
-
-            await submitAction({ action: "cancel", orderId, productId, variantId, cancelReason: reason.value });
-        }, 300); // Small delay for smooth transition
-    });
-
-    async function submitAction(payload) {
-        const endpoint = payload.action === "return"
-            ? `/order/return/${payload.orderId}/${payload.productId}`
-            : `/order/cancel/${payload.orderId}/${payload.productId}/${payload.variantId}`;  // Include variantId for cancel
-
-        try {
-            const response = await fetch(endpoint, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                await Swal.fire("Success", data.message, "success");
-                location.reload(); // Refresh the page to update UI
-            } else {
-                await Swal.fire("Error", data.message, "error");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            await Swal.fire("Error", "An unexpected error occurred.", "error");
-        }
-    }
-});
 
 
 </script>

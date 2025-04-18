@@ -15,7 +15,7 @@ const PlaceOrder = async (req, res) => {
         const { shippingAddress, payment, items, totalAmount, finalAmount, coupon, couponDiscount } = req.body;
         console.log(req.body)
 
-        // Iterate over each item in the order
+        
         for (const item of items) {
             const product = await productModel.findById(item.productId);
 
@@ -23,18 +23,18 @@ const PlaceOrder = async (req, res) => {
                 return res.status(404).json({ message: `Product not found: ${item.productId}` });
             }
 
-            // Find the correct variant
+            
             const variant = product.variant.id(item.variantId);
             if (!variant) {
                 return res.status(404).json({ message: `Variant not found: ${item.variantId}` });
             }
 
-            // Check if there's enough stock
+           
             if (variant.stockQuantity < item.quantityCount) {
                 return res.status(400).json({ message: `Not enough stock for product: ${product.name}` });
             }
 
-            // Subtract the ordered quantity from stock
+            
             variant.stockQuantity -= item.quantityCount;
 
             await product.save();
@@ -114,47 +114,6 @@ const OrderFailed = (req, res) => {
 
 
 
-// get Orders
-// const LoadOrders = async (req, res) => {
-//     try {
-//         const userId = req.session.user.id;
-
-//         // Step 1: Populate product details
-//         const orders = await orderModel.find({ userId })
-//             .populate({
-//                 path: 'items.productId',
-//                 select: 'name images variant'  // Include variants in the populated data
-//             })
-//             .sort({ orderDate: -1 })
-//             .lean();
-
-//         // Step 2: Match variants manually
-//         const populatedOrders = orders.map(order => {
-//             order.items = order.items.map(item => {
-//                 const product = item.productId;
-//                 // Find the variant matching variantId
-//                 const variant = product.variant.find(v => v._id.toString() === item.variantId.toString());
-
-//                 return {
-//                     ...item,
-//                     productDetails: {
-//                         name: product.name,
-//                         images: product.images,
-//                         variant: variant  // Add the matched variant details
-//                     }
-//                 };
-//             });
-//             return order;
-//         });
-
-//         res.render('user/orders', { orders: populatedOrders });
-
-//     } catch (error) {
-//         console.error("Error loading orders:", error);
-//         res.status(500).send('Server Error');
-//     }
-// };
-
 
 const LoadOrders = async (req, res) => {
     try {
@@ -213,20 +172,29 @@ const LoadOrders = async (req, res) => {
 const OrderDetail = async (req, res) => {
     try {
         const { orderId } = req.params;
-        const userId = req.session.user.id; // Ensure this is retrieved correctly (e.g., from authentication middleware)
+        const userId = req.session.user.id; 
 
-        // Fetch the order based on orderId and userId
+       
         const order = await orderModel.findOne({ _id: orderId, userId }).populate('items.productId').lean();
 
         if (!order) {
             return res.status(404).send('Order not found');
         }
 
+        
+        const totalOfferDiscount = order.items.reduce((total, item) => {
+            return total + (item.offerDiscount || 0); 
+        }, 0);
+
+        const totalCouponDiscount = order.couponDiscount
+
+        const totalDiscount = totalOfferDiscount + totalCouponDiscount
 
         // Render the order detail page with specific item data
         res.render('user/order-detail', {
             order,
-            userId
+            userId,
+            totalDiscount
         });
     } catch (error) {
         console.error(error);
@@ -310,8 +278,8 @@ const CancelOrder = async (req, res) => {
 
             // ✅ Wallet refund logic
             if (["RAZORPAY", "WALLET"].includes(order.payment.method) && order.payment.status === "Paid") {
-                const refundAmount = orderedItem.discountPrice * orderedItem.quantityCount;
-
+                
+                const refundAmount = orderedItem.discountPrice
                 let wallet = await walletModel.findOne({ userId: order.userId });
 
                 const transaction = {

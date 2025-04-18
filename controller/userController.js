@@ -1,4 +1,4 @@
-const userModel = require('../../model/userModel')
+const userModel = require('../model/userModel')
 
 // Get Users List
 const customers = async (req, res) => {
@@ -28,5 +28,5 @@ const statusUpdate = async (req, res) => {
 module.exports ={
     customers,
     statusUpdate,
-    //deleteUser
+    
 }

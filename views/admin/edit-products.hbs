@@ -141,11 +141,12 @@
                                 <div class="mb-3">
                                     <label for="offer" class="form-label">Offer</label>
                                     <select id="offer" name="offer" class="form-select">
-                                        <option value="" disabled >Select an offer</option>
+                                        <option value="No Offer" {{#unless product.offers}}selected{{/unless}}>Select an Offer</option>
                                         {{#each offers}}
                                         <option value="{{name}}" {{#if (isEqual ../product.offer name)}}selected{{/if}}>{{name}}</option>
                                         {{/each}}
                                     </select>
+                                    
                                 </div>
 
                                 <div class="mb-3">

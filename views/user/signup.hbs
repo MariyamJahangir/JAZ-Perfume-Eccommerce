@@ -53,14 +53,20 @@
                 <input type="password" id="confirmpassword" name="confirmpassword" class="form-control">
 
             </div>
+            
+            <div class="mb-3">
+                <label for="refCode" class="form-label">Do you have a Refferal Code?</label>
+                <input type="text" id="refCode" name="refferalCode" class="form-control">
+            </div>
+
             <div class="form-footer text-start mb-4">
                 By Creating An Account You Agree With Our <a href="#" class="link-secondary">Terms Of Service</a>, <a
                     href="#" class="link-secondary">Privacy Policy</a>.
             </div>
-            
+
             <button type="submit" class="btn btn-primary w-100">Create Account</button>
             <p class="form-control border-0 text-center text-danger" id="signup"></p>
-            
+
         </form>
         <p class="text-center mt-4">
             Already have an account? <a href="/login"
@@ -84,6 +90,7 @@
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value.trim();
         const confirmpassword = document.getElementById("confirmpassword").value.trim();
+        const referralCode = document.getElementById("refCode").value.trim();
         document.getElementById("signup")
 
         const requiredFields = ['firstname', 'lastname', 'email', 'password', 'confirmpassword']
@@ -131,14 +138,14 @@
             return Swal.fire({ icon: "error", title: "Validation Error", text: "Password is required." });
         }*/
 
-        
+
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
 
         if (!passwordRegex.test(password)) {
-            return Swal.fire({ 
-                icon: "error", 
-                title: "Weak Password", 
-                text: "Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, and one number." 
+            return Swal.fire({
+                icon: "error",
+                title: "Weak Password",
+                text: "Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, and one number."
             });
         }
 
@@ -150,7 +157,7 @@
             return Swal.fire({ icon: "error", title: "Validation Error", text: "Passwords do not match." });
         }
 
-        
+
 
         // Proceed with form submission if all validations pass
         /*Swal.fire({
@@ -160,7 +167,7 @@
         }); */
 
         // Send form data using Fetch API
-        const formData = { firstname, lastname, email, password, confirmpassword };
+        const formData = { firstname, lastname, email, password, confirmpassword, referralCode };
 
         try {
             document.getElementById("signup").innerHTML = "Please wait.."
@@ -186,7 +193,7 @@
             })
             document.getElementById("signupForm").reset();
             window.location.href = "/otp"; // Redirect to OTP verification page
-            
+
 
         } catch (error) {
             Swal.fire({

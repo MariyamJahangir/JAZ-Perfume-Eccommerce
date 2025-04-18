@@ -144,7 +144,7 @@
                                         
                                         <option value="product" {{#if (isEqual offer.offerType "product")}}selected{{/if}}>Product</option>
                                         <option value="category" {{#if (isEqual offer.offerType "category")}}selected{{/if}}>Category</option>
-                                        <option value="referral" {{#if (isEqual offer.offerType "referral")}}selected{{/if}}>Referral</option>
+                                        
                                         
                                     </select>
                                 </div>
@@ -284,6 +284,28 @@
         if (!offerId) {
             Swal.fire({ icon: "error", title: "Error", text: "Offer ID is missing." });
             return;
+        }
+
+        if(formData.discountType === "percentage"){
+            if(formData.discount>=100){
+                Swal.fire({
+                    icon: "error",
+                    title: "Validation Error",
+                    text: "Discount should be less than 100%.",
+                });
+                return
+            }
+
+        }
+        if(formData.discountType === "fixed"){
+            if(formData.discount>=2000){
+                Swal.fire({
+                    icon: "error",
+                    title: "Validation Error",
+                    text: "Discount should be less than 2000",
+                });
+                return
+            }
         }
 
         // Update offer via API request

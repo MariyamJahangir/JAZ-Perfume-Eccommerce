@@ -79,10 +79,10 @@ const addProducts = async (req, res) => {
             });
         }
 
-        // Parse variants
+        
         let parsedVariants = [];
         try {
-            parsedVariants = JSON.parse(variant); // Ensure `variant` is parsed as JSON
+            parsedVariants = JSON.parse(variant); 
             if (!Array.isArray(parsedVariants) || parsedVariants.length === 0) {
                 return res.status(400).json({
                     error: "At least one valid variant is required.",
@@ -94,7 +94,7 @@ const addProducts = async (req, res) => {
             });
         }
 
-        // Validate variant fields
+       
         for (const v of parsedVariants) {
             if (v.quantityML === undefined || typeof v.quantityML !== "number") {
                 return res.status(400).json({ error: "Each variant must have a valid quantityML (number)." });

@@ -20,7 +20,7 @@
 <section style="background-color: #DFF2FA;">
     <div class="container">
         <div class="row p-5">
-            <h2>Welcome Mariyam Jahangir</h2>
+            <h2>Welcome {{user.firstname}} {{user.lastname}}</h2>
         </div>
 
     </div>
@@ -82,6 +82,9 @@
                                     {{else}}
                                     <p>Price: <span class="fw-bold text-success">Rs.{{variant.price}} </span></p>
                                     {{/if}}
+                                    <span class="discount-badge text-danger" id="stockDisplay">
+                                        {{#if (isEqual variant.stockStatus 'Out of Stock')}} Out of Stock {{/if}}
+                                    </span>
                                 </div>
 
 

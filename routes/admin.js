@@ -3,13 +3,13 @@ const router = express.Router();
 const adminAuth = require('../middleware/adminAuth')
 const categoryMulter = require('../config/categoryMulter')
 const productMulter = require('../config/productMulter')
-const homeController = require('../controller/admin/homeController');
-const userController = require('../controller/admin/userController');
-const categoryController = require('../controller/admin/categoryController');
-const productController = require('../controller/admin/productController');
-const orderController = require('../controller/admin/orderController');
-const couponController = require('../controller/admin/couponController');
-const offerController = require('../controller/admin/offerController');
+const homeController = require('../controller/adminHomeController');
+const userController = require('../controller/userController');
+const categoryController = require('../controller/categoryController');
+const productController = require('../controller/productController');
+const orderController = require('../controller/orderController');
+const couponController = require('../controller/couponController');
+const offerController = require('../controller/offerController');
 
 // Admin Login, Logout, Homepage
 
@@ -59,7 +59,7 @@ router.patch('/delete-product', adminAuth.checkSession, productController.delete
 
 
 // Order Management
-router.get('/orders',adminAuth.checkSession, orderController.LoadOrders);
+router.get('/orders',adminAuth.checkSession, orderController.LoadAdminOrders);
 router.get('/order-detail/:id',adminAuth.checkSession, orderController.LoadOrderDetail);
 router.post("/update-order-status/:orderId/:productId",adminAuth.checkSession, orderController.updateOrderStatus)
 

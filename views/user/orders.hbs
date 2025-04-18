@@ -24,7 +24,7 @@
 <section style="background-color: #DFF2FA;">
     <div class="container">
         <div class="row p-5">
-            <h2>Welcome Mariyam Jahangir</h2>
+            <h2>Welcome {{user.firstname}} {{user.lastname}}</h2>
         </div>
 
     </div>
@@ -71,7 +71,7 @@
                             {{#if (gt items.length 1)}}
                                 (+{{dec items.length}} more {{#if (isEqual items.length 2)}}product {{else}} products{{/if}})
                             {{/if}}</p>
-                            <p>Total Price: {{totalAmount}}</p>
+                            <p>Total Price: {{finalAmount}}</p>
                             <span class="fw-5">Ordered on: {{formatDate orderDate}}</span>
 
                         </div>

@@ -139,9 +139,10 @@
                 <h5 class="modal-title" id="exampleModalLabel">Saved Address</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            {{#if addresses.length}}
             <div class="modal-body">
                 <!-- Modal content goes here -->
-                {{#if addresses.length}}
+
                 <div class="list-group">
                     {{#each addresses}}
                     {{#if (isEqual deleted false)}}
@@ -156,14 +157,23 @@
                     {{/if}}
                     {{/each}}
                 </div>
-                {{else}}
-                <p>No saved addresses found.</p>
-                {{/if}}
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="selectAddress">Continue</button>
             </div>
+            {{else}}
+            <div class="modal-body">
+                <div class="text-center">
+                    <p>No saved addresses found.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="/address" type="button" class="btn btn-primary">Add Address</a>
+            </div>
+            {{/if}}
         </div>
     </div>
 </div>
@@ -216,7 +226,19 @@
 
 {{>footer}}
 
-
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const firstOrderDiscount = "{{firstOrderDiscount}}";
+        if (firstOrderDiscount && firstOrderDiscount !== "null") {
+            Swal.fire({
+                icon: 'success',
+                title: 'Congratulations!',
+                text: `You got a ₹${firstOrderDiscount} discount on your first order!`,
+                confirmButtonText: 'Great!',
+            });
+        }
+    });
+</script>
 
 
 

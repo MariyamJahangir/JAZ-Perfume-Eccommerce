@@ -1,45 +1,5 @@
 const couponModel = require('../../model/couponModel')
 
-// const ApplyCoupon = async (req, res) => {
-//     const { couponCode, subTotalPrice } = req.body;
-
-//     try {
-//         const coupon = await couponModel.findOne({ code: couponCode, isActive: true });
-
-//         if (!coupon) {
-//             return res.json({ success: false, message: "Invalid or expired coupon." });
-//         }
-
-//         const currentDate = new Date();
-//         if (currentDate < coupon.start || currentDate > coupon.expiry) {
-//             return res.json({ success: false, message: "This coupon is not valid at this time." });
-//         }
-
-//         if (subTotalPrice < coupon.minAmount) {
-//             return res.json({ success: false, message: `Minimum order amount should be ₹${coupon.minAmount}.` });
-//         }
-
-//         let couponDiscount = 0;
-
-//         if (coupon.discountType === "fixed") {
-//             couponDiscount = coupon.discount;
-//         } else if (coupon.discountType === "percentage") {
-//             couponDiscount = (subTotalPrice * coupon.discount) / 100;
-//             if (coupon.maxDiscount && couponDiscount > coupon.maxDiscount) {
-//                 couponDiscount = coupon.maxDiscount;
-//             }
-//         }
-
-//         const totalDiscountPrice = Math.max(subTotalPrice - couponDiscount, 0);
-
-//         return res.json({ success: true, couponDiscount, totalDiscountPrice });
-
-//     } catch (error) {
-//         console.error("Error applying coupon:", error);
-//         return res.json({ success: false, message: "Server error. Please try again later." });
-//     }
-// }
-
 
 const ApplyCoupon = async (req, res) => {
     const { couponCode, subTotalPrice } = req.body;

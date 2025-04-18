@@ -16,7 +16,7 @@
 <section style="background-color: #DFF2FA;">
     <div class="container">
         <div class="row p-5">
-            <h2>Welcome {{user.firstname}}</h2>
+            <h2>Welcome {{user.firstname}} {{user.lastname}} </h2>
         </div>
 
     </div>
@@ -44,7 +44,8 @@
             </div>
             <div class="col-10">
                 <div class="container m-4 p-4 border bg-light">
-                    <h1 class="text-center">PROFILE</h1>
+                    <div class="text-end pe-3"><button class="btn btn-secondary" type="button" id="inviteUserBtn" data-bs-toggle="modal" data-bs-target="#referralModal">Invite A Friend</button></div>
+                    <h1 class="text-center mt-4">PROFILE</h1>
                     <div class="row d-flex justify-content-center">
                         <div class="col-7 m-4">
                             <form id="updateProfileForm">
@@ -112,7 +113,62 @@
 </section>
 
 
+<!-- Referral Modal -->
+<div class="modal fade" id="referralModal" tabindex="-1" aria-labelledby="referralModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header">
+        <h5 class="modal-title" id="referralModalLabel">Refer & Earn</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="mb-3">💰 You will get <strong>₹500</strong> when your friend signs up!</p>
+        <p class="mb-3">🎉 Your friend will get <strong>20% extra</strong> on their first purchase.</p>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Your Referral Code:</label>
+          <div class="input-group">
+            <input type="text" class="form-control text-center" id="referralCode" readonly value="">
+            <button class="btn btn-outline-secondary" type="button" id="copyCodeBtn">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 {{>footer}}
+
+
+<script>
+    
+    document.getElementById("inviteUserBtn").addEventListener("click", async function () {
+        try {
+            const response = await fetch('/referral', { method: 'GET' });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch referral code");
+            }
+
+            const data = await response.json();
+
+            document.getElementById("referralCode").value = data.referralCode;
+
+        } catch (error) {
+            console.error("Error fetching referral code:", error);
+            alert("Failed to fetch referral code. Please try again."+error);
+        }
+    });
+
+  document.getElementById("copyCodeBtn").addEventListener("click", function () {
+    const codeInput = document.getElementById("referralCode");
+    codeInput.select();
+    codeInput.setSelectionRange(0, 99999); // For mobile
+    navigator.clipboard.writeText(codeInput.value);
+    Swal.fire("Referral code copied!");
+  });
+</script>
+
 
 
 <script>

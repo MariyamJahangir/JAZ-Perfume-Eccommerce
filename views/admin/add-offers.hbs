@@ -101,8 +101,8 @@
                             <li class="breadcrumb-item"><a href="#" class="link-dark link-underline-opacity-0">Admin</a>
                             </li>
                             <li class="breadcrumb-item"><a href="offers"
-                                    class="link-dark link-underline-opacity-0">Coupons</a></li>
-                            <li class="breadcrumb-item active text-dark" aria-current="page">Add-Offers</li>
+                                    class="link-dark link-underline-opacity-0">Offers</a></li>
+                            <li class="breadcrumb-item active text-dark" aria-current="page">Add Offers</li>
                         </ol>
                     </nav>
                 </div>
@@ -138,9 +138,10 @@
                                 <div class="mb-3">
                                     <label class="form-label">Offer Type</label>
                                     <select class="form-control" name="offerType">
+                                        <option value="" selected>Select an Offer</option>
                                         <option value="product">Product</option>
                                         <option value="category">Category</option>
-                                        <option value="referral">Referral</option>
+                                        
                                     </select>
                                 </div>
 
@@ -209,20 +210,7 @@
 </section>
 
 
-<script>
-    /*
-    function toggleMaxDiscount() {
-        let discountType = document.querySelector('input[name="discountType"]:checked').value;
-        let maxDiscountField = document.getElementById("maxDiscountField");
 
-        if (discountType === "percentage") {
-            maxDiscountField.style.display = "block";
-        } else {
-            maxDiscountField.style.display = "none";
-        }
-    }
-    */
-</script>
 
 
 <script>
@@ -292,6 +280,29 @@ document.addEventListener("DOMContentLoaded", function () {
         if (parseFloat(formData.discount) <= 0) {
             Swal.fire({ icon: "error", title: "Invalid Discount", text: "Discount value must be greater than zero." });
             return;
+        }
+
+        if(formData.discountType === "percentage"){
+            if(formData.discount>=100){
+                Swal.fire({
+                    icon: "error",
+                    title: "Validation Error",
+                    text: "Discount should be less than 100%.",
+                });
+                return
+            }
+
+        }
+
+        if(formData.discountType === "fixed"){
+            if(formData.discount>=2000){
+                Swal.fire({
+                    icon: "error",
+                    title: "Validation Error",
+                    text: "Discount should be less than 2000",
+                });
+                return
+            }
         }
 
         // Ensure max discount is required when percentage is selected

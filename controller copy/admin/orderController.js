@@ -1,6 +1,6 @@
 const orderModel = require('../../model/orderModel');
 const productModel = require('../../model/productModel');
-
+const walletModel = require('../../model/walletModel');
 
 const LoadOrders = async (req, res) => {
     try {
@@ -20,7 +20,7 @@ const LoadOrders = async (req, res) => {
 const LoadOrderDetail = async (req, res) => {
     try {
         const orderId = req.params.id;
-        
+
 
         const order = await orderModel.findById(orderId)
             .populate('userId')
@@ -52,10 +52,10 @@ const LoadOrderDetail = async (req, res) => {
                     statusOptions = ["Return Approved"];
                     break;
                 default:
-                    statusOptions = []; // No changes allowed if Cancelled/Returned
+                    statusOptions = []; 
             }
 
-            item.statusOptions = statusOptions; // Attach status options to item
+            item.statusOptions = statusOptions; 
             return item;
         });
 
@@ -68,49 +68,6 @@ const LoadOrderDetail = async (req, res) => {
 };
 
 
-// const updateOrderStatus = async (req, res) => {
-//     const { orderId, productId } = req.params;
-//     const { status } = req.body;
-
-//     try {
-
-//         const order = await orderModel.findById(orderId);
-//         if (!order) {
-//             return res.status(404).send("Order not found");
-//         }
-
-//         order.items.forEach(item => {
-//             if (item.productId.toString() === productId) {
-//                 // If status is being changed to "Delivered"
-//                 if (status === "Delivered") {
-//                     // Only set delivery date if it is null
-//                     if (!item.deliveredDate) {
-//                         item.deliveredDate = new Date();
-//                     }
-//                 }
-//                 // Update the item status
-//                 item.status = status;
-//             }
-//         });
-
-//         // Save the updated order
-//         await order.save();
-        
-//         // Check if all items in the order are delivered
-//         if ( order.items.every(item => item.status === "Delivered" || item.status === "Cancelled" || item.status === "Return Approved")) {
-//             await orderModel.updateOne({ _id: orderId }, { $set: { orderStatus: "Completed" } });
-//         }else await orderModel.updateOne({ _id: orderId }, { $set: { orderStatus: "Not completed" } });
-
-
-//         res.redirect(`/admin/order-detail/${orderId}`); // Redirect back to order detail page
-//     } catch (error) {
-//         console.error("Error updating order status:", error);
-//         res.status(500).send("Error updating order status");
-//     }
-
-
-// }    
-
 
 const updateOrderStatus = async (req, res) => {
     const { orderId, productId } = req.params;
@@ -122,43 +79,77 @@ const updateOrderStatus = async (req, res) => {
             return res.status(404).json({ error: "Order not found" });
         }
 
+
+
         let itemUpdated = false;
 
-        order.items.forEach(item => {
-            if (item.productId.toString() === productId) {
-                // ✅ If status is "Delivered", set deliveredDate if not already set
-                if (status === "Delivered" && !item.deliveredDate) {
-                    item.deliveredDate = new Date(); 
-                }
+       
 
-                // ✅ Update the item status
+        for (const item of order.items) {
+            if (item.productId.toString() === productId) {
+                
+                if (status === "Delivered" && !item.deliveredDate) {
+                    item.deliveredDate = new Date();
+                }
+        
+                if (status === 'Return Approved') {
+                    if (["RAZORPAY", "WALLET"].includes(order.payment.method) && order.payment.status === "Paid") {
+        
+                        const refundAmount = item.discountPrice; // corrected variable name from orderedItem
+                        let wallet = await walletModel.findOne({ userId: order.userId });
+        
+                        const transaction = {
+                            amount: refundAmount,
+                            type: "Credit",
+                            description: `Refund for cancelled item in Order ${order.orderId}`
+                        };
+        
+                        if (!wallet) {
+                            wallet = new walletModel({
+                                userId: order.userId,
+                                balance: refundAmount,
+                                transactions: [transaction]
+                            });
+                        } else {
+                            wallet.balance += refundAmount;
+                            wallet.transactions.push(transaction);
+                        }
+        
+                        await wallet.save();
+                    }
+                }
+        
+                
                 item.status = status;
                 itemUpdated = true;
             }
-        });
+        }
+        
+
+
 
         if (!itemUpdated) {
             return res.status(404).json({ error: "Product not found in this order" });
         }
 
-        // ✅ Save the updated order item
+        
         await order.save();
 
         const finalStatuses = ["Delivered", "Cancelled", "Returned", "Return Approved"];
 
-        // ✅ Check if all items in the order are in a final state
-        const allItemsCompleted = order.items.every(item =>finalStatuses.includes(item.status));
+        
+        const allItemsCompleted = order.items.every(item => finalStatuses.includes(item.status));
 
-        // ✅ Update order status and payment status if all items are completed
-        const updateFields = { 
-            orderStatus: allItemsCompleted ? "Completed" : "Processing" 
+        
+        const updateFields = {
+            orderStatus: allItemsCompleted ? "Completed" : "Processing"
         };
 
         if (allItemsCompleted) {
             updateFields["payment.status"] = "Paid";
         }
 
-        // ✅ Update `orderStatus` based on the item statuses
+        
         await orderModel.updateOne(
             { _id: orderId },
             { $set: updateFields }

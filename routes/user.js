@@ -1,18 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const homeController = require('../controller/user/homeController')
-const productController = require('../controller/user/productController')
-const profileController = require('../controller/user/profileController')
-const addressController = require('../controller/user/addressController')
-const cartController = require('../controller/user/cartController')
-const orderController = require('../controller/user/orderController')
-const reviewController = require('../controller/user/reviewController')
+const homeController = require('../controller/userHomeController')
+const productController = require('../controller/productController')
+const profileController = require('../controller/profileController')
+const addressController = require('../controller/addressController')
+const cartController = require('../controller/cartController')
+const orderController = require('../controller/orderController')
+const reviewController = require('../controller/reviewController')
 const auth = require('../middleware/auth')
 const passport = require('passport')
-const couponController = require('../controller/user/couponController')
-const paymentController = require('../controller/user/paymentController')
-const wishlistController = require('../controller/user/wishlistController')
-const walletController = require('../controller/user/walletController')
+const couponController = require('../controller/couponController')
+const paymentController = require('../controller/paymentController')
+const wishlistController = require('../controller/wishlistController')
+const walletController = require('../controller/walletController')
+const referralController = require('../controller/referralController')
 
 
 //Users sign up & login with validation. // Sign up using OTP with OTP timer and Resend Otp
@@ -97,6 +98,9 @@ router.get('/checkout',auth.isLogin, cartController.LoadCheckout)
 
 //coupons
 router.post("/apply-coupon", auth.isLogin, couponController.ApplyCoupon)
+
+//referral
+router.get('/referral', auth.isLogin, referralController.getReferralCode)
 
 
 //payment

@@ -1,5 +1,16 @@
 <link rel="stylesheet" href="/styles/home.css">
 
+<style>
+    .product-card .hover-content {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.product-card:hover .hover-content {
+  opacity: 1;
+}
+
+</style>
 {{>header}}
 
 <!-- Hero Section -->
@@ -26,34 +37,121 @@
         <p class="text-black mb-4">NEW ARRIVALS</p>
         <div class="row g-3 d-flex justify-content-center">
             <!-- Product Card -->
-            {{#each products}}
+            {{!-- {{#each products}}
             {{#if (isEqual deleted false)}}
             <div class="col-md-2 ">
-                <div class="container p-0">
+                 <div class="container p-0">
                     <div class="card text-center">
                         <a href="/product-details/{{_id}}/{{variant.[0]._id}}">
                             <img src="/uploads/{{images.[0]}}" class="card-img-top" alt="Product Image"
-                                style="width: 100%; height: 240px; object-fit: cover;">
+                                style="width: 100%; height: 210px; object-fit: cover;">
                         </a>
-                        <button type="button" class="btn-hover btncart">Add to Cart</button>
+
+                        <!-- Offer Badge -->
+                            ${product.discountAmount > 0 ? `
+                                <div class="offer-badge position-absolute top-0 start-0 m-2 bg-theme text-white px-2 py-1 rounded fw-bold" 
+                                    style="font-size: 12px; z-index: 1;">
+                                    ${product.discountText}
+                                </div>
+                            ` : ""}
+                            
+                            <!-- Wishlist button -->
+                            <button class="wishlist-btn position-absolute top-0 end-0 m-2 border-0 bg-transparent" 
+                                data-productid="${product.productId}" 
+                                data-variantid="${product._id}"> 
+                                ${(wishlist || []).some(w => w.productId === product.productId && w.variantId === product._id) ? `❤️` : `🤍`}
+                            </button>
+
+                        <button type="button" class="btn-hover btncart"
+                        data-productid="${product.productId}" data-variantid="${product._id}" 
+                                data-stockstatus="${product.stockStatus}" data-stockquantity="${product.stockQuantity}" 
+                                data-price="${product.price}" data-discountedprice="${product.discountedPrice}" 
+                                data-discountamount="${product.discountAmount}">Add to Cart</button>
                     </div>
                     <div class="card-body px-0">
-                        <h6 class="card-title pt-2">{{name}}</h6>
-                        <div class="d-flex justify-content-between align-items-center pe-4">
+                        <h6 class="card-title pt-2">{{name}} - ${product.quantityML} ML</h6>
+                        
                             <button type="button"
                                 class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill ">{{variant.[0].quantityML}}ml</button>
-                            <p class="card-text text-muted">Rs. {{variant.[0].price}}</p>
-                        </div>
+                            <div class="d-flex justify-content-center align-items-center flex-wrap">
+                                <p class="card-text text-success mb-0 fw-bold">Rs.${product.discountedPrice}</p>
+                                ${product.discountAmount > 0 ? `
+                                    <p class="card-text text-muted px-2 mb-0"><s style="font-size: 14px">Rs.${product.price}</s></p>
+                                ` : ""}
+                            </div>
+                        
                         <span class="text-muted">
                             {{#each ../categories}}
                             {{#if (isEqual ../product.category _id)}}{{name}}{{/if}}
                             {{/each}}
-                        </span>
+                        </span> 
                     </div>
                 </div>
+
+                
+
+            </div>
+            {{/if}}
+            {{/each}} --}}
+
+            {{#each products}}
+            {{#if (isEqual deleted false)}}
+            <div class="col-md-2">
+            <div class="container p-1">
+                <div class="card text-center position-relative product-card">
+                <a href="/product-details/{{_id}}/{{variant.[0]._id}}">
+                    <img src="/uploads/{{images.[0]}}" class="card-img-top"
+                    style="width: 100%; height: 200px; object-fit: cover;">
+                </a>
+
+                {{#if (gt discountAmount 0)}}
+                <div class="offer-badge hover-content position-absolute top-0 start-0 m-2 bg-success text-white px-2 py-1 rounded fw-bold"
+                    style="font-size: 12px; z-index: 1;">
+                    {{discountText}}
+                </div>
+                {{/if}}
+
+                <button class="wishlist-btn hover-content position-absolute top-0 end-0 m-2 border-0 bg-transparent"
+                    data-productid="{{_id}}" data-variantid="{{firstVariant._id}}">
+                    {{#if (isEqual inWishlist true)}}
+                    ❤️
+                    {{else}}
+                    🤍
+                    {{/if}}
+                </button>
+                
+
+                <button type="button" class="btn-hover btncart addtocart"
+                    data-productid="{{_id}}" data-variantid="{{variant.[0]._id}}"
+                    data-stockstatus="{{variant.[0].stockStatus}}"
+                    data-stockquantity="{{variant.[0].stockQuantity}}"
+                    data-price="{{variant.[0].price}}"
+                    data-discountedprice="{{discountedPrice}}"
+                    data-discountamount="{{discountAmount}}">
+                    Add to Cart
+                </button>
+                </div>
+
+                <div class="card-body px-0">
+                <h6 class="card-title pt-2">{{name}} - {{variant.[0].quantityML}} ML</h6>
+                <button type="button" class="btn btn-outline-secondary rounded-pill py-0 my-2 btnpill">
+                    {{variant.[0].stockStatus}}ml
+                </button>
+
+                <div class="d-flex justify-content-center align-items-center flex-wrap">
+                    <p class="card-text text-success mb-0 fw-bold">Rs.{{discountedPrice}}</p>
+                    {{#if (gt discountAmount 0)}}
+                    <p class="card-text text-muted px-2 mb-0">
+                    <s style="font-size: 14px">Rs.{{variant.[0].price}}</s>
+                    </p>
+                    {{/if}}
+                </div>
+                </div>
+            </div>
             </div>
             {{/if}}
             {{/each}}
+
 
         </div>
     </div>
@@ -145,3 +243,189 @@
 
 
 {{>footer}}
+
+
+<script>
+    // Handle wishlist button toggle (Add/Remove) using async/await
+document.addEventListener("click", async function (event) {
+    if (event.target.classList.contains("wishlist-btn")) {
+        const productId = event.target.getAttribute("data-productid");
+        const variantId = event.target.getAttribute("data-variantid");
+
+        try {
+            const response = await fetch(`/wishlist/check/${productId}/${variantId}`);
+            const contentType = response.headers.get("content-type");
+
+            if (!contentType || !contentType.includes("application/json")) {
+                // If response is not JSON, assume user is not logged in and redirect
+                console.warn("User not logged in. Redirecting to login page...");
+                window.location.href = "/login";
+                return;
+            }
+
+            const data = await response.json(); // Parse JSON safely
+            console.log("Wishlist Status:", data);
+
+            if (data.inWishlist) {
+                // Remove from wishlist
+                const removeResponse = await fetch("/wishlist/remove", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ productId, variantId }),
+                });
+
+                if (removeResponse.ok) {
+                    event.target.innerHTML = "🤍"; // Gray heart (Removed)
+                    Swal.fire({
+                        icon: "success",
+                        title: "Removed!",
+                        text: "Product removed from wishlist.",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }else{
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops!",
+                        text: "Failed to remove product from wishlist.",
+                    });
+                }
+            } else {
+                // Add to wishlist
+                const addResponse = await fetch("/wishlist/add", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ productId, variantId }),
+                });
+
+                if (addResponse.ok) {
+                    event.target.innerHTML = "❤️"; // Red heart (Added)
+                    Swal.fire({
+                        icon: "success",
+                        title: "Added!",
+                        text: "Product added to wishlist.",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }else{
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops!",
+                        text: "Failed to add product to wishlist.",
+                    });
+                }
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+});
+
+
+</script>
+
+
+
+<script>
+   document.querySelectorAll(".addtocart").forEach(button => {
+    button.addEventListener("click", async function () {
+        const productId = button.dataset.productid;
+        const variantId = button.dataset.variantid;
+
+        const stockStatus = button.dataset.stockstatus;
+        const stockQuantity = parseInt(button.dataset.stockquantity);
+
+        const totalBasePrice = button.dataset.price;
+        const totalDiscountPrice = button.dataset.discountedprice;
+        const totalDiscount = button.dataset.discountamount;
+        const quantityCount = 1;
+
+        if (!variantId) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Variant Required',
+                text: 'Please select a variant before adding to cart.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#f39c12'
+            });
+            return;
+        }
+
+        if (stockStatus.toLowerCase() === "out of stock" || stockQuantity <= 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Out of Stock',
+                text: 'This product is currently out of stock and cannot be added to the cart.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
+        try {
+            const response = await fetch("/cart/add", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    productId,
+                    variantId,
+                    quantityCount,
+                    totalBasePrice,
+                    totalDiscountPrice,
+                    totalDiscount
+                }),
+            });
+
+            const contentType = response.headers.get("content-type");
+
+            if (contentType && contentType.includes("application/json")) {
+                const data = await response.json();
+
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: data.message,
+                        confirmButtonText: 'Great!',
+                        confirmButtonColor: '#28a745'
+                    });
+                } else if (response.status === 401) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'You need to log in!',
+                        text: data.message,
+                        confirmButtonColor: '#d33'
+                    });
+                    window.location.href = "/login";
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: data.message || 'Failed to add product to cart.',
+                        confirmButtonColor: '#d33'
+                    });
+                }
+
+            } else {
+                await Swal.fire({
+                    icon: 'warning',
+                    title: 'Authentication Required',
+                    text: 'You need to log in to add products to the cart.',
+                    confirmButtonColor: '#d33'
+                });
+                window.location.href = "/login";
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Server Error',
+                text: error.message || 'Something went wrong. Please try again later.',
+                confirmButtonColor: '#d33'
+            });
+        }
+    });
+});
+
+</script>

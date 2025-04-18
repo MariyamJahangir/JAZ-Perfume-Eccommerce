@@ -18,16 +18,14 @@ const LoadCart = async (req, res) => {
             })
             .lean();
 
-       
-
-        //const offer = await offerModel.findOne({name: cartItems.products.offer})
+    
 
 
         // Loop through cart items and attach selected variant data to each cart item
         cartItems.forEach(item => {
             const selectedVariant = item.products.variant.find(v => v._id.toString() === item.variant.toString());
             if (selectedVariant) {
-                // Attach selected variant data to the cart item
+                
                 item.selectedVariant = selectedVariant;
             } else {
                 console.log("Variant not found in product.");
@@ -40,11 +38,7 @@ const LoadCart = async (req, res) => {
         let totalBasePrice = 0;
         let totalDiscountPrice = 0;
         let totalDiscount = 0;
-        // cartItems.forEach(item => {
-        //     if (item.selectedVariant) {
-        //         totalBasePrice += item.selectedVariant.price * item.quantityCount;  // Use the selected variant's price         
-        //     }
-        // });
+        
 
         for (const item of cartItems) {
             if (item.selectedVariant) {
@@ -98,103 +92,6 @@ const LoadCart = async (req, res) => {
 };
 
 
-
-// const updateCartQuantity = async (req, res) => {
-//     try {
-//         const { cartItemId, quantity } = req.body;
-
-//         // Find the cart item
-//         const cartItem = await cartModel.findById(cartItemId).populate({
-//             path: "products",
-//             select: "variant offer",
-//         });
-
-//         if (!cartItem) {
-//             return res.status(404).json({ success: false, message: "Cart item not found" });
-//         }
-
-//         // Get the selected variant stock quantity
-//         const selectedVariant = cartItem.products.variant.find(
-//             (v) => v._id.toString() === cartItem.variant.toString()
-//         );
-
-//         if (!selectedVariant) {
-//             return res.status(404).json({ success: false, message: "Variant not found" });
-//         }
-
-//         // Check if requested quantity is within stock limit
-//         if (quantity > selectedVariant.stockQuantity) {
-//             return res.status(400).json({ success: false, message: "Stock limit exceeded" });
-//         }
-
-
-//         // Update the quantity in the database
-//         cartItem.quantityCount = quantity;
-
-//         // Recalculate the individual item total
-//         const newTotalBasePrice = cartItem.quantityCount * selectedVariant.price;
-
-//         cartItem.totalBasePrice = newTotalBasePrice;
-
-//         const offer = await offerModel.findOne({name: cartItem.products.offer, isActive: true, expiry: { $gte: new Date() }})
-//         let newTotalDiscount = 0;
-//         if(offer){
-//             if(offer.discountType == 'percentage'){
-//                 newTotalDiscount = cartItem.quantityCount *(newTotalBasePrice * offer.discount)/100 
-//             }else{
-//                 newTotalDiscount = cartItem.quantityCount * offer.discount 
-//             }
-//         }
-        
-       
-//         cartItem.totalDiscount = newTotalDiscount;
-
-//         const newTotalDiscountPrice = newTotalBasePrice - newTotalDiscount
-//         cartItem.totalDiscountPrice = newTotalDiscountPrice;
-
-//         await cartItem.save();
-
-
-//         // ✅ Calculate the updated total cart price
-//         const cartItems = await cartModel.find({ user: cartItem.user }).populate({
-//             path: "products",
-//             select: "variant",
-//         });
-
-//         // Send response with updated item and cart total
-        
-//         let updatedCartTotalBasePrice = 0
-//         let updatedCartTotalDiscount = 0
-//         let updatedCartTotalDiscountPrice = 0
-//         for(let item of cartItems){
-//             updatedCartTotalBasePrice += item.totalBasePrice
-//             updatedCartTotalDiscount += item.totalDiscount
-//             updatedCartTotalDiscountPrice += item.totalDiscountPrice
-//         }
-
-//         console.log("newTotalBasePrice:",newTotalBasePrice)
-//         console.log("newTotalDiscount:",newTotalDiscount)
-//         console.log("newTotalDiscountPrice:",newTotalDiscountPrice)
-//         console.log("updatedCartTotalBasePrice:",updatedCartTotalBasePrice)
-//         console.log("updatedCartTotalDiscount:",updatedCartTotalDiscount)
-//         console.log("updatedCartTotalDiscountPrice:",updatedCartTotalDiscountPrice)
-
-//         res.json({
-//             success: true,
-//             message: "Quantity updated successfully",
-//             // newTotalBasePrice,
-//             // newTotalDiscount,
-//             // newTotalDiscountPrice,
-//             updatedCartTotalBasePrice,
-//             updatedCartTotalDiscount,
-//             updatedCartTotalDiscountPrice
-//         });
-
-//     } catch (error) {
-//         console.error("Error updating cart quantity:", error);
-//         res.status(500).json({ success: false, message: "Server error" });
-//     }
-// };
 
 const updateCartQuantity = async (req, res) => {
     try {
@@ -314,80 +211,6 @@ const removeProduct = async (req, res) => {
 
 
 
-
-// const LoadCheckout = async (req, res) => {
-//     try {
-//         const userId = req.session.user?.id;
-//         if (!userId) {
-//             return res.redirect("/login");
-//         }
-
-//         // Fetch addresses
-//         const addresses = await addressModel.find({ user: userId }).lean();
-
-//         // Fetch cart items and populate product details
-//         const cartItems = await cartModel.find({ user: userId })
-//             .populate({
-//                 path: 'products',
-//                 select: 'name images variant offer'
-//             })
-//             .lean();
-
-//         let totalBasePrice = 0;
-//         let totalDiscount = 0;
-
-//         // Extract all offer names to fetch them in one query
-//         const offerNames = [...new Set(cartItems.map(item => item.products.offer).filter(Boolean))];
-//         const offers = await offerModel.find({ name: { $in: offerNames } }).lean();
-
-//         // Create a map for quick lookup
-//         const offerMap = {};
-//         offers.forEach(offer => {
-//             offerMap[offer.name] = offer;
-//         });
-
-
-//         for (let item of cartItems) {
-//             // Find the selected variant
-//             const selectedVariant = item.products.variant.find(v => v._id.toString() === item.variant.toString());
-//             if (!selectedVariant) {
-//                 console.log("Variant not found in product.");
-//                 continue;
-//             }
-
-//             item.selectedVariant = selectedVariant;
-//             const itemBasePrice = selectedVariant.price * item.quantityCount;
-//             totalBasePrice += itemBasePrice;
-
-//             // Calculate discount
-//             let itemDiscount = 0;
-//             if (item.products.offer && offerMap[item.products.offer]) {
-//                 const offer = offerMap[item.products.offer];
-
-//                 if (offer.discountType === 'percentage') {
-//                     itemDiscount = (itemBasePrice * offer.discount) / 100;
-//                 } else {
-//                     itemDiscount = offer.discount; // Fixed discount applies once per product
-//                 }
-//             }
-
-//             item.discount = itemDiscount;
-//             totalDiscount += itemDiscount;
-//         }
-
-//         const totalDiscountedPrice = totalBasePrice - totalDiscount;
-
-//         const coupons = await couponModel.find({isActive: true}).lean()
-
-//         res.render("user/checkout", { addresses, cartItems, totalBasePrice, totalDiscount, totalDiscountedPrice, coupons });
-
-//     } catch (error) {
-//         console.error("Error fetching checkout data:", error);
-//         res.status(500).send("Server Error");
-//     }
-// };
-
-
 const LoadCheckout = async (req, res) => {
     try {
         const userId = req.session.user?.id;
@@ -438,19 +261,35 @@ const LoadCheckout = async (req, res) => {
         }
 
         
-        const totalDiscountedPrice = totalBasePrice - totalDiscount;
+        let totalDiscountedPrice = totalBasePrice - totalDiscount;
+
+        let isFirstOrder = false;
+        const orderCount = await orderModel.countDocuments({  userId: userId });
+        if (orderCount === 0) {
+            isFirstOrder = true;
+        }
+
+        const user = await userModel.findById(userId);
+        const isReferred = user.isReferred
+
+
+        if (isFirstOrder && isReferred) {
+            const firstOrderDiscount = (totalBasePrice * 0.20); 
+            totalDiscount += firstOrderDiscount; 
+            totalDiscountedPrice -= firstOrderDiscount; 
+        }
 
         const coupons = await couponModel.find({isActive: true, expiry: { $gte: new Date() }}).lean()
 
-        res.render("user/checkout", { addresses, cartItems, totalBasePrice, totalDiscount, totalDiscountedPrice, coupons });
+        const orders = await orderModel.find({userId: userId})
+
+        res.render("user/checkout", { addresses, cartItems, totalBasePrice, totalDiscount, totalDiscountedPrice, coupons, orders, firstOrderDiscount: isFirstOrder && isReferred ? (totalBasePrice * 0.20).toFixed(2) : null,  });
 
     } catch (error) {
         console.error("Error fetching checkout data:", error);
         res.status(500).send("Server Error");
     }
 };
-
-
 
 
 

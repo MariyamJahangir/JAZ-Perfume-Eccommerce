@@ -93,6 +93,14 @@ const starRating = (rating) => {
   return repeat("&#9733;", rating) + repeat("&#9734;", 5 - rating);
 };
 
+
+const isInWishlist = (wishlist, productId, variantId) => {
+  return wishlist && wishlist.some(w => w.productId == productId && w.variantId == variantId);
+}
+
+
+
+
 module.exports = {
   isEqual,
   isObjectIdEqual,
@@ -115,5 +123,6 @@ module.exports = {
   toFixed,
   formatAddress,
   range,
-  starRating
+  starRating,
+  isInWishlist
 }

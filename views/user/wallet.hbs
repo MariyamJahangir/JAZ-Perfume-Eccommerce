@@ -64,7 +64,7 @@
 <section style="background-color: #DFF2FA;">
   <div class="container">
     <div class="row p-5">
-      <h2>Welcome {{user.firstname}}</h2>
+      <h2>Welcome {{user.firstname}} {{user.lastname}}</h2>
     </div>
 
   </div>
@@ -74,8 +74,8 @@
     <div class="row">
       <div class="col-2 mt-5">
         <nav class="d-flex flex-column p-3">
-          <a href="profile" class="link-dark link-underline-opacity-0 nav-item rounded active px-3 py-2 mb-2"
-            aria-current="page"><i class="bi bi-person-circle p-2"></i>Profile</a>
+          <a href="profile" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
+              class="bi bi-person-circle p-2"></i>Profile</a>
           <a href="address" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
               class="bi bi-cart4 p-2"></i>Address</a>
           <a href="wishlist" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
@@ -84,8 +84,9 @@
               class="bi bi-truck p-2"></i>Orders</a>
           <a href="change-password" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
               class="bi bi-key p-2"></i>Password</a>
-          <a href="wallet" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
-              class="bi bi-wallet2 p-2"></i>Wallet</a>
+          <a href="wallet" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2 active"
+            aria-current="page">
+            <i class="bi bi-wallet2 p-2"></i>Wallet</a>
           <a href="logout" class="link-dark link-underline-opacity-0 nav-item rounded px-3 py-2 mb-2"><i
               class="bi bi-box-arrow-right p-2"></i>Logout</a>
         </nav>
@@ -216,7 +217,12 @@
     const amount = document.getElementById("walletAmount").value;
 
     if (!amount || amount <= 0) {
-      alert("Please enter a valid amount");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Amount',
+        text: 'Please enter a valid amount'
+      });
+
       return;
     }
 
@@ -230,7 +236,11 @@
     const data = await response.json();
 
     if (!data.success) {
-      alert("Failed to initiate payment");
+      Swal.fire({
+        icon: 'error',
+        title: 'Payment Failed',
+        text: 'Failed to initiate payment'
+      });
       return;
     }
 
@@ -253,10 +263,27 @@
         const verifyData = await verifyRes.json();
 
         if (verifyData.success) {
-          alert("Wallet credited successfully!");
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Wallet credited successfully!'
+          });
           location.reload(); // reload to show updated wallet
         } else {
-          alert("Payment failed or not verified");
+          Swal.fire({
+            icon: 'error',
+            title: 'Payment Error',
+            text: 'Payment failed or not verified'
+          });
+        }
+      },
+      modal: {
+        ondismiss: function () {
+          Swal.fire({
+            icon: 'info',
+            title: 'Payment Incomplete',
+            text: 'You did not add money to your wallet.'
+          });
         }
       },
       theme: {

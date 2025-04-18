@@ -203,24 +203,24 @@
             if (file && file.type.startsWith('image/')) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    imagePreview.src = e.target.result; // Set the image source
-                    imagePreviewContainer.style.display = 'block'; // Show the preview container
+                    imagePreview.src = e.target.result; 
+                    imagePreviewContainer.style.display = 'block'; 
                 };
-                reader.readAsDataURL(file); // Read the file as a Data URL
+                reader.readAsDataURL(file); 
             } else {
-                imagePreviewContainer.style.display = 'none'; // Hide the preview container if no image
+                imagePreviewContainer.style.display = 'none'; 
             }
         });
 
         // Handle form submission
         categoryForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Prevent the default form submission
+            e.preventDefault(); 
 
-            // Create FormData object
+            
             const formData = new FormData(categoryForm);
 
             try {
-                // Send form data to the server using fetch
+                
                 const response = await fetch('/admin/add-category', {
                     method: 'POST',
                     body: formData,

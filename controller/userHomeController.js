@@ -1,9 +1,13 @@
-const userModel = require('../../model/userModel')
-const productModel = require('../../model/productModel')
-const categoryModel = require('../../model/categoryModel')
-const OtpModel = require('../../model/otpModel');
+const userModel = require('../model/userModel')
+const productModel = require('../model/productModel')
+const categoryModel = require('../model/categoryModel')
+const offerModel = require('../model/offerModel')
+const wishlistModel = require('../model/wishlistModel')
+const OtpModel = require('../model/otpModel');
+const referralModel = require('../model/referralModel');
+const walletModel = require('../model/walletModel');
 const bcrypt = require('bcrypt')
-const transporter = require('../../config/emailService')
+const transporter = require('../config/emailService')
 const crypto = require('crypto');
 //const nodemailer = require('nodemailer');
 require('dotenv').config();
@@ -11,122 +15,9 @@ const dns = require('dns');
 
 
 // post signup
-// const registerUser = async (req, res) => {
-//     try {
-//         const { firstname, lastname, email, password, confirmpassword} = req.body;
-
-//         if (!firstname || !lastname || !email || !password || !confirmpassword) {
-//             req.flash('error', 'All fields are required');
-//             return res.redirect('/signup');
-//         }
-
-//         const emailPattern =  /^[a-z0-9]{4,}@[a-z]+\.[a-z]{2,3}$/
-//         if (!emailPattern.test(email)) {
-//             req.flash('error', 'Please enter a valid email address!');
-//             return res.redirect('/signup');
-//         }
-
-//         // // ✅ Extract Domain and Check MX Record
-//         // const domain = email.split('@')[1];
-
-//         // const checkMXRecords = async (domain) => {
-//         //     return new Promise((resolve, reject) => {
-//         //         dns.resolveMx(domain, (err, addresses) => {
-//         //             if (err || addresses.length === 0) {
-//         //                 reject('Invalid email domain. Please use a valid email.');
-//         //             } else {
-//         //                 resolve(true);
-//         //             }
-//         //         });
-//         //     });
-//         // };
-
-//         // try {
-//         //     await checkMXRecords(domain);
-//         // } catch (error) {
-//         //     req.flash('error', error);
-//         //     return res.redirect('/signup');
-//         // }
-
-//         const existingUser = await userModel.findOne({ email });
-//         if (existingUser) {
-//             req.flash('error', 'User already exists');
-//             return res.redirect('/signup');
-//         }
-
-//         const hashedPassword = await bcrypt.hash(password, 10);
-//         const newUser = new userModel({
-//             firstname,
-//             lastname,
-//             email,
-//             password: hashedPassword,
-//             status: 'blocked',
-//             lastOtpSentAt: new Date()
-//         });
-//         await newUser.save();
-
-//         const generateOtp = async (email) => {
-
-//             const existingOtp = await OtpModel.findOne({ email });
-
-//             if (existingOtp && new Date() - existingOtp.createdAt < 5 * 60 * 1000) {
-//                 throw new Error('OTP already sent. Please check your email.');
-//             }
-
-//             const otp = Math.floor(1000 + Math.random() * 9000);
-//             const createdAt = new Date();
-
-
-//             await OtpModel.create({
-//                 email,
-//                 otp,
-//                 createdAt,
-//             });
-
-//             return otp;
-//         };
-
-//         const otp = await generateOtp(email);
-
-
-//         const mailOptions = {
-//             from: process.env.EMAIL_USER,
-//             to: email,
-//             subject: 'Registration OTP',
-//             text: `Your OTP for registration is: ${otp}. It is valid for 5 minutes.`,
-//         };
-
-//         const sendEmail = (mailOptions) => {
-//             return new Promise((resolve, reject) => {
-//                 transporter.sendMail(mailOptions, (error, info) => {
-//                     if (error) {
-//                         reject('Failed to send OTP. Please try again later.');
-//                     } else {
-//                         resolve(info);
-//                     }
-//                 });
-//             });
-//         };
-
-//         try {
-//             await sendEmail(mailOptions);
-//             req.session.tempEmail = email;
-//             res.redirect('/otp');
-//         } catch (error) {
-//             console.error('Error sending email:', error);
-//             return res.render('user/signup', { message: error });
-//         }
-
-//     } catch (error) {
-//         console.error(error);
-//         res.render('user/signup', { message: 'Something went wrong. Please try again later.' });
-//     }
-// };
-
-
 const registerUser = async (req, res) => {
     try {
-        const { firstname, lastname, email, password } = req.body;
+        const { firstname, lastname, email, password, referralCode } = req.body;
 
         // ✅ Extract Domain and Check MX Record
         const domain = email.split('@')[1];
@@ -155,16 +46,58 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ success: false, error: "User already exists" });
         }
 
+        if (referralCode) {
+            const referral = await referralModel.findOne({ referralCode: referralCode });
+            if (!referral) {
+                return res.status(400).render('user/signup', { success: false,
+                    error: 'Invalid referral code',
+                    
+                });
+            }
+        
+            referral.referredUsers.push(email);
+            await referral.save();
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new userModel({
             firstname,
             lastname,
             email,
+            isReferred: referralCode ? true : false,
             password: hashedPassword,
             status: 'blocked',
             lastOtpSentAt: new Date()
         });
         await newUser.save();
+
+        if (referralCode) {
+            const referredUser = await referralModel.findOne({ referralCode: referralCode });
+            if (referredUser) {
+                const refWallet = await walletModel.findOne({ userId: referredUser.userId });
+                
+                if (refWallet) {
+                   
+                    refWallet.balance += 500; 
+                    refWallet.transactions.push({
+                        amount: 500,
+                        type: 'Credit',
+                        description: 'Referral Bonus for referring ' + email,
+                    });
+
+                    await refWallet.save();
+                }
+            }
+        }
+
+        
+        const newWallet = new walletModel({
+            userId: newUser._id,
+            balance: 0, 
+            transactions: [], 
+        });
+
+        await newWallet.save(); 
 
         const generateOtp = async (email) => {
 
@@ -241,12 +174,7 @@ const verifyOTP = async (req, res) => {
     }
 
     try {
-        // // Clean up unverified users
-        // await userModel.deleteMany({ 
-        //     status: "blocked", 
-        //     createdAt: { $lt: new Date(Date.now() - 30 * 60 * 1000) } 
-        // });
-        // Cleanup expired OTPs
+        
         await OtpModel.deleteMany({ createdAt: { $lt: new Date(Date.now() - 2 * 60 * 1000) } });
         
         const otpEntry = await OtpModel.findOne({ email });
@@ -366,14 +294,138 @@ const loadLogin = (req, res) => {
 }
 
 
-// get homepage
+
 const loadHome = async (req, res) => {
-    console.log(req.session.user)
-    const users = await userModel.find({ status: "active" })
-    const products = await productModel.find({}).lean().sort({updatedAt : -1}).limit(6)
-    const categories = await categoryModel.find().lean()
-    res.render('user/home', { users, products, categories })
-}
+    try {
+        
+        console.log(req.session.user)
+        const users = await userModel.find({ status: "active" });
+
+        let wishlist = [];
+        
+        if (req.session?.user?.id) {
+            wishlist = await wishlistModel.find({
+                userId: req.session.user.id
+            }).lean();
+        } else {
+            console.log("User not logged in, skipping wishlist fetch.");
+        }
+
+        let products = await productModel.find({ deleted: false })
+            .populate('category')
+            .sort({ updatedAt: -1 })
+            .limit(6)
+            .lean();
+
+        const currentDate = new Date();
+        const offers = await offerModel.find({
+            isActive: true,
+            start: { $lte: currentDate },
+            expiry: { $gte: currentDate }
+        }).lean();
+
+        const calculateCategoryDiscount = (offer, price) => {
+            if (!offer) return { amount: 0, text: "" };
+
+            let discountAmount = 0;
+            let discountText = "";
+
+            if (offer.discountType === "percentage") {
+                discountAmount = (price * offer.discount) / 100;
+                if (offer.maxDiscount && discountAmount > offer.maxDiscount) {
+                    discountAmount = offer.maxDiscount;
+                }
+                discountText = `${offer.discount}% Off`;
+            } else {
+                discountAmount = offer.discount;
+                discountText = `Rs.${offer.discount} Off`;
+            }
+
+            return {
+                amount: Math.floor(discountAmount),
+                text: discountText
+            };
+        };
+
+        products = products.map(product => {
+            const variant = product.variant?.[0];
+            if (!variant) return product;
+
+            const price = variant.price;
+
+            const productOffer = product.offer
+                ? offers.find(o => o.name === product.offer && o.offerType === 'product')
+                : null;
+
+            const categoryOffer = product.category?.offer
+                ? offers.find(o => o.name === product.category.offer && o.offerType === 'category')
+                : null;
+
+            // Calculate product offer discount
+            let productDiscountAmount = 0;
+            let productDiscountText = "";
+            if (productOffer) {
+                if (productOffer.discountType === "percentage") {
+                    productDiscountAmount = (price * productOffer.discount) / 100;
+                    if (productOffer.maxDiscount && productDiscountAmount > productOffer.maxDiscount) {
+                        productDiscountAmount = productOffer.maxDiscount;
+                    }
+                    productDiscountText = `${productOffer.discount}% Off`;
+                } else {
+                    productDiscountAmount = productOffer.discount;
+                    productDiscountText = `Rs.${productOffer.discount} Off`;
+                }
+            }
+
+            // Calculate category offer discount
+            const { amount: categoryDiscountAmount, text: categoryDiscountText } = calculateCategoryDiscount(categoryOffer, price);
+
+            // Decide which discount to apply
+            let bestDiscountAmount = 0;
+            let bestDiscountText = "";
+            if (productDiscountAmount >= categoryDiscountAmount) {
+                bestDiscountAmount = Math.floor(productDiscountAmount);
+                bestDiscountText = productDiscountText;
+            } else {
+                bestDiscountAmount = Math.floor(categoryDiscountAmount);
+                bestDiscountText = categoryDiscountText;
+            }
+
+            const discountedPrice = Math.floor(price - bestDiscountAmount);
+
+             // ✅ Check if product + variant is in wishlist
+            const inWishlist = wishlist?.some(item =>
+                item.productId.toString() === product._id.toString() &&
+                item.variantId.toString() === variant._id.toString()
+            );
+
+            return {
+                ...product,
+                firstVariant: variant,
+                discountAmount: bestDiscountAmount,
+                discountedPrice,
+                discountText: bestDiscountText,
+                inWishlist
+            };
+        });
+
+       
+
+        const categories = await categoryModel.find().lean();
+
+        res.render('user/home', {
+            users,
+            products,
+            categories,
+        });
+
+    } catch (error) {
+        console.error("Error loading home:", error);
+        res.status(500).send('Server Error');
+    }
+};
+
+
 
 const contact = (req, res) => {
 

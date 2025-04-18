@@ -15,7 +15,7 @@ const OfferSchema = new mongoose.Schema(
         offerType: {
             type: String,
             required: true,
-            enum: ['product', 'category', 'referral'],
+            enum: ['product', 'category'],
         },
         start: {
             type: Date,
