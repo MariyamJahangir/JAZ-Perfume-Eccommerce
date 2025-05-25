@@ -45,7 +45,7 @@ const verifyPayment = async (req, res) => {
     try {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = req.body;
         
-
+        console.log('orderId:', orderId)
         const expectedSignature = crypto
             .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
             .update(razorpay_order_id + "|" + razorpay_payment_id)
@@ -58,7 +58,7 @@ const verifyPayment = async (req, res) => {
         }
 
         const order = await orderModel.findOne({ orderId })
-
+        console.log('order:', order)
         if (!order) {
             return res.status(404).json({ success: false, message: "Order not found" });
         }
@@ -83,14 +83,9 @@ const verifyPayment = async (req, res) => {
 
 
 
-
-
-
-
-
-
 module.exports = {
     createRazorpayOrder,
     verifyPayment,
+
     
 }

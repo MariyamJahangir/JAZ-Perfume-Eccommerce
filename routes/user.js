@@ -107,8 +107,8 @@ router.get('/referral', auth.isLogin, referralController.getReferralCode)
 router.post("/order/place",auth.isLogin, orderController.PlaceOrder)
 router.post('/create-payment',auth.isLogin, paymentController.createRazorpayOrder)
 router.post('/verify-payment',auth.isLogin, paymentController.verifyPayment)
-router.get('/order-placed', orderController.OrderPlaced)
-router.get('/order-failed', orderController.OrderFailed)
+router.get('/order-placed',auth.isLogin, orderController.OrderPlaced)
+router.get('/order-failed',auth.isLogin, orderController.OrderFailed)
 
 
 //orders
@@ -116,8 +116,8 @@ router.get('/orders',auth.isLogin, orderController.LoadOrders)
 router.get('/order-detail/:orderId', auth.isLogin, orderController.OrderDetail)
 router.post('/order/return/:orderId/:productId',auth.isLogin, orderController.ReturnOrder)
 router.post('/order/cancel/:orderId/:productId/:variantId',auth.isLogin, orderController.CancelOrder)
-
-
+router.get('/download-invoice/:orderId', orderController.downloadInvoice)
+router.get('/orders/pendings',auth.isLogin, orderController.LoadOrderPending)
 
 
 

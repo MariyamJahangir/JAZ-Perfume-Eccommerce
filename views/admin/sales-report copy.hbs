@@ -282,98 +282,147 @@
 
 <script>
 
- // Wait for DOM to load
-document.addEventListener("DOMContentLoaded", function () {
-  const filterSelect = document.getElementById('filter');
-  const startDate = document.getElementById('startDate');
-  const endDate = document.getElementById('endDate');
-  const startDateDiv = startDate.parentElement;
-  const endDateDiv = endDate.parentElement;
+  $(document).ready(function () {
 
-  filterSelect.addEventListener('change', function () {
-    const isCustom = this.value === 'custom';
-    startDateDiv.hidden = !isCustom;
-    endDateDiv.hidden = !isCustom;
-    document.querySelector('.date-inputs').classList.toggle('d-none', !isCustom);
-  });
 
-  const generateReportBtn = document.getElementById('generateReport');
+    const salesTable = $('#salesTable').DataTable({
+      responsive: true,
+      order: [[1, 'desc']]
+    });
 
-  generateReportBtn.addEventListener('click', async function () {
-    const buttonText = this.querySelector('.button-text');
-    const spinner = this.querySelector('.spinner-border');
-    const filter = filterSelect.value;
-    const start = startDate.value;
-    const end = endDate.value;
+    // Add Bootstrap classes to existing DataTables elements
+    const wrapper = $('.dataTables_wrapper');
 
-    if (filter === 'custom') {
-      if (!start) return Swal.fire({ icon: 'warning', title: 'Missing Date!', text: 'Please enter the start date.' });
-      if (!end) return Swal.fire({ icon: 'warning', title: 'Missing Date!', text: 'Please enter the end date.' });
-      if (new Date(start) > new Date(end)) {
-        return Swal.fire({ icon: 'warning', title: 'Invalid Date!', text: 'Start date must be before end date.' });
+    // --- Top Controls ---
+    const topControls = $('<div class="d-flex justify-content-between align-items-center mb-1 flex-wrap w-100"></div>');
+    topControls.append(wrapper.find('.dataTables_length'));
+    topControls.append(wrapper.find('.dataTables_filter'));
+    wrapper.prepend(topControls);
+
+    // --- Bottom Controls (Info & Pagination) ---
+    const bottomControls = $('<div class="d-flex justify-content-between align-items-center mt-2 flex-wrap w-100"></div>');
+    bottomControls.append(wrapper.find('.dataTables_info'));
+    bottomControls.append(wrapper.find('.dataTables_paginate'));
+    wrapper.append(bottomControls);
+
+
+
+    $('#filter').on('change', function () {
+      const dateInputs = $('.date-inputs');
+      dateInputs.toggleClass('d-none', $(this).val() !== 'custom');
+    });
+
+
+
+    $('#generateReport').on('click', async function () {
+      const button = $(this);
+      const buttonText = button.find('.button-text');
+      const spinner = button.find('.spinner-border');
+      const filter = $('#filter').val();
+      const startDate = $('#startDate').val();
+      const endDate = $('#endDate').val();
+
+
+
+
+
+      if (filter === 'custom') {
+        if (!startDate) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Missing Date!',
+            text: 'Please enter the start date.',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+          });
+          return;
+        }
+
+        if (!endDate) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Missing Date!',
+            text: 'Please enter the end date.',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+          });
+          return;
+        }
+
+        if (new Date(startDate) > new Date(endDate)) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Missing Date!',
+            text: 'Start date must be before end date.',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+          });
+          return;
+        }
+
       }
-    }
 
-    buttonText.classList.add('d-none');
-    spinner.classList.remove('d-none');
-    this.disabled = true;
+      buttonText.addClass('d-none');
+      spinner.removeClass('d-none');
+      button.prop('disabled', true);
 
-    try {
-      const params = new URLSearchParams({ filter, startDate: start, endDate: end });
-      const res = await fetch(`/admin/sales-report-data?${params}`);
-      const response = await res.json();
+      try {
+        const response = await $.ajax({
+          url: '/admin/sales-report-data',
+          method: 'GET',
+          data: { filter, startDate, endDate }
+        });
 
-      const tableBody = document.querySelector('#salesTable tbody');
-      tableBody.innerHTML = '';
-      response.result.forEach(item => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${item.productName} ${item.size}</td>
-          <td>${item.soldCount}</td>
-          <td>${item.returnedCount}</td>
-          <td>₹${item.offerDiscounts.toFixed(2)}</td>
-          <td>₹${item.revenue.toFixed(2)}</td>
-        `;
-        tableBody.appendChild(row);
+        salesTable.clear();
+        response.result.forEach(item => {
+          salesTable.row.add([
+            `${item.productName} ${item.size}`,
+            item.soldCount,
+            item.returnedCount,
+            `₹${item.offerDiscounts.toFixed(2)}`,
+            `₹${item.revenue.toFixed(2)}`
+          ]);
+        });
+        salesTable.draw();
+
+        $('#discounts').text(`Offer Discounts: ₹${response.totalOfferDiscounts?.toFixed(2) || 0}`);
+        $('#coupon-discounts').text(`Coupon Discounts: ₹${response.totalCouponDiscount?.toFixed(2) || 0}`);
+        $('#overall-sales-count').text(`Overall Sales Count: ${response.totalSold || 0}`);
+        $('#overall-order-amount').text(`Order Count: ${((response.totalSold || 0) + (response.totalReturns || 0))}`);
+        $('#overall-discount').text(`Overall Discount: ₹${response.overallDiscount?.toFixed(2) || 0}`);
+        $('#net-revenue').text(`Net Revenue: ₹${response.netRevenue?.toFixed(2) || 0}`);
+
+      } catch (error) {
+        console.error('Error fetching report:', error);
+        alert('Failed to generate report. Please try again.');
+      } finally {
+        buttonText.removeClass('d-none');
+        spinner.addClass('d-none');
+        button.prop('disabled', false);
+      }
+    });
+
+    $('#downloadExcel, #downloadPDF').on('click', function () {
+      const format = $(this).attr('id') === 'downloadExcel' ? 'excel' : 'pdf';
+      const filter = $('#filter').val();
+      const startDate = $('#startDate').val();
+      const endDate = $('#endDate').val();
+
+      const params = new URLSearchParams({
+        format,
+        filter,
+        ...(startDate && { startDate }),
+        ...(endDate && { endDate })
       });
 
-      document.getElementById('discounts').textContent = `Offer Discounts: ₹${(response.totalOfferDiscounts || 0).toFixed(2)}`;
-      document.getElementById('coupon-discounts').textContent = `Coupon Discounts: ₹${(response.totalCouponDiscount || 0).toFixed(2)}`;
-      document.getElementById('overall-sales-count').textContent = `Overall Sales Count: ${response.totalSold || 0}`;
-      document.getElementById('overall-order-amount').textContent = `Order Count: ${(response.totalSold || 0) + (response.totalReturns || 0)}`;
-      document.getElementById('overall-discount').textContent = `Overall Discount: ₹${(response.overallDiscount || 0).toFixed(2)}`;
-      document.getElementById('net-revenue').textContent = `Net Revenue: ₹${(response.netRevenue || 0).toFixed(2)}`;
-
-    } catch (err) {
-      console.error('Error fetching report:', err);
-      alert('Failed to generate report. Please try again.');
-    } finally {
-      buttonText.classList.remove('d-none');
-      spinner.classList.add('d-none');
-      this.disabled = false;
-    }
+      window.location.href = `/admin/sales-report-download?${params.toString()}`;
+    });
   });
 
-  document.getElementById('downloadExcel').addEventListener('click', downloadFile);
-  document.getElementById('downloadPDF').addEventListener('click', downloadFile);
-
-  function downloadFile(e) {
-    const format = e.target.id === 'downloadExcel' ? 'excel' : 'pdf';
-    const filter = filterSelect.value;
-    const start = startDate.value;
-    const end = endDate.value;
-
-    const params = new URLSearchParams({ format, filter });
-    if (start) params.append('startDate', start);
-    if (end) params.append('endDate', end);
-
-    window.location.href = `/admin/sales-report-download?${params.toString()}`;
-  }
-
-  // Enable Bootstrap tooltips
-  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-  tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
-});
+  document.addEventListener("DOMContentLoaded", function () {
+    const tooltips = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltips.map(el => new bootstrap.Tooltip(el));
+  });
 
 
 </script>

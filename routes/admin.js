@@ -10,6 +10,8 @@ const productController = require('../controller/productController');
 const orderController = require('../controller/orderController');
 const couponController = require('../controller/couponController');
 const offerController = require('../controller/offerController');
+const walletController = require('../controller/walletController');
+
 
 // Admin Login, Logout, Homepage
 
@@ -83,5 +85,14 @@ router.get('/add-offers',adminAuth.checkSession, offerController.LoadAddOffers);
 router.post('/add-offers',adminAuth.checkSession, offerController.AddOffers);
 router.get('/edit-offer/:id',adminAuth.checkSession, offerController.LoadEditOffers);
 router.put('/edit-offer/:id',adminAuth.checkSession, offerController.EditOffers);
+
+
+//wallet
+router.get('/wallet',adminAuth.checkSession, walletController.LoadAllWallets);
+
+
+
+
+
 
 module.exports = router;

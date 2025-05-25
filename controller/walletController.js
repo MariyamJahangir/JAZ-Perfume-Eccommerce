@@ -117,8 +117,16 @@ const verifyPayment = async (req, res) => {
 
 
 
+
+const LoadAllWallets = (req, res)=>{
+    res.status(200).render('admin/wallet');
+}
+
+
 module.exports = {
     LoadWallet,
     createOrder,
-    verifyPayment
+    verifyPayment,
+
+    LoadAllWallets
 }

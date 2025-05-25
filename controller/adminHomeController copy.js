@@ -1,7 +1,7 @@
-const adminModel = require('../../model/adminModel')
+const adminModel = require('../model/adminModel')
 const bcrypt = require('bcrypt')
-const userModel = require('../../model/userModel')
-const orderModel = require('../../model/orderModel')
+const userModel = require('../model/userModel')
+const orderModel = require('../model/orderModel')
 const moment = require('moment');
 const xl = require('excel4node');
 const PDFDocument = require('pdfkit');
@@ -403,7 +403,7 @@ const getSalesReportData = async (filter, startDate, endDate) => {
             }
         }
     ]);
-
+    
     const totalCouponDiscount = couponDiscounts[0]?.couponDiscount || 0;
 
     return {

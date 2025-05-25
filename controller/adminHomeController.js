@@ -175,6 +175,7 @@ const loadDashboard = async (req, res) => {
 const loadSalesReport = async (req, res) => {
     try {
         const reportData = await getSalesReportData('daily');
+        console.log("reportData.result:", reportData.result)
         res.status(200).render('admin/sales-report', {
             title: "Sales Report",
             orders: reportData.result,

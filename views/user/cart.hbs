@@ -28,13 +28,22 @@
                             class="fw-bold text-danger">{{this.selectedVariant.stockStatus}}</span>{{/if}}
                     </div>
                     <div class="col-4 align-items-center d-flex">
-                        <p class="pe-2" id="totalDiscountPrice">₹{{this.totalDiscountPrice}}</p>
-                        {{#if (not (isEqual this.totalDiscount 0))}}
-                        <p class="pe-2" id="totalBasePrice"><s>₹{{this.totalBasePrice}}</s></p>
-                        <p style="font-size: small;"class="ms-2 px-1 border rounded">{{#if (isEqual this.offerDetails.discountType 'percentage')}}
-                            {{this.offerDetails.discountValue}}% Off{{else}} ₹{{this.offerDetails.discountValue}}
-                            Off{{/if}}</p>
-                        {{/if}}
+                        <div>
+                            {{#if (not (isEqual this.totalDiscount 0))}}
+                            <p class="mb-1 fw-bold text-success" id="totalDiscountPrice">₹{{this.totalDiscountPrice}}</p>
+                            <p class="mb-0 text-muted" style="font-size: 0.9rem;" id="totalBasePrice"><s>₹{{this.totalBasePrice}}</s></p>
+                            <span class="badge bg-success mt-1">
+                                {{#if (isEqual this.offerDetails.discountType 'percentage')}}
+                                {{this.offerDetails.discountValue}}% Off
+                                {{else}}
+                                ₹{{this.offerDetails.discountValue}} Off
+                                {{/if}}
+                            </span>
+                            {{else}}
+                            <p class="fw-bold" id="totalDiscountPrice">₹{{this.totalDiscountPrice}}</p>
+                            {{/if}}
+                        </div>
+
                     </div>
                     <div class="col-3 align-content-center">
                         <button class="btn btn-sm btn-outline-secondary rounded-circle me-1"
@@ -132,6 +141,9 @@
         window.location.href = "/checkout";
     }
     });
+
+
+    
 
 
     async function updateQuantity(cartItemId, newQuantity) {
