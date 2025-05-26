@@ -313,7 +313,7 @@
         document.body.addEventListener("click", async function (event) {
             const target = event.target;
 
-            console.log("Clicked element:", target); // Debugging log
+           
 
             if (target.classList.contains("return-btn") || target.classList.contains("cancel-btn")) {
                 const action = target.getAttribute("data-action");
@@ -421,8 +421,7 @@
             const finalAmount = retryButton.dataset.finalamount;
             const shippingAddress = JSON.parse(retryButton.dataset.shippingaddress);
 
-            console.log("orderId:",orderId)
-            console.log("finalAmount:",finalAmount)
+            
             try {
                 const response = await fetch("/create-payment", {
                     method: "POST",
@@ -433,7 +432,7 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    console.log("data.order:", data.order)
+                    
                     // Step 2: Now initiate Razorpay payment
                     initiateRazorpayPayment(data.order, shippingAddress, orderId);
                 } else {
@@ -489,7 +488,7 @@
                 rzp1.open();
 
                 rzp1.on('payment.failed', function (response) {
-                    console.log("Payment Failed:", response.error);
+                    
                     Swal.fire({
                         icon: "error",
                         title: "Payment Failed",
